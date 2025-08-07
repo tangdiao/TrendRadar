@@ -1382,37 +1382,16 @@ class ReportGenerator:
 
     @staticmethod
     def _format_title_html(title_data: Dict) -> str:
-        """格式化HTML标题显示"""
+        """格式化HTML标题显示 - 微信风格"""
         rank_display = StatisticsCalculator.format_rank_for_html(
             title_data["ranks"], title_data["rank_threshold"]
         )
 
         link_url = title_data["mobile_url"] or title_data["url"]
-
         cleaned_title = DataProcessor.clean_title(title_data["title"])
         escaped_title = ReportGenerator._html_escape(cleaned_title)
-        escaped_source_name = ReportGenerator._html_escape(title_data["source_name"])
-
-        if link_url:
-            escaped_url = ReportGenerator._html_escape(link_url)
-            formatted_title = f'[{escaped_source_name}] <a href="{escaped_url}" target="_blank" class="news-link">{escaped_title}</a>'
-        else:
-            formatted_title = (
-                f'[{escaped_source_name}] <span class="no-link">{escaped_title}</span>'
-            )
-
-        if rank_display:
-            formatted_title += f" {rank_display}"
-        if title_data["time_display"]:
-            escaped_time = ReportGenerator._html_escape(title_data["time_display"])
-            formatted_title += f" <font color='grey'>- {escaped_time}</font>"
-        if title_data["count"] > 1:
-            formatted_title += f" <font color='green'>({title_data['count']}次)</font>"
-
-        if title_data["is_new"]:
-            formatted_title = f"<div class='new-title'>🆕 {formatted_title}</div>"
-
-        return formatted_title
+        
+        return escaped_title
 
     @staticmethod
     def _render_html_content(
@@ -1421,154 +1400,448 @@ class ReportGenerator:
         is_daily_summary: bool = False,
         mode: str = "daily",
     ) -> str:
-        """渲染HTML内容"""
+        """渲染HTML内容 - 微信风格设计"""
         html = """
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>频率词统计报告</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1, h2 { color: #333; }
-                table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f2f2f2; }
-                tr:nth-child(even) { background-color: #f9f9f9; }
-                .word { font-weight: bold; }
-                .count { text-align: center; }
-                .percentage { text-align: center; }
-                .titles { max-width: 500px; }
-                .source { color: #666; font-style: italic; }
-                .error { color: #d9534f; }
-                .news-link { 
-                    color: #007bff; 
-                    text-decoration: none; 
-                    border-bottom: 1px dotted #007bff;
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
                 }
-                .news-link:hover { 
-                    color: #0056b3; 
-                    text-decoration: underline; 
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
                 }
-                .news-link:visited { 
-                    color: #6f42c1; 
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
                 }
-                .no-link { 
-                    color: #333; 
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
                 }
-                .new-title {
-                    background-color: #fff3cd;
-                    border: 1px solid #ffc107;
-                    border-radius: 3px;
-                    padding: 2px 6px;
-                    margin: 2px 0;
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
                 }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
                 .new-section {
-                    background-color: #d1ecf1;
-                    border: 1px solid #bee5eb;
-                    border-radius: 5px;
-                    padding: 10px;
-                    margin-top: 10px;
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
                 }
+
                 .new-section h3 {
-                    color: #0c5460;
-                    margin-top: 0;
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
                 }
             </style>
         </head>
         <body>
-            <h1>频率词统计报告</h1>
+            <div class="container">
+                <div class="header">
+                    <h1>频率词统计报告</h1>
+                    <div class="header-info">
         """
 
-        if is_daily_summary:
-            if mode == "current":
-                html += "<p>报告类型: 当前榜单模式</p>"
-            elif mode == "incremental":
-                html += "<p>报告类型: 增量模式</p>"
-            else:
-                html += "<p>报告类型: 当日汇总</p>"
-        else:
-            html += "<p>报告类型: 实时分析</p>"
-
+        # 添加统计信息
         now = TimeHelper.get_beijing_time()
-        html += f"<p>总标题数: {total_titles}</p>"
-        html += f"<p>生成时间: {now.strftime('%Y-%m-%d %H:%M:%S')}</p>"
+        report_type_text = {
+            "current": "当前榜单模式",
+            "incremental": "增量模式", 
+            "daily": "当日汇总"
+        }.get(mode, "实时分析")
+        if not is_daily_summary:
+            report_type_text = "实时分析"
 
+        html += f"""
+                    <p>📊 {report_type_text}</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{total_titles}</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{len(report_data['stats'])}</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{now.strftime('%m-%d')}</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{now.strftime('%H:%M')}</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        """
+
+        # 错误处理
         if report_data["failed_ids"]:
             html += """
-            <div class="error">
-                <h2>请求失败的平台</h2>
-                <ul>
+            <div class="error-section">
+                <h3>⚠️ 数据获取失败</h3>
+                <ul class="error-list">
             """
             for id_value in report_data["failed_ids"]:
-                html += f"<li>{ReportGenerator._html_escape(id_value)}</li>"
+                html += f"<li class=\"error-item\">{ReportGenerator._html_escape(id_value)}</li>"
             html += """
                 </ul>
             </div>
             """
 
-        html += """
-            <table>
-                <tr>
-                    <th>排名</th>
-                    <th>频率词</th>
-                    <th>出现次数</th>
-                    <th>占比</th>
-                    <th>相关标题</th>
-                </tr>
-        """
+        # 热点词统计
+        if report_data["stats"]:
+            html += """
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            """
+            
+            for i, stat in enumerate(report_data["stats"], 1):
+                escaped_word = ReportGenerator._html_escape(stat["word"])
+                html += f"""
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 {escaped_word}  #{i}</div>
+                        <div class="word-stats">
+                            <span>{stat['count']} 条</span>
+                            <span>占比 {stat.get('percentage', 0)}%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                """
 
-        for i, stat in enumerate(report_data["stats"], 1):
-            formatted_titles = []
+                for title_data in stat["titles"]:
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
+                    )
+                    source_name = ReportGenerator._html_escape(title_data["source_name"])
+                    
+                    html += f"""
+                    <li class="news-item">
+                        <div class="news-title">
+                            {title_data.get("is_new", False) and '<span class="new-badge">NEW</span>' or ''}
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                                class="news-link" 
+                                target="_blank">{cleaned_title}</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">{source_name}</span>
+                    """
+                    
+                    # 添加排名信息
+                    if title_data.get("ranks"):
+                        ranks = title_data["ranks"]
+                        min_rank = min(ranks)
+                        max_rank = max(ranks)
+                        if min_rank <= 5:
+                            rank_display = f"#{min_rank}"
+                            if min_rank != max_rank:
+                                rank_display = f"#{min_rank}-{max_rank}"
+                            html += f'\u003cspan class="rank-tag">{rank_display}</span>'
+                    
+                    # 添加时间信息
+                    if title_data.get("time_display"):
+                        html += f'\u003cspan class="time-tag">{ReportGenerator._html_escape(title_data["time_display"])}</span>'
+                    
+                    # 添加出现次数
+                    if title_data.get("count", 1) > 1:
+                        html += f'\u003cspan class="time-tag">{title_data["count"]}次</span>'
+                    
+                    html += """
+                        </div>
+                    </li>
+                    """
 
-            for title_data in stat["titles"]:
-                formatted_title = ReportGenerator._format_title_html(title_data)
-                formatted_titles.append(formatted_title)
+                html += """
+                    </ul>
+                </div>
+                """
 
-            escaped_word = ReportGenerator._html_escape(stat["word"])
-            html += f"""
-                <tr>
-                    <td>{i}</td>
-                    <td class="word">{escaped_word}</td>
-                    <td class="count">{stat['count']}</td>
-                    <td class="percentage">{stat.get('percentage', 0)}%</td>
-                    <td class="titles">{"<br>".join(formatted_titles)}</td>
-                </tr>
+            html += """
+            </div>
             """
 
-        html += """
-            </table>
-        """
-
+        # 新增热点新闻
         if report_data["new_titles"]:
             html += f"""
             <div class="new-section">
-                <h3>🆕 本次新增热点新闻 (共 {report_data['total_new_count']} 条)</h3>
+                <h3>🔥 本次新增热点新闻 (共 {report_data['total_new_count']} 条)</h3>
             """
 
             for source_data in report_data["new_titles"]:
                 escaped_source = ReportGenerator._html_escape(
                     source_data["source_name"]
                 )
-                html += (
-                    f"<h4>{escaped_source} ({len(source_data['titles'])} 条)</h4><ul>"
-                )
+                html += f"""
+                <div class="source-group">
+                    <div class="source-title">{escaped_source} · {len(source_data['titles'])} 条</div>
+                    <ul class="news-list">
+                """
 
                 for title_data in source_data["titles"]:
-                    title_data_copy = title_data.copy()
-                    title_data_copy["is_new"] = False
-                    formatted_title = ReportGenerator._format_title_html(
-                        title_data_copy
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
                     )
-                    if "] " in formatted_title:
-                        formatted_title = formatted_title.split("] ", 1)[1]
-                    html += f"<li>{formatted_title}</li>"
+                    html += f"""
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                                class="news-link" 
+                                target="_blank"
+                            >{cleaned_title}</a>
+                        </div>
+                    </li>
+                    """
 
-                html += "</ul>"
+                html += """
+                    </ul>
+                </div>
+                """
 
-            html += "</div>"
+            html += """
+            </div>
+            """
 
         html += """
+            </div>
         </body>
         </html>
         """
