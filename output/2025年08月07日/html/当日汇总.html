@@ -3,120 +3,2257 @@
         <html>
         <head>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>频率词统计报告</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                h1, h2 { color: #333; }
-                table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f2f2f2; }
-                tr:nth-child(even) { background-color: #f9f9f9; }
-                .word { font-weight: bold; }
-                .count { text-align: center; }
-                .percentage { text-align: center; }
-                .titles { max-width: 500px; }
-                .source { color: #666; font-style: italic; }
-                .error { color: #d9534f; }
-                .news-link { 
-                    color: #007bff; 
-                    text-decoration: none; 
-                    border-bottom: 1px dotted #007bff;
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
                 }
-                .news-link:hover { 
-                    color: #0056b3; 
-                    text-decoration: underline; 
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
                 }
-                .news-link:visited { 
-                    color: #6f42c1; 
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
                 }
-                .no-link { 
-                    color: #333; 
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
                 }
-                .new-title {
-                    background-color: #fff3cd;
-                    border: 1px solid #ffc107;
-                    border-radius: 3px;
-                    padding: 2px 6px;
-                    margin: 2px 0;
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
                 }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
                 .new-section {
-                    background-color: #d1ecf1;
-                    border: 1px solid #bee5eb;
-                    border-radius: 5px;
-                    padding: 10px;
-                    margin-top: 10px;
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
                 }
+
                 .new-section h3 {
-                    color: #0c5460;
-                    margin-top: 0;
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
                 }
             </style>
         </head>
         <body>
-            <h1>频率词统计报告</h1>
-        <p>报告类型: 当日汇总</p><p>总标题数: 2664</p><p>生成时间: 2025-08-07 20:18:14</p>
-            <table>
-                <tr>
-                    <th>排名</th>
-                    <th>频率词</th>
-                    <th>出现次数</th>
-                    <th>占比</th>
-                    <th>相关标题</th>
-                </tr>
+            <div class="container">
+                <div class="header">
+                    <h1>频率词统计报告</h1>
+                    <div class="header-info">
         
-                <tr>
-                    <td>1</td>
-                    <td class="word">ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api</td>
-                    <td class="count">77</td>
-                    <td class="percentage">2.89%</td>
-                    <td class="titles">[产品猎手] <a href="https://www.producthunt.com/products/openai" target="_blank" class="news-link">OpenAI Open Models</a> <font color='red'><strong>[4]</strong></font> <font color='grey'>- [00时12分 ~ 14时15分]</font> <font color='green'>(14次)</font><br>[财联社热门] <a href="https://www.cls.cn/detail/2097911" target="_blank" class="news-link">云天励飞战略聚焦AI芯片，三大核心布局押注推理蓝海</a> <font color='red'><strong>[5]</strong></font> <font color='grey'>- [00时12分 ~ 20时18分]</font> <font color='green'>(20次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44811567" target="_blank" class="news-link">Claude Code IDE integration for Emacs</a> <font color='red'><strong>[1 - 8]</strong></font> <font color='grey'>- [02时13分 ~ 20时18分]</font> <font color='green'>(18次)</font><br>[GitHub] <a href="https://github.com/simstudioai/sim" target="_blank" class="news-link">simstudioai / sim</a> <font color='red'><strong>[3 - 9]</strong></font> <font color='grey'>- [00时12分 ~ 20时18分]</font> <font color='green'>(20次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=0198829e-c368-7ddf-a174-1649cb6a337a" target="_blank" class="news-link">FED REPORT EXAMINES FUNDING US STRATEGIC BITCOIN RESERVE WITH GOLD REVALUATIONS GAINS</a> <font color='red'><strong>[1 - 14]</strong></font> <font color='grey'>- [11时59分 ~ 20时18分]</font> <font color='green'>(10次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=0198828e-3f29-7ddf-a173-d04337a810ee" target="_blank" class="news-link">China’s July Exports Surge 7.2% Despite U.S. Tariffs, Supply Chain Shifts Intensify</a> <font color='red'><strong>[2 - 16]</strong></font> <font color='grey'>- [11时59分 ~ 20时18分]</font> <font color='green'>(10次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988055-7027-7ddf-a16b-74619b3938d3" target="_blank" class="news-link">OPENAI ANNOUNCES GPT-5 LIVESTREAM SCHEDULED FOR THURSDAY 10AM PT</a> <font color='red'><strong>[1 - 11]</strong></font> <font color='grey'>- [01时13分 ~ 12时42分]</font> <font color='green'>(11次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01987ebe-e564-7ddf-a164-2de4133ed71d" target="_blank" class="news-link">ANTHROPIC: CLAUDE OPUS 4.1 IS NOW AVAILABLE TO PAID USERS AND IN CLAUDE CODE</a> <font color='red'><strong>[1 - 3]</strong></font> <font color='grey'>- [00时12分 ~ 05时08分]</font> <font color='green'>(6次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/equip" target="_blank" class="news-link">Equip AI Interview</a> [8 - 10] <font color='grey'>- [00时12分 ~ 14时15分]</font> <font color='green'>(14次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/agent-maya-by-flow-ai" target="_blank" class="news-link">Agent Maya (by Flow AI)</a> [8 - 12] <font color='grey'>- [00时12分 ~ 14时15分]</font> <font color='green'>(14次)</font><br>[GitHub] <a href="https://github.com/openai/openai-cookbook" target="_blank" class="news-link">openai / openai-cookbook</a> [10 - 16] <font color='grey'>- [00时12分 ~ 20时18分]</font> <font color='green'>(20次)</font><br>[GitHub] <a href="https://github.com/JetBrains/intellij-community" target="_blank" class="news-link">JetBrains / intellij-community</a> [12] <font color='grey'>- [00时12分 ~ 18时10分]</font> <font color='green'>(18次)</font><br>[GitHub] <a href="https://github.com/confident-ai/deepeval" target="_blank" class="news-link">confident-ai / deepeval</a> [14] <font color='grey'>- [00时12分 ~ 18时10分]</font> <font color='green'>(18次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988375-2696-7ddf-a177-224690afb1af" target="_blank" class="news-link">Baidu Plans New Reasoning Model Launch to Compete with DeepSeek and OpenAI</a> <font color='red'><strong>[1 - 5]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[联合早报] <a href="https://www.zaochenbao.com/news/politics/202508/0648961.html" target="_blank" class="news-link">美国探讨定位追踪AI晶片 防走私到中国</a> [7 - 23] <font color='grey'>- [00时12分 ~ 08时46分]</font> <font color='green'>(9次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=0198836b-9fcd-7ddf-a177-1053d592c9b8" target="_blank" class="news-link">BAIDU PLANS TO LAUNCH NEW REASONING MODEL BY END AUGUST, SOURCE SAYS</a> <font color='red'><strong>[2 - 6]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/deskrib-ai-super-visual-agents" target="_blank" class="news-link">Deskrib.Ai</a> <font color='red'><strong>[1 - 28]</strong></font> <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051777" target="_blank" class="news-link">美股异动丨特朗普媒体科技集团跌超1.6% 开始在Truth Social上测试AI搜索功能</a> [8 - 9] <font color='grey'>- [00时12分 ~ 07时01分]</font> <font color='green'>(8次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988368-170e-7ddf-a177-08ea07d7d9dc" target="_blank" class="news-link">MUSK: GROK IMAGINE VIDEO GENERATION IS NOW AVAILABLE ON ANDROID</a> <font color='red'><strong>[3 - 7]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988350-6b63-7ddf-a176-6e7327a17351" target="_blank" class="news-link">CHINA MIIT ISSUED IMPLEMENTATION GUIDELINES ON PROMOTING INNOVATION AND DEVELOPMENT OF BRAIN-COMPUTER INTERFACE (BCI) INDUSTRY</a> <font color='red'><strong>[4 - 8]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051775" target="_blank" class="news-link">全系搭载3颗图灵AI芯片，全新小鹏P7正式亮相</a> [10 - 11] <font color='grey'>- [00时12分 ~ 07时01分]</font> <font color='green'>(8次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/gemini-6" target="_blank" class="news-link">Gemini Storybook</a> <font color='red'><strong>[2 - 21]</strong></font> <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[参考消息] <a href="https://ckxxapp.ckxx.net/pages/2025/08/07/98bc4ab80e234a5f88d059f6fd8f5cda.html" target="_blank" class="news-link">高盛称AI正在冲击劳动力市场 年轻科技工作者首当其冲</a> <font color='red'><strong>[3 - 6]</strong></font> <font color='grey'>- [17时15分 ~ 20时18分]</font> <font color='green'>(4次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/haimeta" target="_blank" class="news-link">Haimeta</a> <font color='red'><strong>[5 - 29]</strong></font> <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44811567" target="_blank" class="news-link">Claude Code IDE Integration for Emacs</a> <font color='red'><strong>[1]</strong></font> <font color='grey'>- [00时12分 ~ 01时13分]</font> <font color='green'>(2次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=019883ff-810c-7ddf-a179-d54bb0bdd644" target="_blank" class="news-link">TRUMP WILL SIGN AN EXECUTIVE ORDER THURSDAY THAT AIMS TO ALLOW PRIVATE EQUITY, REAL ESTATE, CRYPTOCURRENCY &amp; OTHER ALTERNATIVE ASSETS IN 401(K)S</a> <font color='red'><strong>[1]</strong></font> <font color='grey'>- [19时01分 ~ 20时18分]</font> <font color='green'>(2次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=019883d4-8fef-7ddf-a178-e1a60353f719" target="_blank" class="news-link">S&amp;P: CHINA&#x27;S STABLE OUTLOOK REFLECTS THAT ECONOMY WILL RETURN TO SELF-SUSTAINING GROWTH OF ABOVE 4% OVER THE NEXT FEW YEARS</a> <font color='red'><strong>[2]</strong></font> <font color='grey'>- [19时01分 ~ 20时18分]</font> <font color='green'>(2次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=0198834d-74dd-7ddf-a176-553ff9280fe1" target="_blank" class="news-link">SoftBank Posts $2.9 Billion Profit on AI-Driven Gains</a> <font color='red'><strong>[5 - 9]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44822389" target="_blank" class="news-link">New AI Coding Teammate: Gemini CLI GitHub Actions</a> <font color='red'><strong>[2 - 4]</strong></font> <font color='grey'>- [19时01分 ~ 20时18分]</font> <font color='green'>(2次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/xpander-ai-slack-native-agents" target="_blank" class="news-link">xpander.ai</a> <font color='red'><strong>[5 - 26]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/domainerly" target="_blank" class="news-link">Domainerly</a> <font color='red'><strong>[1 - 29]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3598850_101_1" target="_blank" class="news-link">Openai将于北京时间8日凌晨1点举行直播活动</a> <font color='red'><strong>[1]</strong></font> <font color='grey'>- 08时46分</font><br>[产品猎手] <a href="https://www.producthunt.com/products/rapidnative" target="_blank" class="news-link">RapidNative</a> [7 - 26] <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/melder-ai-for-excel" target="_blank" class="news-link">Melder - AI for Excel</a> [9 - 25] <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/transync-ai" target="_blank" class="news-link">Transync AI</a> <font color='red'><strong>[1 - 27]</strong></font> <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[澎湃新闻] <a href="https://m.thepaper.cn/newsDetail_forward_31302872" target="_blank" class="news-link">北斗专访｜商汤杨帆：AI在物理世界还有很长的路要走</a> [16 - 20] <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/xpander-ai-slack-native-agents" target="_blank" class="news-link">xpander.ai Slack-native agents</a> <font color='red'><strong>[2]</strong></font> <font color='grey'>- 15时15分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3598733_101_1" target="_blank" class="news-link">Ai数据中心公司Whitefiber通过Ipo募资1.594亿美元。</a> <font color='red'><strong>[2]</strong></font> <font color='grey'>- 07时01分</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108556?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">【盘中宝】科技巨头加速布局这个赛道，抢占AI算力制高点，该产业即将迎来高速增长，这家公司具备提供相关服务的能力</a> <font color='red'><strong>[3]</strong></font> <font color='grey'>- 11时59分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44813854" target="_blank" class="news-link">Jules, our asynchronous coding agent, is now available for everyone</a> <font color='red'><strong>[4]</strong></font> <font color='grey'>- 02时13分</font><br><div class='new-title'>🆕 [黑客新闻] <a href="https://news.ycombinator.com/item?id=44823066" target="_blank" class="news-link">Schools are using AI surveillance to protect students. Sometimes arresting them</a> <font color='red'><strong>[4]</strong></font> <font color='grey'>- 20时18分</font></div><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=0198834c-b7b5-7ddf-a176-4821a1a60f24" target="_blank" class="news-link">Global AI News - MKTNews (2025.8.7)</a> [6 - 10] <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01987d9c-82b5-7ddf-a160-365be62e42d1" target="_blank" class="news-link">China Eyes Stablecoins to Boost RMB Global Use, but Capital Controls Slow Progress</a> <font color='red'><strong>[5]</strong></font> <font color='grey'>- 00时12分</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988293-aeb8-7ddf-a173-e9379dbb1fe1" target="_blank" class="news-link">OpenAI&#x27;s Altman on X</a> [11 - 15] <font color='grey'>- [16时14分 ~ 20时18分]</font> <font color='green'>(5次)</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051981" target="_blank" class="news-link">Keep四连升累涨近30%，创始人王宁盈利后首发言：AI颠覆公司商业模式</a> <font color='red'><strong>[1 - 11]</strong></font> <font color='grey'>- [11时59分 ~ 12时42分]</font> <font color='green'>(2次)</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807121220338800" target="_blank" class="news-link">据英国金融时报：苹果(AAPL.O)的人工智能部门员工正流失至如OpenAI等竞争对手处。</a> <font color='red'><strong>[3 - 11]</strong></font> <font color='grey'>- [12时42分 ~ 13时20分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44822258" target="_blank" class="news-link">About AI</a> <font color='red'><strong>[5 - 16]</strong></font> <font color='grey'>- [19时01分 ~ 20时18分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44809387" target="_blank" class="news-link">Python performance myths and fairy tales</a> [18 - 28] <font color='grey'>- [00时12分 ~ 03时11分]</font> <font color='green'>(4次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44808794" target="_blank" class="news-link">I gave the AI arms and legs then it rejected me</a> [24 - 29] <font color='grey'>- [00时12分 ~ 05时08分]</font> <font color='green'>(4次)</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108173?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">财联社8月7日电，OpenAI投资的Chai按大约5.5亿美元估值融资0.7亿美元。</a> [6 - 20] <font color='grey'>- [01时13分 ~ 03时11分]</font> <font color='green'>(3次)</font><br>[bilibili 热搜] <a href="https://search.bilibili.com/all?keyword=%E7%BE%8E%E5%9B%BDAI%E4%B8%BA%E4%BD%95%E8%A2%AB%E7%94%B5%E5%8A%9B%E5%8D%A1%E4%BA%86%E8%84%96%E5%AD%90" target="_blank" class="news-link">美国AI为何被电力卡了脖子</a> [17 - 30] <font color='grey'>- [11时59分 ~ 14时15分]</font> <font color='green'>(3次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44780034" target="_blank" class="news-link">Did Craigslist decimate newspapers? Legend meets reality</a> [17 - 21] <font color='grey'>- [18时10分 ~ 20时18分]</font> <font color='green'>(3次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44813615" target="_blank" class="news-link">When is the next caltrain? (minimal webapp)</a> [20 - 30] <font color='grey'>- [02时13分 ~ 04时10分]</font> <font color='green'>(3次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44800746" target="_blank" class="news-link">Open models by OpenAI</a> [21 - 25] <font color='grey'>- [00时12分 ~ 02时13分]</font> <font color='green'>(3次)</font><br>[华尔街见闻] <a href="https://wallstreetcn.com/articles/3752737" target="_blank" class="news-link">四巨头“烧钱凶猛”，非美和二线云厂被低估，GB200良率提升！大摩对AI服务器非常乐观</a> [10] <font color='grey'>- [07时01分 ~ 08时46分]</font> <font color='green'>(2次)</font><br>[财联社热门] <a href="https://www.cls.cn/detail/2108417" target="_blank" class="news-link">GPT-5要来了？OpenAI官方预告引遐想 AI应用或迎来加速发展</a> [11 - 13] <font color='grey'>- [16时14分 ~ 17时15分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44821869" target="_blank" class="news-link">OpenAI&#x27;s new GPT-5 models announced early by GitHub</a> [12 - 16] <font color='grey'>- [17时15分 ~ 18时10分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44818836" target="_blank" class="news-link">Why Building Billing Systems Is So Painful (2024)</a> [21 - 26] <font color='grey'>- [10时56分 ~ 11时59分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44815046" target="_blank" class="news-link">AI in Search is driving more queries and higher quality clicks</a> [27 - 29] <font color='grey'>- [10时56分 ~ 11时59分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44821351" target="_blank" class="news-link">&quot;I met a founder who writes 10k lines of code a day thanks to AI&quot;</a> [6] <font color='grey'>- 16时14分</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807124016416800" target="_blank" class="news-link">AI公司挖角大战苹果惨败 痛失12名人工智能人才</a> [6] <font color='grey'>- 13时20分</font><br><div class='new-title'>🆕 [黑客新闻] <a href="https://news.ycombinator.com/item?id=44823260" target="_blank" class="news-link">&quot;AI hype&quot; is the true AI product</a> [7] <font color='grey'>- 20时18分</font></div><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3597797_101_1" target="_blank" class="news-link">Openai投资的Chai按大约5.5亿美元估值融资0.7亿美元。</a> [7] <font color='grey'>- 01时13分</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051959" target="_blank" class="news-link">AI医疗再迎政策催化！医疗服务ETF、医疗器械指数ETF、医疗设备ETF、医疗ETF上涨</a> [10] <font color='grey'>- 10时56分</font><br>[产品猎手] <a href="https://www.producthunt.com/products/graphy-lite" target="_blank" class="news-link">Graphy 3.0 — The AI Graph maker</a> [11] <font color='grey'>- 15时15分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44815046" target="_blank" class="news-link">Google says AI in Search is driving more queries and higher quality clicks</a> [13] <font color='grey'>- 03时11分</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108714?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">【风口研报·公司】打造“数据平台+AI中台+Agent”能力闭环，这家公司构建起“国产Palantir”式竞争力，迈入AI产业智能跃迁加速期；这家公司中报首提机器人业务+原有业务拓展至高壁垒千亿市场</a> [15] <font color='grey'>- 17时15分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3599208_0_1" target="_blank" class="news-link">英国金融时报：苹果的人工智能部门员工正流失至如OpenAI等竞争对手处。</a> [15] <font color='grey'>- 12时42分</font><br>[知乎] <a href="https://www.zhihu.com/question/1936485940626429230" target="_blank" class="news-link">AI 节能功能真的能让空调更省电吗？格力 AI 节能王子 Pro 怎么样？</a> [17] <font color='grey'>- 12时42分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3598587_0_1" target="_blank" class="news-link">Airgain报告第二季度亏损，预计第三季度收入在1300万美元至1500万美元之间</a> [18] <font color='grey'>- 06时09分</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108734?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">【盘中宝】AI驱动下的该行业发展供需对接会将召开，机构称其是国产算力发展之基，未来行业市场规模或超1300亿，这家企业积极布局新技术</a> [19] <font color='grey'>- 15时15分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3597984_0_1" target="_blank" class="news-link">Wayfair财报强劲，股价飙升至52周高点</a> [19] <font color='grey'>- 04时10分</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250806232314439800" target="_blank" class="news-link">AMD(AMD.O)首席执行官：个人电脑需求强劲，正在抢占市场份额。有大量大客户在采购新的AI芯片。</a> [20] <font color='grey'>- 00时12分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44816165" target="_blank" class="news-link">Brennan Center for Justice Report: The Campaign to Undermine the Next Election</a> [23] <font color='grey'>- 04时10分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44821250" target="_blank" class="news-link">Researchers Uncover RCE Attack Chains in HashiCorp Vault and CyberArk Conjur</a> [23] <font color='grey'>- 15时15分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44814587" target="_blank" class="news-link">Consistency over Availability: How rqlite Handles the CAP theorem</a> [27] <font color='grey'>- 05时08分</font><br>[百度热搜] <a href="https://www.baidu.com/s?wd=OpenAI%E6%88%96%E5%9C%A8%E5%91%A8%E4%BA%94%E5%87%8C%E6%99%A8%E5%8F%91%E5%B8%83GPT-5" target="_blank" class="news-link">OpenAI或在周五凌晨发布GPT-5</a> [30] <font color='grey'>- 11时59分</font></td>
-                </tr>
+                    <p>📊 当日汇总</p>
+                </div>
+            </div>
             
-                <tr>
-                    <td>2</td>
-                    <td class="word">前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview</td>
-                    <td class="count">29</td>
-                    <td class="percentage">1.09%</td>
-                    <td class="titles">[财联社热门] <a href="https://www.cls.cn/detail/2108578" target="_blank" class="news-link">付费实习内推、有偿面试辅导，又有伸向学子的罪恶之手，已有券商紧急声明</a> <font color='red'><strong>[1 - 13]</strong></font> <font color='grey'>- [11时59分 ~ 20时18分]</font> <font color='green'>(10次)</font><br>[MKT News] <a href="https://mktnews.net/flashDetail.html?id=01988284-1904-7ddf-a173-bb059117f884" target="_blank" class="news-link">CHINA’S JAN-JUL DOLLAR-DENOMINATED EXPORTS TO THE U.S. DOWN 12.6% Y/Y; IMPORTS FROM U.S. DOWN 10.3% YOY — CUSTOMS</a> <font color='red'><strong>[3 - 17]</strong></font> <font color='grey'>- [11时59分 ~ 20时18分]</font> <font color='green'>(10次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44807868" target="_blank" class="news-link">Show HN: Kitten TTS – 25MB CPU-Only, Open-Source TTS Model</a> <font color='red'><strong>[4 - 15]</strong></font> <font color='grey'>- [00时12分 ~ 20时18分]</font> <font color='green'>(20次)</font><br>[知乎] <a href="https://www.zhihu.com/question/12099889316" target="_blank" class="news-link">面试的时候被面试官问「看了你的学历是普通本科，想问下对比 985 的面试者，你强在哪里？」该如何回复？</a> <font color='red'><strong>[3 - 17]</strong></font> <font color='grey'>- [10时56分 ~ 17时15分]</font> <font color='green'>(8次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44778898" target="_blank" class="news-link">Comptime.ts: compile-time expressions for TypeScript</a> [10 - 29] <font color='grey'>- [04时10分 ~ 19时01分]</font> <font color='green'>(15次)</font><br>[GitHub] <a href="https://github.com/MaaAssistantArknights/MaaAssistantArknights" target="_blank" class="news-link">MaaAssistantArknights / MaaAssistantArknights</a> [11] <font color='grey'>- [00时12分 ~ 18时10分]</font> <font color='green'>(18次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44777419" target="_blank" class="news-link">Herbie detects inaccurate expressions and finds more accurate replacements</a> <font color='red'><strong>[5 - 21]</strong></font> <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[产品猎手] <a href="https://www.producthunt.com/products/ductts" target="_blank" class="news-link">Ductts</a> <font color='red'><strong>[2 - 27]</strong></font> <font color='grey'>- [15时15分 ~ 20时18分]</font> <font color='green'>(6次)</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051939" target="_blank" class="news-link">维他奶(00345.HK)获Kuang Ming Investments Pte. Limited增持285.2万股</a> <font color='red'><strong>[1]</strong></font> <font color='grey'>- 08时46分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3600308_100_1" target="_blank" class="news-link">伦敦证券交易所集团：Kenvue公司2025财年每股收益预期为1.13美元，营收预期为154.8亿美元。</a> <font color='red'><strong>[2]</strong></font> <font color='grey'>- 19时01分</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108222?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">美国总统特朗普表示，开始面试美联储候选人，候选人降至三人，不认为贝森特会担任美联储职务。</a> <font color='red'><strong>[1 - 12]</strong></font> <font color='grey'>- [06时09分 ~ 07时01分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44816060" target="_blank" class="news-link">The arcane alphabets of Black Sabbath</a> [16 - 25] <font color='grey'>- [05时08分 ~ 08时46分]</font> <font color='green'>(4次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44787073" target="_blank" class="news-link">Scientists have recreated the Universe&#x27;s first molecule</a> [17 - 30] <font color='grey'>- [18时10分 ~ 20时18分]</font> <font color='green'>(3次)</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807055039096800" target="_blank" class="news-link">美国总统特朗普：贝森特和卢特尼克正在面试美联储候选人。两位凯文都很棒。</a> [6 - 17] <font color='grey'>- [06时09分 ~ 07时01分]</font> <font color='green'>(2次)</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807054757434800" target="_blank" class="news-link">美国总统特朗普：正在开始面试美联储官员人选。候选人降至3人。贝森特不想担任美联储主席。有来自华尔街的候选人。</a> [10 - 21] <font color='grey'>- [06时09分 ~ 07时01分]</font> <font color='green'>(2次)</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44776871" target="_blank" class="news-link">Show HN: Write lead sheets in a Markdown way and transpose in a second</a> [23 - 30] <font color='grey'>- [05时08分 ~ 06时09分]</font> <font color='green'>(2次)</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807061102381800" target="_blank" class="news-link">台积电(TSM.N)美股盘后涨3.5%。</a> [6] <font color='grey'>- 07时01分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44815125" target="_blank" class="news-link">Blocking LLMs from your website cuts you off from next-generation search</a> [7] <font color='grey'>- 04时10分</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807182401575800" target="_blank" class="news-link">特斯拉与NHTSA就调查会面 后者施压索要Robotaxi信息</a> [10] <font color='grey'>- 19时01分</font><br><div class='new-title'>🆕 [黑客新闻] <a href="https://news.ycombinator.com/item?id=44783372" target="_blank" class="news-link">Splatshop: Efficiently Editing Large Gaussian Splat Models</a> [12] <font color='grey'>- 20时18分</font></div><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3599818_100_1" target="_blank" class="news-link">【行情】ETF涨幅前五，Xl2CSOPTSLA（07766.HK）涨8.0%居榜首。</a> [16] <font color='grey'>- 17时15分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44787073" target="_blank" class="news-link">Scientists just recreated the Universe&#x27;s first molecule</a> [18] <font color='grey'>- 17时15分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3600230_101_1" target="_blank" class="news-link">特斯拉上周就7月1日调查事项与美国国家公路交通安全管理局（Nhtsa）会面。</a> [18] <font color='grey'>- 19时01分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44814278" target="_blank" class="news-link">The Internet Wants to Check Your ID</a> [19] <font color='grey'>- 01时13分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3597756_101_1" target="_blank" class="news-link">【行情】非洲股市收盘播报｜周三（8月6日），南非富时/Jse非洲领先40可交易指数收涨0.57%，报92725.09点，突破7月25日所创收盘历史最高位92457.00点。</a> [19] <font color='grey'>- 01时13分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44814278" target="_blank" class="news-link">The internet wants to check your ID</a> [23] <font color='grey'>- 03时11分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44781683" target="_blank" class="news-link">Realizing we needed two sorts of alerts for our temperature monitoring</a> [25] <font color='grey'>- 03时11分</font><br>[黑客新闻] <a href="https://news.ycombinator.com/item?id=44808693" target="_blank" class="news-link">Some thoughts on journals, refereeing, and the P vs NP problem</a> [29] <font color='grey'>- 00时12分</font><br><div class='new-title'>🆕 [金十数据] <a href="https://flash.jin10.com/detail/20250807194256414800" target="_blank" class="news-link">美国财长贝森特：我们已经开始了美联储主席的面试流程。</a> [29] <font color='grey'>- 20时18分</font></div></td>
-                </tr>
-            
-                <tr>
-                    <td>3</td>
-                    <td class="word">国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂</td>
-                    <td class="count">11</td>
-                    <td class="percentage">0.41%</td>
-                    <td class="titles">[知乎] <a href="https://www.zhihu.com/question/1933354452695363833" target="_blank" class="news-link">16 袋泡面，120 个锅贴，6 斤大卷饼，18 个汉堡和 37 根油条，哪个吃起来难度更大？</a> [6 - 17] <font color='grey'>- [04时10分 ~ 15时15分]</font> <font color='green'>(11次)</font><br>[bilibili 热搜] <a href="https://search.bilibili.com/all?keyword=%E5%85%B3%E4%BA%8E%E5%90%8C%E4%BA%8B%E5%A4%96%E5%8D%B7%E8%BF%99%E4%BB%B6%E4%BA%8B" target="_blank" class="news-link">关于同事外卷这件事</a> [14 - 26] <font color='grey'>- [00时12分 ~ 16时14分]</font> <font color='green'>(15次)</font><br>[知乎] <a href="https://www.zhihu.com/question/1935365947826370211" target="_blank" class="news-link">小朋友高铁上被列车员发试卷一秒静音，如何看待列车员这一做法？是否值得推广？</a> [6 - 14] <font color='grey'>- [00时12分 ~ 07时01分]</font> <font color='green'>(8次)</font><br>[联合早报] <a href="https://www.zaochenbao.com/news/china/202508/0648947.html" target="_blank" class="news-link">中国互联网大厂密集校招 AI岗位占比显著增加</a> [21] <font color='grey'>- [00时12分 ~ 07时01分]</font> <font color='green'>(8次)</font><br>[知乎] <a href="https://www.zhihu.com/question/1936367083089802281" target="_blank" class="news-link">奇瑞董事长尹同跃反思致歉称加班非常不人性化，如何落实反加班倡议？「缩减会议先抓领导」的深层逻辑是什么？</a> <font color='red'><strong>[2 - 9]</strong></font> <font color='grey'>- [08时46分 ~ 11时59分]</font> <font color='green'>(3次)</font><br>[联合早报] <a href="https://www.zaochenbao.com/news/china/202508/0748989.html" target="_blank" class="news-link">泽连斯基指中国雇佣兵为俄作战 中国外交部：多次提醒莫卷冲突</a> [10 - 20] <font color='grey'>- [10时56分 ~ 13时20分]</font> <font color='green'>(4次)</font><br>[微博] <a href="https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E5%BB%BA%E8%AE%AE%E6%9D%A8%E5%B9%82%E5%8D%B7%E5%8F%91%E5%8D%8A%E6%B0%B8%E4%B9%85&amp;stream_entry_id=31&amp;isnewpage=1&amp;extparam=seat%3D1%26realpos%3D31%26filter_type%3Drealtimehot%26flag%3D1%26c_type%3D31%26band_rank%3D31%26lcate%3D5001%26stream_entry_id%3D31%26cate%3D5001%26q%3D%25E5%25BB%25BA%25E8%25AE%25AE%25E6%259D%25A8%25E5%25B9%2582%25E5%258D%25B7%25E5%258F%2591%25E5%258D%258A%25E6%25B0%25B8%25E4%25B9%2585%26dgr%3D0%26pos%3D32%26display_time%3D1754541653%26pre_seqid%3D1754541653672050016153" target="_blank" class="news-link">建议杨幂卷发半永久</a> [29 - 30] <font color='grey'>- [12时42分 ~ 13时20分]</font> <font color='green'>(2次)</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5051934" target="_blank" class="news-link">华泰证券：预期过后，静待钢铁反内卷政策落地</a> [6] <font color='grey'>- 08时46分</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807080952624800" target="_blank" class="news-link">华泰证券：预期过后，静待钢铁反内卷政策落地</a> [9] <font color='grey'>- 08时46分</font><br><div class='new-title'>🆕 [凤凰网] <a href="https://news.ifeng.com/c/8ld2WoMInkV" target="_blank" class="news-link">柯文哲丢水杯、撒卷宗，喊话检察官：跟赖清德讲我绝对不会投降</a> [12] <font color='grey'>- 20时18分</font></div><br>[财联社热门] <a href="https://www.cls.cn/detail/2108271" target="_blank" class="news-link">人民日报：扩内需与反“内卷”要双向发力</a> [13] <font color='grey'>- 14时15分</font></td>
-                </tr>
-            
-                <tr>
-                    <td>4</td>
-                    <td class="word">经验 职场 生活 分享</td>
-                    <td class="count">7</td>
-                    <td class="percentage">0.26%</td>
-                    <td class="titles">[bilibili 热搜] <a href="https://search.bilibili.com/all?keyword=%E6%88%98%E5%9C%B06%E9%A6%99%E6%B8%AF%E5%AE%9E%E6%9C%BA%E8%AF%95%E7%8E%A9%E5%88%86%E4%BA%AB" target="_blank" class="news-link">战地6香港实机试玩分享</a> <font color='red'><strong>[5 - 30]</strong></font> <font color='grey'>- [00时12分 ~ 13时20分]</font> <font color='green'>(12次)</font><br>[知乎] <a href="https://www.zhihu.com/question/1936348180489929901" target="_blank" class="news-link">曹云金坦言与郭德纲没深仇大恨，不做朋友但别当敌人，离职后和老板真能一笑泯恩仇么？在职场里这套玩的转么？</a> [6 - 18] <font color='grey'>- [00时12分 ~ 08时46分]</font> <font color='green'>(6次)</font><br>[知乎] <a href="https://www.zhihu.com/question/1931979378146932567" target="_blank" class="news-link">职场里，是「事事汇报，寻求指导」显得更稳妥，还是「独立思考，直接给出方案」更能体现价值？</a> [12 - 13] <font color='grey'>- [14时15分 ~ 15时15分]</font> <font color='green'>(2次)</font><br>[金十数据] <a href="https://flash.jin10.com/detail/20250807165906719800" target="_blank" class="news-link">日本政府官员：政府经济委员会的私营部门成员表示担心日本央行可能落后于通货膨胀，这已经影响到人们的生活。</a> [8] <font color='grey'>- 17时15分</font><br>[格隆汇] <a href="https://www.gelonghui.com/news/5052136" target="_blank" class="news-link">通源环境(688679.SH)：联合体中标1.54亿元盐亭县生活垃圾综合整治项目设计施工总承包</a> [9] <font color='grey'>- 16时14分</font><br>[快牛] <a href="https://www.fastbull.com/cn/fastshort/3598693_100_1" target="_blank" class="news-link">一名美国陆军士兵被控试图与俄罗斯分享坦克信息。</a> [12] <font color='grey'>- 07时01分</font><br><div class='new-title'>🆕 [微博] <a href="https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E6%9D%A8%E5%B9%82%E8%BA%AB%E4%B8%8A%E6%9C%89%E6%B5%93%E7%83%88%E7%9A%84%E7%94%9F%E6%B4%BB%E6%84%9F&amp;stream_entry_id=31&amp;isnewpage=1&amp;extparam=seat%3D1%26realpos%3D28%26band_rank%3D28%26filter_type%3Drealtimehot%26q%3D%25E6%259D%25A8%25E5%25B9%2582%25E8%25BA%25AB%25E4%25B8%258A%25E6%259C%2589%25E6%25B5%2593%25E7%2583%2588%25E7%259A%2584%25E7%2594%259F%25E6%25B4%25BB%25E6%2584%259F%26c_type%3D31%26cate%3D5001%26pos%3D29%26stream_entry_id%3D31%26dgr%3D0%26flag%3D1%26lcate%3D5001%26display_time%3D1754568546%26pre_seqid%3D175456854658502517114134" target="_blank" class="news-link">杨幂身上有浓烈的生活感</a> [28] <font color='grey'>- 20时18分</font></div></td>
-                </tr>
-            
-                <tr>
-                    <td>5</td>
-                    <td class="word">日报 早报 晚报</td>
-                    <td class="count">3</td>
-                    <td class="percentage">0.11%</td>
-                    <td class="titles">[财联社热门] <a href="https://www.cls.cn/detail/2108244" target="_blank" class="news-link">【早报】三部门：目标到2027年全国完成新改建农村公路30万公里；2.0%分红险上演“闪电停售”</a> <font color='red'><strong>[1 - 2]</strong></font> <font color='grey'>- [08时46分 ~ 14时15分]</font> <font color='green'>(6次)</font><br>[百度热搜] <a href="https://www.baidu.com/s?wd=%E9%99%88%E4%BD%A9%E6%96%AF%E5%9C%A8%E3%80%8A%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E3%80%8B%E6%92%B0%E6%96%87" target="_blank" class="news-link">陈佩斯在《人民日报》撰文</a> <font color='red'><strong>[5 - 29]</strong></font> <font color='grey'>- [12时42分 ~ 18时10分]</font> <font color='green'>(7次)</font><br>[财联社] <a href="https://api3.cls.cn/share/article/2108183?os=web&amp;sv=8.4.6&amp;app=CailianpressWeb" target="_blank" class="news-link">财联社8月7日电，美联储周三隔夜逆回购协议（RRP）使用规模为919.66亿美元，上个交易日报843.56亿美元。</a> [8 - 13] <font color='grey'>- [02时13分 ~ 03时11分]</font> <font color='green'>(2次)</font></td>
-                </tr>
-            
-                <tr>
-                    <td>6</td>
-                    <td class="word">工具 羊毛 福利 破解</td>
-                    <td class="count">1</td>
-                    <td class="percentage">0.04%</td>
-                    <td class="titles">[金十数据] <a href="https://flash.jin10.com/detail/20250807075115608800" target="_blank" class="news-link">金十数据中心工具</a> [23] <font color='grey'>- 08时46分</font></td>
-                </tr>
-            
-            </table>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">2820</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">08-07</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">21:33</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
         
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>83 条</span>
+                            <span>占比 2.94%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/openai" 
+                                class="news-link" 
+                                target="_blank">OpenAI Open Models</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">[00时12分 ~ 14时15分]</span><span class="time-tag">14次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.cls.cn/detail/2097911" 
+                                class="news-link" 
+                                target="_blank">云天励飞战略聚焦AI芯片，三大核心布局押注推理蓝海</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">[00时12分 ~ 21时33分]</span><span class="time-tag">21次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44811567" 
+                                class="news-link" 
+                                target="_blank">Claude Code IDE integration for Emacs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#1-10</span><span class="time-tag">[02时13分 ~ 21时33分]</span><span class="time-tag">19次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://github.com/simstudioai/sim" 
+                                class="news-link" 
+                                target="_blank">simstudioai / sim</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GitHub</span>
+                    <span class="rank-tag">#3-9</span><span class="time-tag">[00时12分 ~ 21时33分]</span><span class="time-tag">21次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988055-7027-7ddf-a16b-74619b3938d3" 
+                                class="news-link" 
+                                target="_blank">OPENAI ANNOUNCES GPT-5 LIVESTREAM SCHEDULED FOR THURSDAY 10AM PT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1-11</span><span class="time-tag">[01时13分 ~ 12时42分]</span><span class="time-tag">11次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=0198829e-c368-7ddf-a174-1649cb6a337a" 
+                                class="news-link" 
+                                target="_blank">FED REPORT EXAMINES FUNDING US STRATEGIC BITCOIN RESERVE WITH GOLD REVALUATIONS GAINS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1-16</span><span class="time-tag">[11时59分 ~ 21时33分]</span><span class="time-tag">11次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=0198828e-3f29-7ddf-a173-d04337a810ee" 
+                                class="news-link" 
+                                target="_blank">China’s July Exports Surge 7.2% Despite U.S. Tariffs, Supply Chain Shifts Intensify</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2-18</span><span class="time-tag">[11时59分 ~ 21时33分]</span><span class="time-tag">11次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01987ebe-e564-7ddf-a164-2de4133ed71d" 
+                                class="news-link" 
+                                target="_blank">ANTHROPIC: CLAUDE OPUS 4.1 IS NOW AVAILABLE TO PAID USERS AND IN CLAUDE CODE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1-3</span><span class="time-tag">[00时12分 ~ 05时08分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/equip" 
+                                class="news-link" 
+                                target="_blank">Equip AI Interview</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">[00时12分 ~ 14时15分]</span><span class="time-tag">14次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/agent-maya-by-flow-ai" 
+                                class="news-link" 
+                                target="_blank">Agent Maya (by Flow AI)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">[00时12分 ~ 14时15分]</span><span class="time-tag">14次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://github.com/openai/openai-cookbook" 
+                                class="news-link" 
+                                target="_blank">openai / openai-cookbook</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GitHub</span>
+                    <span class="time-tag">[00时12分 ~ 21时33分]</span><span class="time-tag">21次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://github.com/JetBrains/intellij-community" 
+                                class="news-link" 
+                                target="_blank">JetBrains / intellij-community</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GitHub</span>
+                    <span class="time-tag">[00时12分 ~ 18时10分]</span><span class="time-tag">18次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://github.com/confident-ai/deepeval" 
+                                class="news-link" 
+                                target="_blank">confident-ai / deepeval</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GitHub</span>
+                    <span class="time-tag">[00时12分 ~ 18时10分]</span><span class="time-tag">18次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988375-2696-7ddf-a177-224690afb1af" 
+                                class="news-link" 
+                                target="_blank">Baidu Plans New Reasoning Model Launch to Compete with DeepSeek and OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1-7</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/deskrib-ai-super-visual-agents" 
+                                class="news-link" 
+                                target="_blank">Deskrib.Ai</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#1-28</span><span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zaochenbao.com/news/politics/202508/0648961.html" 
+                                class="news-link" 
+                                target="_blank">美国探讨定位追踪AI晶片 防走私到中国</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">[00时12分 ~ 08时46分]</span><span class="time-tag">9次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=0198836b-9fcd-7ddf-a177-1053d592c9b8" 
+                                class="news-link" 
+                                target="_blank">BAIDU PLANS TO LAUNCH NEW REASONING MODEL BY END AUGUST, SOURCE SAYS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2-8</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/gemini-6" 
+                                class="news-link" 
+                                target="_blank">Gemini Storybook</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#2-21</span><span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988368-170e-7ddf-a177-08ea07d7d9dc" 
+                                class="news-link" 
+                                target="_blank">MUSK: GROK IMAGINE VIDEO GENERATION IS NOW AVAILABLE ON ANDROID</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3-9</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988350-6b63-7ddf-a176-6e7327a17351" 
+                                class="news-link" 
+                                target="_blank">CHINA MIIT ISSUED IMPLEMENTATION GUIDELINES ON PROMOTING INNOVATION AND DEVELOPMENT OF BRAIN-COMPUTER INTERFACE (BCI) INDUSTRY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4-10</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051777" 
+                                class="news-link" 
+                                target="_blank">美股异动丨特朗普媒体科技集团跌超1.6% 开始在Truth Social上测试AI搜索功能</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">[00时12分 ~ 07时01分]</span><span class="time-tag">8次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/haimeta" 
+                                class="news-link" 
+                                target="_blank">Haimeta</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#5-29</span><span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051775" 
+                                class="news-link" 
+                                target="_blank">全系搭载3颗图灵AI芯片，全新小鹏P7正式亮相</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">[00时12分 ~ 07时01分]</span><span class="time-tag">8次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=019883ff-810c-7ddf-a179-d54bb0bdd644" 
+                                class="news-link" 
+                                target="_blank">TRUMP WILL SIGN AN EXECUTIVE ORDER THURSDAY THAT AIMS TO ALLOW PRIVATE EQUITY, REAL ESTATE, CRYPTOCURRENCY &amp; OTHER ALTERNATIVE ASSETS IN 401(K)S</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1-3</span><span class="time-tag">[19时01分 ~ 21时33分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44822389" 
+                                class="news-link" 
+                                target="_blank">New AI Coding Teammate: Gemini CLI GitHub Actions</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2-4</span><span class="time-tag">[19时01分 ~ 21时33分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=019883d4-8fef-7ddf-a178-e1a60353f719" 
+                                class="news-link" 
+                                target="_blank">S&amp;P: CHINA&#x27;S STABLE OUTLOOK REFLECTS THAT ECONOMY WILL RETURN TO SELF-SUSTAINING GROWTH OF ABOVE 4% OVER THE NEXT FEW YEARS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2-4</span><span class="time-tag">[19时01分 ~ 21时33分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://ckxxapp.ckxx.net/pages/2025/08/07/98bc4ab80e234a5f88d059f6fd8f5cda.html" 
+                                class="news-link" 
+                                target="_blank">高盛称AI正在冲击劳动力市场 年轻科技工作者首当其冲</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#3-12</span><span class="time-tag">[17时15分 ~ 21时33分]</span><span class="time-tag">5次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/xpander-ai-slack-native-agents" 
+                                class="news-link" 
+                                target="_blank">xpander.ai</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#5-26</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=0198834d-74dd-7ddf-a176-553ff9280fe1" 
+                                class="news-link" 
+                                target="_blank">SoftBank Posts $2.9 Billion Profit on AI-Driven Gains</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5-11</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/domainerly" 
+                                class="news-link" 
+                                target="_blank">Domainerly</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#1-29</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44811567" 
+                                class="news-link" 
+                                target="_blank">Claude Code IDE Integration for Emacs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">[00时12分 ~ 01时13分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/rapidnative" 
+                                class="news-link" 
+                                target="_blank">RapidNative</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/melder-ai-for-excel" 
+                                class="news-link" 
+                                target="_blank">Melder - AI for Excel</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/transync-ai" 
+                                class="news-link" 
+                                target="_blank">Transync AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#1-27</span><span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://m.thepaper.cn/newsDetail_forward_31302872" 
+                                class="news-link" 
+                                target="_blank">北斗专访｜商汤杨帆：AI在物理世界还有很长的路要走</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=0198834c-b7b5-7ddf-a176-4821a1a60f24" 
+                                class="news-link" 
+                                target="_blank">Global AI News - MKTNews (2025.8.7)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3598850_101_1" 
+                                class="news-link" 
+                                target="_blank">Openai将于北京时间8日凌晨1点举行直播活动</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">08时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988293-aeb8-7ddf-a173-e9379dbb1fe1" 
+                                class="news-link" 
+                                target="_blank">OpenAI&#x27;s Altman on X</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">[16时14分 ~ 21时33分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/xpander-ai-slack-native-agents" 
+                                class="news-link" 
+                                target="_blank">xpander.ai Slack-native agents</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">15时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2108915?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【财联社早知道】全球首个L4级企业智能体工厂发布，机构称AI智能体进入新阶段，这家公司上线了旗下首款AI Agent产品，致力于打造全链路音视频AI智能体；闪迪联手SK海力士推进HBF高带宽闪存标准化</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3598733_101_1" 
+                                class="news-link" 
+                                target="_blank">Ai数据中心公司Whitefiber通过Ipo募资1.594亿美元。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">07时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108556?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【盘中宝】科技巨头加速布局这个赛道，抢占AI算力制高点，该产业即将迎来高速增长，这家公司具备提供相关服务的能力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">11时59分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44813854" 
+                                class="news-link" 
+                                target="_blank">Jules, our asynchronous coding agent, is now available for everyone</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">02时13分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44823066" 
+                                class="news-link" 
+                                target="_blank">Schools are using AI surveillance to protect students. Sometimes arresting them</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">20时18分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01987d9c-82b5-7ddf-a160-365be62e42d1" 
+                                class="news-link" 
+                                target="_blank">China Eyes Stablecoins to Boost RMB Global Use, but Capital Controls Slow Progress</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">00时12分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051981" 
+                                class="news-link" 
+                                target="_blank">Keep四连升累涨近30%，创始人王宁盈利后首发言：AI颠覆公司商业模式</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="rank-tag">#1-11</span><span class="time-tag">[11时59分 ~ 12时42分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44822258" 
+                                class="news-link" 
+                                target="_blank">About AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#5-25</span><span class="time-tag">[19时01分 ~ 21时33分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807121220338800" 
+                                class="news-link" 
+                                target="_blank">据英国金融时报：苹果(AAPL.O)的人工智能部门员工正流失至如OpenAI等竞争对手处。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#3-11</span><span class="time-tag">[12时42分 ~ 13时20分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44780034" 
+                                class="news-link" 
+                                target="_blank">Did Craigslist decimate newspapers? Legend meets reality</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[18时10分 ~ 21时33分]</span><span class="time-tag">4次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44809387" 
+                                class="news-link" 
+                                target="_blank">Python performance myths and fairy tales</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[00时12分 ~ 03时11分]</span><span class="time-tag">4次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44808794" 
+                                class="news-link" 
+                                target="_blank">I gave the AI arms and legs then it rejected me</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[00时12分 ~ 05时08分]</span><span class="time-tag">4次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108173?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">财联社8月7日电，OpenAI投资的Chai按大约5.5亿美元估值融资0.7亿美元。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">[01时13分 ~ 03时11分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://search.bilibili.com/all?keyword=%E7%BE%8E%E5%9B%BDAI%E4%B8%BA%E4%BD%95%E8%A2%AB%E7%94%B5%E5%8A%9B%E5%8D%A1%E4%BA%86%E8%84%96%E5%AD%90" 
+                                class="news-link" 
+                                target="_blank">美国AI为何被电力卡了脖子</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">[11时59分 ~ 14时15分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44813615" 
+                                class="news-link" 
+                                target="_blank">When is the next caltrain? (minimal webapp)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[02时13分 ~ 04时10分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44800746" 
+                                class="news-link" 
+                                target="_blank">Open models by OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[00时12分 ~ 02时13分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://wallstreetcn.com/articles/3752737" 
+                                class="news-link" 
+                                target="_blank">四巨头“烧钱凶猛”，非美和二线云厂被低估，GB200良率提升！大摩对AI服务器非常乐观</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">[07时01分 ~ 08时46分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.cls.cn/detail/2108417" 
+                                class="news-link" 
+                                target="_blank">GPT-5要来了？OpenAI官方预告引遐想 AI应用或迎来加速发展</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">[16时14分 ~ 17时15分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44821869" 
+                                class="news-link" 
+                                target="_blank">OpenAI&#x27;s new GPT-5 models announced early by GitHub</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[17时15分 ~ 18时10分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44818836" 
+                                class="news-link" 
+                                target="_blank">Why Building Billing Systems Is So Painful (2024)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[10时56分 ~ 11时59分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44815046" 
+                                class="news-link" 
+                                target="_blank">AI in Search is driving more queries and higher quality clicks</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[10时56分 ~ 11时59分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44821351" 
+                                class="news-link" 
+                                target="_blank">&quot;I met a founder who writes 10k lines of code a day thanks to AI&quot;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">16时14分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807124016416800" 
+                                class="news-link" 
+                                target="_blank">AI公司挖角大战苹果惨败 痛失12名人工智能人才</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">13时20分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44823260" 
+                                class="news-link" 
+                                target="_blank">&quot;AI hype&quot; is the true AI product</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">20时18分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=44822665" 
+                                class="news-link" 
+                                target="_blank">How AI Conquered the US Economy: A Visual FAQ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3597797_101_1" 
+                                class="news-link" 
+                                target="_blank">Openai投资的Chai按大约5.5亿美元估值融资0.7亿美元。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">01时13分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3601033_101_1" 
+                                class="news-link" 
+                                target="_blank">据市场消息，Chainlink将利用协议收入建立LINK储备，代币将从市场回购获得。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051959" 
+                                class="news-link" 
+                                target="_blank">AI医疗再迎政策催化！医疗服务ETF、医疗器械指数ETF、医疗设备ETF、医疗ETF上涨</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">10时56分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/graphy-lite" 
+                                class="news-link" 
+                                target="_blank">Graphy 3.0 — The AI Graph maker</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">15时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44815046" 
+                                class="news-link" 
+                                target="_blank">Google says AI in Search is driving more queries and higher quality clicks</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时11分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=44823094" 
+                                class="news-link" 
+                                target="_blank">AI Ethics is being narrowed on purpose, like privacy was</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108714?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【风口研报·公司】打造“数据平台+AI中台+Agent”能力闭环，这家公司构建起“国产Palantir”式竞争力，迈入AI产业智能跃迁加速期；这家公司中报首提机器人业务+原有业务拓展至高壁垒千亿市场</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">17时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3599208_0_1" 
+                                class="news-link" 
+                                target="_blank">英国金融时报：苹果的人工智能部门员工正流失至如OpenAI等竞争对手处。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">12时42分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1936485940626429230" 
+                                class="news-link" 
+                                target="_blank">AI 节能功能真的能让空调更省电吗？格力 AI 节能王子 Pro 怎么样？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">12时42分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3598587_0_1" 
+                                class="news-link" 
+                                target="_blank">Airgain报告第二季度亏损，预计第三季度收入在1300万美元至1500万美元之间</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">06时09分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108734?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【盘中宝】AI驱动下的该行业发展供需对接会将召开，机构称其是国产算力发展之基，未来行业市场规模或超1300亿，这家企业积极布局新技术</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">15时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3597984_0_1" 
+                                class="news-link" 
+                                target="_blank">Wayfair财报强劲，股价飙升至52周高点</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">04时10分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250806232314439800" 
+                                class="news-link" 
+                                target="_blank">AMD(AMD.O)首席执行官：个人电脑需求强劲，正在抢占市场份额。有大量大客户在采购新的AI芯片。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">00时12分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=44811840" 
+                                class="news-link" 
+                                target="_blank">Show HN: Aura – Like robots.txt, but for AI actions</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44816165" 
+                                class="news-link" 
+                                target="_blank">Brennan Center for Justice Report: The Campaign to Undermine the Next Election</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时10分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44821250" 
+                                class="news-link" 
+                                target="_blank">Researchers Uncover RCE Attack Chains in HashiCorp Vault and CyberArk Conjur</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">15时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44814587" 
+                                class="news-link" 
+                                target="_blank">Consistency over Availability: How rqlite Handles the CAP theorem</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">05时08分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=44823123" 
+                                class="news-link" 
+                                target="_blank">Photographer spends years on street corner capturing same commuters daily (2017)</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.baidu.com/s?wd=OpenAI%E6%88%96%E5%9C%A8%E5%91%A8%E4%BA%94%E5%87%8C%E6%99%A8%E5%8F%91%E5%B8%83GPT-5" 
+                                class="news-link" 
+                                target="_blank">OpenAI或在周五凌晨发布GPT-5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">11时59分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>31 条</span>
+                            <span>占比 1.1%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.cls.cn/detail/2108578" 
+                                class="news-link" 
+                                target="_blank">付费实习内推、有偿面试辅导，又有伸向学子的罪恶之手，已有券商紧急声明</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#1-13</span><span class="time-tag">[11时59分 ~ 20时18分]</span><span class="time-tag">10次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://mktnews.net/flashDetail.html?id=01988284-1904-7ddf-a173-bb059117f884" 
+                                class="news-link" 
+                                target="_blank">CHINA’S JAN-JUL DOLLAR-DENOMINATED EXPORTS TO THE U.S. DOWN 12.6% Y/Y; IMPORTS FROM U.S. DOWN 10.3% YOY — CUSTOMS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3-19</span><span class="time-tag">[11时59分 ~ 21时33分]</span><span class="time-tag">11次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44807868" 
+                                class="news-link" 
+                                target="_blank">Show HN: Kitten TTS – 25MB CPU-Only, Open-Source TTS Model</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#4-21</span><span class="time-tag">[00时12分 ~ 21时33分]</span><span class="time-tag">21次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/12099889316" 
+                                class="news-link" 
+                                target="_blank">面试的时候被面试官问「看了你的学历是普通本科，想问下对比 985 的面试者，你强在哪里？」该如何回复？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#3-17</span><span class="time-tag">[10时56分 ~ 17时15分]</span><span class="time-tag">8次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44778898" 
+                                class="news-link" 
+                                target="_blank">Comptime.ts: compile-time expressions for TypeScript</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[04时10分 ~ 19时01分]</span><span class="time-tag">15次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://github.com/MaaAssistantArknights/MaaAssistantArknights" 
+                                class="news-link" 
+                                target="_blank">MaaAssistantArknights / MaaAssistantArknights</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">GitHub</span>
+                    <span class="time-tag">[00时12分 ~ 18时10分]</span><span class="time-tag">18次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.producthunt.com/products/ductts" 
+                                class="news-link" 
+                                target="_blank">Ductts</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#2-27</span><span class="time-tag">[15时15分 ~ 21时33分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44777419" 
+                                class="news-link" 
+                                target="_blank">Herbie detects inaccurate expressions and finds more accurate replacements</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#5-21</span><span class="time-tag">[15时15分 ~ 20时18分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01988496-d82c-7ddf-a17c-d0d9b9db5091" 
+                                class="news-link" 
+                                target="_blank">U.S. COMMERCE SECRETARY LUTNICK: TRUMP TOLD TECH COMPANIES HE WON&#x27;T CHARGE TARIFFS IF THEY BUILD SEMICONDUCTORS IN THE COUNTRY -FOX BUSINESS NETWORK INTERVIEW</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051939" 
+                                class="news-link" 
+                                target="_blank">维他奶(00345.HK)获Kuang Ming Investments Pte. Limited增持285.2万股</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">08时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3600308_100_1" 
+                                class="news-link" 
+                                target="_blank">伦敦证券交易所集团：Kenvue公司2025财年每股收益预期为1.13美元，营收预期为154.8亿美元。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">19时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=44823262" 
+                                class="news-link" 
+                                target="_blank">Show HN: Stasher – Burn-after-read secrets from the CLI, no server, no trust</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">21时33分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108222?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">美国总统特朗普表示，开始面试美联储候选人，候选人降至三人，不认为贝森特会担任美联储职务。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#1-12</span><span class="time-tag">[06时09分 ~ 07时01分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44816060" 
+                                class="news-link" 
+                                target="_blank">The arcane alphabets of Black Sabbath</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[05时08分 ~ 08时46分]</span><span class="time-tag">4次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44787073" 
+                                class="news-link" 
+                                target="_blank">Scientists have recreated the Universe&#x27;s first molecule</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[18时10分 ~ 20时18分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807055039096800" 
+                                class="news-link" 
+                                target="_blank">美国总统特朗普：贝森特和卢特尼克正在面试美联储候选人。两位凯文都很棒。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">[06时09分 ~ 07时01分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807054757434800" 
+                                class="news-link" 
+                                target="_blank">美国总统特朗普：正在开始面试美联储官员人选。候选人降至3人。贝森特不想担任美联储主席。有来自华尔街的候选人。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">[06时09分 ~ 07时01分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44783372" 
+                                class="news-link" 
+                                target="_blank">Splatshop: Efficiently Editing Large Gaussian Splat Models</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[20时18分 ~ 21时33分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44776871" 
+                                class="news-link" 
+                                target="_blank">Show HN: Write lead sheets in a Markdown way and transpose in a second</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">[05时08分 ~ 06时09分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807061102381800" 
+                                class="news-link" 
+                                target="_blank">台积电(TSM.N)美股盘后涨3.5%。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">07时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44815125" 
+                                class="news-link" 
+                                target="_blank">Blocking LLMs from your website cuts you off from next-generation search</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时10分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807182401575800" 
+                                class="news-link" 
+                                target="_blank">特斯拉与NHTSA就调查会面 后者施压索要Robotaxi信息</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">19时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3599818_100_1" 
+                                class="news-link" 
+                                target="_blank">【行情】ETF涨幅前五，Xl2CSOPTSLA（07766.HK）涨8.0%居榜首。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">17时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44787073" 
+                                class="news-link" 
+                                target="_blank">Scientists just recreated the Universe&#x27;s first molecule</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3600230_101_1" 
+                                class="news-link" 
+                                target="_blank">特斯拉上周就7月1日调查事项与美国国家公路交通安全管理局（Nhtsa）会面。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">19时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44814278" 
+                                class="news-link" 
+                                target="_blank">The Internet Wants to Check Your ID</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">01时13分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3597756_101_1" 
+                                class="news-link" 
+                                target="_blank">【行情】非洲股市收盘播报｜周三（8月6日），南非富时/Jse非洲领先40可交易指数收涨0.57%，报92725.09点，突破7月25日所创收盘历史最高位92457.00点。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">01时13分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44814278" 
+                                class="news-link" 
+                                target="_blank">The internet wants to check your ID</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时11分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44781683" 
+                                class="news-link" 
+                                target="_blank">Realizing we needed two sorts of alerts for our temperature monitoring</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时11分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ycombinator.com/item?id=44808693" 
+                                class="news-link" 
+                                target="_blank">Some thoughts on journals, refereeing, and the P vs NP problem</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">00时12分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807194256414800" 
+                                class="news-link" 
+                                target="_blank">美国财长贝森特：我们已经开始了美联储主席的面试流程。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">20时18分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>11 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1933354452695363833" 
+                                class="news-link" 
+                                target="_blank">16 袋泡面，120 个锅贴，6 斤大卷饼，18 个汉堡和 37 根油条，哪个吃起来难度更大？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">[04时10分 ~ 15时15分]</span><span class="time-tag">11次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://search.bilibili.com/all?keyword=%E5%85%B3%E4%BA%8E%E5%90%8C%E4%BA%8B%E5%A4%96%E5%8D%B7%E8%BF%99%E4%BB%B6%E4%BA%8B" 
+                                class="news-link" 
+                                target="_blank">关于同事外卷这件事</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">[00时12分 ~ 16时14分]</span><span class="time-tag">15次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1935365947826370211" 
+                                class="news-link" 
+                                target="_blank">小朋友高铁上被列车员发试卷一秒静音，如何看待列车员这一做法？是否值得推广？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">[00时12分 ~ 07时01分]</span><span class="time-tag">8次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zaochenbao.com/news/china/202508/0648947.html" 
+                                class="news-link" 
+                                target="_blank">中国互联网大厂密集校招 AI岗位占比显著增加</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">[00时12分 ~ 07时01分]</span><span class="time-tag">8次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1936367083089802281" 
+                                class="news-link" 
+                                target="_blank">奇瑞董事长尹同跃反思致歉称加班非常不人性化，如何落实反加班倡议？「缩减会议先抓领导」的深层逻辑是什么？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#2-9</span><span class="time-tag">[08时46分 ~ 11时59分]</span><span class="time-tag">3次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zaochenbao.com/news/china/202508/0748989.html" 
+                                class="news-link" 
+                                target="_blank">泽连斯基指中国雇佣兵为俄作战 中国外交部：多次提醒莫卷冲突</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">[10时56分 ~ 13时20分]</span><span class="time-tag">4次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://news.ifeng.com/c/8ld2WoMInkV" 
+                                class="news-link" 
+                                target="_blank">柯文哲丢水杯、撒卷宗，喊话检察官：跟赖清德讲我绝对不会投降</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">凤凰网</span>
+                    <span class="time-tag">[20时18分 ~ 21时33分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E5%BB%BA%E8%AE%AE%E6%9D%A8%E5%B9%82%E5%8D%B7%E5%8F%91%E5%8D%8A%E6%B0%B8%E4%B9%85&stream_entry_id=31&isnewpage=1&extparam=seat%3D1%26realpos%3D31%26filter_type%3Drealtimehot%26flag%3D1%26c_type%3D31%26band_rank%3D31%26lcate%3D5001%26stream_entry_id%3D31%26cate%3D5001%26q%3D%25E5%25BB%25BA%25E8%25AE%25AE%25E6%259D%25A8%25E5%25B9%2582%25E5%258D%25B7%25E5%258F%2591%25E5%258D%258A%25E6%25B0%25B8%25E4%25B9%2585%26dgr%3D0%26pos%3D32%26display_time%3D1754541653%26pre_seqid%3D1754541653672050016153" 
+                                class="news-link" 
+                                target="_blank">建议杨幂卷发半永久</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">[12时42分 ~ 13时20分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5051934" 
+                                class="news-link" 
+                                target="_blank">华泰证券：预期过后，静待钢铁反内卷政策落地</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">08时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807080952624800" 
+                                class="news-link" 
+                                target="_blank">华泰证券：预期过后，静待钢铁反内卷政策落地</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">08时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.cls.cn/detail/2108271" 
+                                class="news-link" 
+                                target="_blank">人民日报：扩内需与反“内卷”要双向发力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">14时15分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 0.25%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://search.bilibili.com/all?keyword=%E6%88%98%E5%9C%B06%E9%A6%99%E6%B8%AF%E5%AE%9E%E6%9C%BA%E8%AF%95%E7%8E%A9%E5%88%86%E4%BA%AB" 
+                                class="news-link" 
+                                target="_blank">战地6香港实机试玩分享</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="rank-tag">#5-30</span><span class="time-tag">[00时12分 ~ 13时20分]</span><span class="time-tag">12次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1936348180489929901" 
+                                class="news-link" 
+                                target="_blank">曹云金坦言与郭德纲没深仇大恨，不做朋友但别当敌人，离职后和老板真能一笑泯恩仇么？在职场里这套玩的转么？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">[00时12分 ~ 08时46分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.zhihu.com/question/1931979378146932567" 
+                                class="news-link" 
+                                target="_blank">职场里，是「事事汇报，寻求指导」显得更稳妥，还是「独立思考，直接给出方案」更能体现价值？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">[14时15分 ~ 15时15分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807165906719800" 
+                                class="news-link" 
+                                target="_blank">日本政府官员：政府经济委员会的私营部门成员表示担心日本央行可能落后于通货膨胀，这已经影响到人们的生活。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">17时15分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.gelonghui.com/news/5052136" 
+                                class="news-link" 
+                                target="_blank">通源环境(688679.SH)：联合体中标1.54亿元盐亭县生活垃圾综合整治项目设计施工总承包</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">16时14分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.fastbull.com/cn/fastshort/3598693_100_1" 
+                                class="news-link" 
+                                target="_blank">一名美国陆军士兵被控试图与俄罗斯分享坦克信息。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">07时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E6%9D%A8%E5%B9%82%E8%BA%AB%E4%B8%8A%E6%9C%89%E6%B5%93%E7%83%88%E7%9A%84%E7%94%9F%E6%B4%BB%E6%84%9F&stream_entry_id=31&isnewpage=1&extparam=seat%3D1%26realpos%3D28%26band_rank%3D28%26filter_type%3Drealtimehot%26q%3D%25E6%259D%25A8%25E5%25B9%2582%25E8%25BA%25AB%25E4%25B8%258A%25E6%259C%2589%25E6%25B5%2593%25E7%2583%2588%25E7%259A%2584%25E7%2594%259F%25E6%25B4%25BB%25E6%2584%259F%26c_type%3D31%26cate%3D5001%26pos%3D29%26stream_entry_id%3D31%26dgr%3D0%26flag%3D1%26lcate%3D5001%26display_time%3D1754568546%26pre_seqid%3D175456854658502517114134" 
+                                class="news-link" 
+                                target="_blank">杨幂身上有浓烈的生活感</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">20时18分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #5</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 0.11%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.cls.cn/detail/2108244" 
+                                class="news-link" 
+                                target="_blank">【早报】三部门：目标到2027年全国完成新改建农村公路30万公里；2.0%分红险上演“闪电停售”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#1-2</span><span class="time-tag">[08时46分 ~ 14时15分]</span><span class="time-tag">6次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://www.baidu.com/s?wd=%E9%99%88%E4%BD%A9%E6%96%AF%E5%9C%A8%E3%80%8A%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E3%80%8B%E6%92%B0%E6%96%87" 
+                                class="news-link" 
+                                target="_blank">陈佩斯在《人民日报》撰文</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#5-29</span><span class="time-tag">[12时42分 ~ 18时10分]</span><span class="time-tag">7次</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://api3.cls.cn/share/article/2108183?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">财联社8月7日电，美联储周三隔夜逆回购协议（RRP）使用规模为919.66亿美元，上个交易日报843.56亿美元。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">[02时13分 ~ 03时11分]</span><span class="time-tag">2次</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #6</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.04%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            
+                            <a href="https://flash.jin10.com/detail/20250807075115608800" 
+                                class="news-link" 
+                                target="_blank">金十数据中心工具</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">08时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
             <div class="new-section">
-                <h3>🆕 本次新增热点新闻 (共 6 条)</h3>
-            <h4>凤凰网 (1 条)</h4><ul><li><a href="https://news.ifeng.com/c/8ld2WoMInkV" target="_blank" class="news-link">柯文哲丢水杯、撒卷宗，喊话检察官：跟赖清德讲我绝对不会投降</a> [12]</li></ul><h4>微博 (1 条)</h4><ul><li><a href="https://m.weibo.cn/search?containerid=100103type%3D1%26t%3D10%26q%3D%E6%9D%A8%E5%B9%82%E8%BA%AB%E4%B8%8A%E6%9C%89%E6%B5%93%E7%83%88%E7%9A%84%E7%94%9F%E6%B4%BB%E6%84%9F&amp;stream_entry_id=31&amp;isnewpage=1&amp;extparam=seat%3D1%26realpos%3D28%26band_rank%3D28%26filter_type%3Drealtimehot%26q%3D%25E6%259D%25A8%25E5%25B9%2582%25E8%25BA%25AB%25E4%25B8%258A%25E6%259C%2589%25E6%25B5%2593%25E7%2583%2588%25E7%259A%2584%25E7%2594%259F%25E6%25B4%25BB%25E6%2584%259F%26c_type%3D31%26cate%3D5001%26pos%3D29%26stream_entry_id%3D31%26dgr%3D0%26flag%3D1%26lcate%3D5001%26display_time%3D1754568546%26pre_seqid%3D175456854658502517114134" target="_blank" class="news-link">杨幂身上有浓烈的生活感</a> [28]</li></ul><h4>黑客新闻 (3 条)</h4><ul><li><a href="https://news.ycombinator.com/item?id=44823066" target="_blank" class="news-link">Schools are using AI surveillance to protect students. Sometimes arresting them</a> <font color='red'><strong>[4]</strong></font></li><li><a href="https://news.ycombinator.com/item?id=44823260" target="_blank" class="news-link">&quot;AI hype&quot; is the true AI product</a> [7]</li><li><a href="https://news.ycombinator.com/item?id=44783372" target="_blank" class="news-link">Splatshop: Efficiently Editing Large Gaussian Splat Models</a> [12]</li></ul><h4>金十数据 (1 条)</h4><ul><li><a href="https://flash.jin10.com/detail/20250807194256414800" target="_blank" class="news-link">美国财长贝森特：我们已经开始了美联储主席的面试流程。</a> [29]</li></ul></div>
+                <h3>🔥 本次新增热点新闻 (共 8 条)</h3>
+            
+                <div class="source-group">
+                    <div class="source-title">黑客新闻 · 5 条</div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://news.ycombinator.com/item?id=44823262" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Stasher – Burn-after-read secrets from the CLI, no server, no trust</a>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://news.ycombinator.com/item?id=44822665" 
+                                class="news-link" 
+                                target="_blank"
+                            >How AI Conquered the US Economy: A Visual FAQ</a>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://news.ycombinator.com/item?id=44823094" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI Ethics is being narrowed on purpose, like privacy was</a>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://news.ycombinator.com/item?id=44811840" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Aura – Like robots.txt, but for AI actions</a>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://news.ycombinator.com/item?id=44823123" 
+                                class="news-link" 
+                                target="_blank"
+                            >Photographer spends years on street corner capturing same commuters daily (2017)</a>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="source-group">
+                    <div class="source-title">财联社 · 1 条</div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://api3.cls.cn/share/article/2108915?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >【财联社早知道】全球首个L4级企业智能体工厂发布，机构称AI智能体进入新阶段，这家公司上线了旗下首款AI Agent产品，致力于打造全链路音视频AI智能体；闪迪联手SK海力士推进HBF高带宽闪存标准化</a>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="source-group">
+                    <div class="source-title">MKT News · 1 条</div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://mktnews.net/flashDetail.html?id=01988496-d82c-7ddf-a17c-d0d9b9db5091" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. COMMERCE SECRETARY LUTNICK: TRUMP TOLD TECH COMPANIES HE WON&#x27;T CHARGE TARIFFS IF THEY BUILD SEMICONDUCTORS IN THE COUNTRY -FOX BUSINESS NETWORK INTERVIEW</a>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="source-group">
+                    <div class="source-title">快牛 · 1 条</div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="https://www.fastbull.com/cn/fastshort/3601033_101_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >据市场消息，Chainlink将利用协议收入建立LINK储备，代币将从市场回购获得。</a>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
         </body>
         </html>
         
