@@ -1227,22 +1227,35 @@ class ReportGenerator:
             filename = f"{TimeHelper.format_time_filename()}.html"
 
         file_path = FileHelper.get_output_path("html", filename)
+        card_file_path = FileHelper.get_output_path("html", filename.replace(".html", "_card.html"))
 
         report_data = ReportGenerator._prepare_report_data(
             stats, failed_ids, new_titles, id_to_name, mode
         )
 
+        # 生成经典风格
         html_content = ReportGenerator._render_html_content(
-            report_data, total_titles, is_daily_summary, mode
+            report_data, total_titles, is_daily_summary, mode, filename
+        )
+
+        # 生成卡片风格
+        card_html_content = ReportGenerator._render_card_style_html(
+            report_data, total_titles, is_daily_summary, mode, filename.replace(".html", "_card.html")
         )
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(html_content)
 
+        with open(card_file_path, "w", encoding="utf-8") as f:
+            f.write(card_html_content)
+
         if is_daily_summary:
             root_file_path = Path("index.html")
+            card_root_file_path = Path("index_card.html")
             with open(root_file_path, "w", encoding="utf-8") as f:
                 f.write(html_content)
+            with open(card_root_file_path, "w", encoding="utf-8") as f:
+                f.write(card_html_content)
 
         return file_path
 
@@ -1399,6 +1412,7 @@ class ReportGenerator:
         total_titles: int,
         is_daily_summary: bool = False,
         mode: str = "daily",
+        filename: str = "report.html",
     ) -> str:
         """渲染HTML内容 - 微信风格设计"""
         html = """
@@ -1435,6 +1449,37 @@ class ReportGenerator:
                     border-radius: 12px;
                     margin-bottom: 20px;
                     box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
                 }
 
                 .header h1 {
@@ -1675,6 +1720,10 @@ class ReportGenerator:
             <div class="container">
                 <div class="header" id="top">
                     <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="{card_style_url}" class="style-btn">卡片</a>
+                    </div>
                     <div class="header-info">
                         <!-- 锚点导航 -->
                         <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
@@ -1884,8 +1933,12 @@ class ReportGenerator:
             </div>
             """
 
-        # 已经插入的热点和今日资讯部分，这里不需要再次添加
-        pass  # 防止重复
+        # 热点词统计
+        if report_data["stats"]:
+            html += """
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            """
             
             for i, stat in enumerate(report_data["stats"], 1):
                 escaped_word = ReportGenerator._html_escape(stat["word"])
@@ -1998,7 +2051,11 @@ class ReportGenerator:
         </body>
         </html>
         """
-
+        
+        # 替换卡片风格URL
+        card_filename = filename.replace('.html', '_card.html')
+        html = html.replace('{card_style_url}', card_filename)
+        
         return html
 
     @staticmethod
@@ -2128,6 +2185,487 @@ class ReportGenerator:
             result += f" <code>({title_data['count']}次)</code>"
 
         return result
+
+    @staticmethod
+    def _render_card_style_html(
+        report_data: Dict,
+        total_titles: int,
+        is_daily_summary: bool = False,
+        mode: str = "daily",
+        filename: str = "report_card.html",
+    ) -> str:
+        """渲染新闻卡片风格的HTML内容"""
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        html = """
+        <!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>热点资讯 - {current_time}</title>
+            <style>
+                * {{
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }}
+                
+                body {{
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+                    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                }}
+                
+                .header {{
+                    background: white;
+                    border-radius: 16px;
+                    padding: 24px;
+                    margin-bottom: 24px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    backdrop-filter: blur(10px);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }}
+                
+                .header h1 {{
+                    font-size: 28px;
+                    font-weight: 700;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                }}
+                
+                .style-switcher {{
+                    display: flex;
+                    gap: 8px;
+                    background: #f8f9fa;
+                    padding: 4px;
+                    border-radius: 12px;
+                }}
+                
+                .style-btn {{
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 8px;
+                    background: transparent;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: all 0.3s ease;
+                    color: #6c757d;
+                }}
+                
+                .style-btn.active {{
+                    background: white;
+                    color: #495057;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }}
+                
+                .stats-grid {{
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 16px;
+                    margin-bottom: 24px;
+                }}
+                
+                .stat-card {{
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                    text-align: center;
+                }}
+                
+                .stat-value {{
+                    font-size: 32px;
+                    font-weight: 700;
+                    color: #667eea;
+                    margin-bottom: 4px;
+                }}
+                
+                .stat-label {{
+                    font-size: 14px;
+                    color: #6c757d;
+                }}
+                
+                .news-grid {{
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                    gap: 20px;
+                }}
+                
+                .news-card {{
+                    background: white;
+                    border-radius: 16px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                }}
+                
+                .news-card:hover {{
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+                }}
+                
+                .news-card-header {{
+                    padding: 20px;
+                    border-bottom: 1px solid #f0f0f0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }}
+                
+                .news-card-title {{
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    margin-bottom: 8px;
+                    line-height: 1.4;
+                }}
+                
+                .news-card-meta {{
+                    display: flex;
+                    gap: 12px;
+                    align-items: center;
+                    flex-wrap: wrap;
+                }}
+                
+                .source-badge {{
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 500;
+                }}
+                
+                .rank-badge {{
+                    background: #ff6b6b;
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                }}
+                
+                .time-badge {{
+                    background: #f8f9fa;
+                    color: #6c757d;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                }}
+                
+                .new-indicator {{
+                    background: linear-gradient(135deg, #ff6b6b, #ffa500);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    animation: pulse 2s infinite;
+                }}
+                
+                @keyframes pulse {{
+                    0% {{ opacity: 1; }}
+                    50% {{ opacity: 0.7; }}
+                    100% {{ opacity: 1; }}
+                }}
+                
+                .news-card-content {{
+                    padding: 20px;
+                }}
+                
+                .news-link {{
+                    color: #2c3e50;
+                    text-decoration: none;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    display: block;
+                    transition: color 0.3s ease;
+                }}
+                
+                .news-link:hover {{
+                    color: #667eea;
+                }}
+                
+                .word-section {{
+                    margin-bottom: 32px;
+                }}
+                
+                .word-header {{
+                    background: white;
+                    border-radius: 16px;
+                    padding: 24px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }}
+                
+                .word-name {{
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #2c3e50;
+                }}
+                
+                .word-stats {{
+                    display: flex;
+                    gap: 16px;
+                    align-items: center;
+                }}
+                
+                .word-count {{
+                    font-size: 20px;
+                    font-weight: 600;
+                    color: #667eea;
+                }}
+                
+                .word-percentage {{
+                    font-size: 14px;
+                    color: #6c757d;
+                    background: #f8f9fa;
+                    padding: 4px 8px;
+                    border-radius: 8px;
+                }}
+                
+                .error-section {{
+                    background: #fff5f5;
+                    border: 1px solid #fed7d7;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-top: 24px;
+                }}
+                
+                .error-section h3 {{
+                    color: #e53e3e;
+                    margin-bottom: 12px;
+                }}
+                
+                .error-list {{
+                    list-style: none;
+                }}
+                
+                .error-item {{
+                    padding: 8px 0;
+                    color: #742a2a;
+                    border-bottom: 1px solid #fed7d7;
+                }}
+                
+                .error-item:last-child {{
+                    border-bottom: none;
+                }}
+                
+                @media (max-width: 768px) {{
+                    body {{
+                        padding: 10px;
+                    }}
+                    
+                    .news-grid {{
+                        grid-template-columns: 1fr;
+                    }}
+                    
+                    .header {{
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 16px;
+                    }}
+                    
+                    .stats-grid {{
+                        grid-template-columns: 1fr;
+                    }}
+                }}
+            </style>
+            <script>
+                function switchStyle(style) {{
+                    const buttons = document.querySelectorAll('.style-btn');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    event.target.classList.add('active');
+                    
+                    if (style === 'classic') {{
+                        window.location.href = window.location.pathname.replace('card-style', 'index');
+                    }} else if (style === 'card') {{
+                        // 已经在卡片风格页面
+                    }}
+                }}
+            </script>
+        </head>
+        <body>
+            <div class="header">
+                <h1>📊 热点资讯监控</h1>
+                <div class="style-switcher">
+                    <a href="{classic_style_url}" class="style-btn">经典风格</a>
+                    <a href="#" class="style-btn active" onclick="return false;">无样式风格</a>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{total_titles}</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{len(report_data["stats"])}</div>
+                    <div class="stat-label">热点词汇</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{datetime.now().strftime("%m-%d")}</div>
+                    <div class="stat-label">今日日期</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{datetime.now().strftime("%H:%M")}</div>
+                    <div class="stat-label">更新时间</div>
+                </div>
+            </div>
+        """
+
+        # 热点词统计 - 卡片风格
+        if report_data["stats"]:
+            for i, stat in enumerate(report_data["stats"], 1):
+                escaped_word = ReportGenerator._html_escape(stat["word"])
+                html += f"""
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 {escaped_word}</div>
+                        <div class="word-stats">
+                            <span class="word-count">{stat['count']} 条</span>
+                            <span class="word-percentage">占比 {stat.get('percentage', 0)}%</span>
+                        </div>
+                    </div>
+                    <div class="news-grid">
+                """
+
+                for title_data in stat["titles"]:
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
+                    )
+                    source_name = ReportGenerator._html_escape(title_data["source_name"])
+                    
+                    html += f"""
+                    <div class="news-card">
+                        <div class="news-card-header">
+                            <div class="news-card-meta">
+                                <span class="source-badge">{source_name}</span>
+                                {title_data.get("is_new", False) and '<span class="new-indicator">NEW</span>' or ''}
+                    """
+                    
+                    # 添加排名信息
+                    if title_data.get("ranks"):
+                        ranks = title_data["ranks"]
+                        min_rank = min(ranks)
+                        max_rank = max(ranks)
+                        if min_rank <= 5:
+                            rank_display = f"#{min_rank}"
+                            if min_rank != max_rank:
+                                rank_display = f"#{min_rank}-{max_rank}"
+                            html += f'<span class="rank-badge">{rank_display}</span>'
+                    
+                    # 添加时间信息
+                    if title_data.get("time_display"):
+                        html += f'<span class="time-badge">{ReportGenerator._html_escape(title_data["time_display"])}</span>'
+                    
+                    # 添加出现次数
+                    if title_data.get("count", 1) > 1:
+                        html += f'<span class="time-badge">{title_data["count"]}次</span>'
+                    
+                    html += f"""
+                            </div>
+                        </div>
+                        <div class="news-card-content">
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                               class="news-link" 
+                               target="_blank">
+                                {cleaned_title}
+                            </a>
+                        </div>
+                    </div>
+                    """
+
+                html += """
+                    </div>
+                </div>
+                """
+
+        # 新增热点新闻 - 卡片风格
+        if report_data["new_titles"]:
+            html += f"""
+            <div class="word-section">
+                <div class="word-header">
+                    <div class="word-name">🔥 本次新增热点新闻</div>
+                    <div class="word-stats">
+                        <span class="word-count">共 {report_data['total_new_count']} 条</span>
+                    </div>
+                </div>
+                <div class="news-grid">
+            """
+
+            for source_data in report_data["new_titles"]:
+                escaped_source = ReportGenerator._html_escape(
+                    source_data["source_name"]
+                )
+                
+                for title_data in source_data["titles"]:
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
+                    )
+                    
+                    html += f"""
+                    <div class="news-card">
+                        <div class="news-card-header">
+                            <div class="news-card-meta">
+                                <span class="source-badge">{escaped_source}</span>
+                                <span class="new-indicator">NEW</span>
+                            </div>
+                        </div>
+                        <div class="news-card-content">
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                               class="news-link" 
+                               target="_blank">
+                                {cleaned_title}
+                            </a>
+                        </div>
+                    </div>
+                    """
+
+            html += """
+                </div>
+            </div>
+            """
+
+        # 错误处理
+        if report_data["failed_ids"]:
+            html += """
+            <div class="error-section">
+                <h3>⚠️ 数据获取失败</h3>
+                <ul class="error-list">
+            """
+            for id_value in report_data["failed_ids"]:
+                html += f"<li class=\"error-item\">{ReportGenerator._html_escape(id_value)}</li>"
+            html += """
+                </ul>
+            </div>
+            """
+
+        html += """
+        </body>
+        </html>
+        """
+
+        # 替换变量
+        classic_filename = filename.replace("_card.html", ".html")
+        html = html.replace("{classic_style_url}", classic_filename)
+        html = html.replace("{total_titles}", str(total_titles))
+        html = html.replace("{current_time}", current_time)
+        html = html.replace('{len(report_data["stats"])}', str(len(report_data["stats"])))
+        html = html.replace('{datetime.now().strftime("%m-%d")}', datetime.now().strftime("%m-%d"))
+        html = html.replace('{datetime.now().strftime("%H:%M")}', datetime.now().strftime("%H:%M"))
+
+        return html
 
     @staticmethod
     def _render_feishu_content(
