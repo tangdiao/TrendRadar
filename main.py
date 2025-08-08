@@ -1407,7 +1407,7 @@ class ReportGenerator:
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>频率词统计报告</title>
+            <title>今日新闻</title>
             <style>
                 * {
                     margin: 0;
@@ -1673,9 +1673,52 @@ class ReportGenerator:
         </head>
         <body>
             <div class="container">
-                <div class="header">
-                    <h1>频率词统计报告</h1>
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
                     <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        """
+
+        # 显示错误导航的条件添加
+        html += """
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
         """
 
         # 添加统计信息
@@ -1713,10 +1756,124 @@ class ReportGenerator:
             </div>
         """
 
-        # 错误处理
+        # 新增热点新闻 - 放在最前面
+        if report_data["new_titles"]:
+            html += f"""
+            <div class="new-section" id="hot-news">
+                <h3>🔥 本次新增热点新闻 (共 {report_data['total_new_count']} 条)</h3>
+            """
+
+            for source_data in report_data["new_titles"]:
+                escaped_source = ReportGenerator._html_escape(
+                    source_data["source_name"]
+                )
+                html += f"""
+                <div class="source-group">
+                    <div class="source-title">{escaped_source} · {len(source_data['titles'])} 条</div>
+                    <ul class="news-list">
+                """
+
+                for title_data in source_data["titles"]:
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
+                    )
+                    html += f"""
+                    <li class="news-item">
+                        <div class="news-title">
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                                class="news-link" 
+                                target="_blank"
+                            >{cleaned_title}</a>
+                        </div>
+                    </li>
+                    """
+
+                html += """
+                    </ul>
+                </div>
+                """
+
+            html += """
+            </div>
+            """
+
+        # 热点词统计 - 今日资讯部分
+        if report_data["stats"]:
+            html += """
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            """
+            
+            for i, stat in enumerate(report_data["stats"], 1):
+                escaped_word = ReportGenerator._html_escape(stat["word"])
+                html += f"""
+                <div class="word-section" id="trending-{i}">
+                    <div class="word-header">
+                        <div class="word-name">🏆 {escaped_word}  #{i}</div>
+                        <div class="word-stats">
+                            <span>{stat['count']} 条</span>
+                            <span>占比 {stat.get('percentage', 0)}%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                """
+
+                for title_data in stat["titles"]:
+                    cleaned_title = ReportGenerator._html_escape(
+                        DataProcessor.clean_title(title_data["title"])
+                    )
+                    source_name = ReportGenerator._html_escape(title_data["source_name"])
+                    
+                    html += f"""
+                    <li class="news-item">
+                        <div class="news-title">
+                            {title_data.get("is_new", False) and '<span class="new-badge">NEW</span>' or ''}
+                            <a href="{title_data.get('mobile_url', '') or title_data.get('url', '')}" 
+                                class="news-link" 
+                                target="_blank"
+                            >{cleaned_title}</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">{source_name}</span>
+                    """
+                    
+                    # 添加排名信息
+                    if title_data.get("ranks"):
+                        ranks = title_data["ranks"]
+                        min_rank = min(ranks)
+                        max_rank = max(ranks)
+                        if min_rank <= 5:
+                            rank_display = f"#{min_rank}"
+                            if min_rank != max_rank:
+                                rank_display = f"#{min_rank}-{max_rank}"
+                            html += f'<span class="rank-tag">{rank_display}</span>'
+                    
+                    # 添加时间信息
+                    if title_data.get("time_display"):
+                        html += f'<span class="time-tag">{ReportGenerator._html_escape(title_data["time_display"])}</span>'
+                    
+                    # 添加出现次数
+                    if title_data.get("count", 1) > 1:
+                        html += f'<span class="time-tag">{title_data["count"]}次</span>'
+                    
+                    html += """
+                        </div>
+                    </li>
+                    """
+
+                html += """
+                    </ul>
+                </div>
+                """
+
+            html += """
+            </div>
+            """
+
+        # 错误处理 - 放在最后
         if report_data["failed_ids"]:
             html += """
-            <div class="error-section">
+            <div class="error-section" id="failed-platforms">
                 <h3>⚠️ 数据获取失败</h3>
                 <ul class="error-list">
             """
@@ -1727,12 +1884,8 @@ class ReportGenerator:
             </div>
             """
 
-        # 热点词统计
-        if report_data["stats"]:
-            html += """
-            <div class="card">
-                <h2>📈 热点词汇统计</h2>
-            """
+        # 已经插入的热点和今日资讯部分，这里不需要再次添加
+        pass  # 防止重复
             
             for i, stat in enumerate(report_data["stats"], 1):
                 escaped_word = ReportGenerator._html_escape(stat["word"])
