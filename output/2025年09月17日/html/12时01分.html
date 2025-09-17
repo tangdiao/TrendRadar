@@ -1,0 +1,682 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="12时01分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">92</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">09-17</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12:01</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 6.52%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019955cd-9899-799d-be0c-d3dd9bd0f61a" 
+                                class="news-link" 
+                                target="_blank"
+                            >【China Tech Stocks Surge to 2021 Level as Investors Bet on AI】Chinese technology stocks listed in Hong Kong jumped to their highest level in almost four years as optimism over artificial intelligence fueled demand. Saxo Markets chief investment strategist Charu Chanana said that China tech leaders are visibly re-accelerating AI spend and product rollouts — models, robotaxis, in-house chips — while also proving they can monetize AI faster than many expected. “With valuations lagging the U.S., investors are starting to pay attention again.”&lt;br/&gt;- &lt;b&gt;Hang Seng Tech Index&lt;/b&gt; rose as much as 3.5%, hitting its highest level since November 2021.&lt;br/&gt;- &lt;b&gt;Alibaba &lt;/b&gt;up nearly 6%. China Unicom’s Sanjiangyuan data center has signed contracts to deploy AI chips from Chinese firms including Alibaba’s chip unit T-Head. Alibaba raised $3.2 billion from a blockbuster convertible bond offering last week.&lt;br/&gt;- &lt;b&gt;CATL &lt;/b&gt;H-shares surpass HK$500, up 5.8% intraday to record high since May IPO. JPMorgan analysts noted that CATL&#x27;s Hong Kong-listed shares are on track for their highest close since May, driven by bullish outlooks from equipment makers and growing energy-storage investment in China.&lt;br/&gt;- &lt;b&gt;Tencent &lt;/b&gt;up nearly 2% to HK$658, market cap back above HK$6 trillion. Tencent turned to the dim sum bond market for a 9 billion yuan ($1.27 billion) on Tuesday, its first bond sale in four years.&lt;br/&gt;- &lt;b&gt;Baidu &lt;/b&gt;Inc. shares surged as much as 15% in Hong Kong, marking their biggest jump since March 2023.&lt;br/&gt;- &lt;b&gt;Meituan &lt;/b&gt;up over as much as 6%.&lt;br/&gt;- &lt;b&gt;JD.com&lt;/b&gt; up nearly 4%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019955b2-d652-799d-be0c-8585ec38562f" 
+                                class="news-link" 
+                                target="_blank"
+                            >【CATL H-shares Hit record high In Early Trading, Last up 6.18% in HK 】Chinese investors are increasingly optimistic about the commercialization of solid-state electric vehicle batteries, a next-generation technology replacing some liquid components with solids, fueling major gains in industry stocks. &lt;b&gt;Contemporary Amperex Technology Co.’s Hong Kong-listed shares are on track for their highest close since May, driven by bullish outlooks from equipment makers and growing energy-storage investment in China, JPMorgan analysts noted.&lt;/b&gt; &lt;br/&gt;In early trading, CATL H-shares surpass HK$500, up 5.8% intraday to record high since May IPO; A-shares up over 5%.&lt;br/&gt;Wuxi Lead Intelligent Equipment Co. has reported a “complete” production process and expects rising orders for solid-state technology, while Gotion High-Tech Co. plans “semi-solid” mass production next year and EVE Energy Co. opened a solid-state research base in Chengdu. Max Reid of CRU Group said confidence in commercialization timelines has grown, with mass production now expected in the late 2020s.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5084830" 
+                                class="news-link" 
+                                target="_blank"
+                            >大行评级｜高盛：上调阿里巴巴H股目标价至174港元 看好AI云端驱动增长潜力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3667817_0_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >香港特区行政长官李家超：香港会加大发挥“一国两制”的优势，推动早日实现内地数据在合规安全保障下可跨境流动到河套香港园区用于科研，助力AI应用测试与创新。此外，继数码港设立人工智能超算中心及特区政府推出“人工智能资助计划”后，今年内会推出北区沙岭约10公顷数据园区发展用地作市场招标，提供先进算力设施，推动数据及AI相关产业发展。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5084827" 
+                                class="news-link" 
+                                target="_blank"
+                            >大行评级｜美银：预计AI成软件股主要增长动力 首选金蝶及美图</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3667801_101_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >阿里开源通义Deepresearch，性能超Openai、Deepseek旗舰模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E4%BB%8E%E4%BD%A0%E6%88%91%E5%81%9A%E8%B5%B7+%E5%AE%88%E6%8A%A4%E5%AE%89%E5%85%A8%E6%95%B0%E5%AD%97%E7%94%9F%E6%B4%BB" 
+                                class="news-link" 
+                                target="_blank"
+                            >从你我做起 守护安全数字生活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/1951232184150107925" 
+                                class="news-link" 
+                                target="_blank"
+                            >9 月 16 日，人民日报发表刘慈欣撰文《大时代推动是〈三体〉成功的最深层原因》，这意味着什么？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 6.52%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019955cd-9899-799d-be0c-d3dd9bd0f61a" 
+                                class="news-link" 
+                                target="_blank">【China Tech Stocks Surge to 2021 Level as Investors Bet on AI】Chinese technology stocks listed in Hong Kong jumped to their highest level in almost four years as optimism over artificial intelligence fueled demand. Saxo Markets chief investment strategist Charu Chanana said that China tech leaders are visibly re-accelerating AI spend and product rollouts — models, robotaxis, in-house chips — while also proving they can monetize AI faster than many expected. “With valuations lagging the U.S., investors are starting to pay attention again.”&lt;br/&gt;- &lt;b&gt;Hang Seng Tech Index&lt;/b&gt; rose as much as 3.5%, hitting its highest level since November 2021.&lt;br/&gt;- &lt;b&gt;Alibaba &lt;/b&gt;up nearly 6%. China Unicom’s Sanjiangyuan data center has signed contracts to deploy AI chips from Chinese firms including Alibaba’s chip unit T-Head. Alibaba raised $3.2 billion from a blockbuster convertible bond offering last week.&lt;br/&gt;- &lt;b&gt;CATL &lt;/b&gt;H-shares surpass HK$500, up 5.8% intraday to record high since May IPO. JPMorgan analysts noted that CATL&#x27;s Hong Kong-listed shares are on track for their highest close since May, driven by bullish outlooks from equipment makers and growing energy-storage investment in China.&lt;br/&gt;- &lt;b&gt;Tencent &lt;/b&gt;up nearly 2% to HK$658, market cap back above HK$6 trillion. Tencent turned to the dim sum bond market for a 9 billion yuan ($1.27 billion) on Tuesday, its first bond sale in four years.&lt;br/&gt;- &lt;b&gt;Baidu &lt;/b&gt;Inc. shares surged as much as 15% in Hong Kong, marking their biggest jump since March 2023.&lt;br/&gt;- &lt;b&gt;Meituan &lt;/b&gt;up over as much as 6%.&lt;br/&gt;- &lt;b&gt;JD.com&lt;/b&gt; up nearly 4%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019955b2-d652-799d-be0c-8585ec38562f" 
+                                class="news-link" 
+                                target="_blank">【CATL H-shares Hit record high In Early Trading, Last up 6.18% in HK 】Chinese investors are increasingly optimistic about the commercialization of solid-state electric vehicle batteries, a next-generation technology replacing some liquid components with solids, fueling major gains in industry stocks. &lt;b&gt;Contemporary Amperex Technology Co.’s Hong Kong-listed shares are on track for their highest close since May, driven by bullish outlooks from equipment makers and growing energy-storage investment in China, JPMorgan analysts noted.&lt;/b&gt; &lt;br/&gt;In early trading, CATL H-shares surpass HK$500, up 5.8% intraday to record high since May IPO; A-shares up over 5%.&lt;br/&gt;Wuxi Lead Intelligent Equipment Co. has reported a “complete” production process and expects rising orders for solid-state technology, while Gotion High-Tech Co. plans “semi-solid” mass production next year and EVE Energy Co. opened a solid-state research base in Chengdu. Max Reid of CRU Group said confidence in commercialization timelines has grown, with mass production now expected in the late 2020s.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5084830" 
+                                class="news-link" 
+                                target="_blank">大行评级｜高盛：上调阿里巴巴H股目标价至174港元 看好AI云端驱动增长潜力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3667817_0_1" 
+                                class="news-link" 
+                                target="_blank">香港特区行政长官李家超：香港会加大发挥“一国两制”的优势，推动早日实现内地数据在合规安全保障下可跨境流动到河套香港园区用于科研，助力AI应用测试与创新。此外，继数码港设立人工智能超算中心及特区政府推出“人工智能资助计划”后，今年内会推出北区沙岭约10公顷数据园区发展用地作市场招标，提供先进算力设施，推动数据及AI相关产业发展。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5084827" 
+                                class="news-link" 
+                                target="_blank">大行评级｜美银：预计AI成软件股主要增长动力 首选金蝶及美图</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3667801_101_1" 
+                                class="news-link" 
+                                target="_blank">阿里开源通义Deepresearch，性能超Openai、Deepseek旗舰模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E4%BB%8E%E4%BD%A0%E6%88%91%E5%81%9A%E8%B5%B7+%E5%AE%88%E6%8A%A4%E5%AE%89%E5%85%A8%E6%95%B0%E5%AD%97%E7%94%9F%E6%B4%BB" 
+                                class="news-link" 
+                                target="_blank">从你我做起 守护安全数字生活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/1951232184150107925" 
+                                class="news-link" 
+                                target="_blank">9 月 16 日，人民日报发表刘慈欣撰文《大时代推动是〈三体〉成功的最深层原因》，这意味着什么？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">12时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
