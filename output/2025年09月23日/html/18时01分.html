@@ -1,0 +1,791 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="18时01分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">153</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">09-23</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">18:01</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>11 条</span>
+                            <span>占比 7.19%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975d7-1622-7cc5-9c6a-f8e2c4c68095" 
+                                class="news-link" 
+                                target="_blank"
+                            >OECD SEES FED CUTTING KEY RATE AGAIN IN 2025, TWICE IN EARLY 2026</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975ab-6182-7cc5-9c6a-78390f074824" 
+                                class="news-link" 
+                                target="_blank"
+                            >【China Seeks to Store Foreign Sovereign Gold to Boost Global Market Role】China is seeking to become a global custodian of foreign sovereign gold reserves to bolster its position in the international bullion market, according to sources familiar with the matter. The People’s Bank of China (PBOC), through the Shanghai Gold Exchange (SGE), has been encouraging central banks from friendly nations to purchase and store gold within China’s borders. This initiative aligns with Beijing’s broader goal of reducing dependence on the US dollar and Western financial hubs such as London and Switzerland. The reserves would be housed in SGE-linked custodian warehouses and consist of newly acquired gold that contributes to foreign countries&#x27; reserves, rather than relocating existing stockpiles. While China’s domestic gold market is the largest globally, its reported central bank reserves rank fifth worldwide, far behind the UK’s 5,000 tons stored in the Bank of England’s vaults. However, the PBOC has been on a gold-buying spree for ten consecutive months, and demand from central banks has helped push gold prices to record highs. China has also eased restrictions on gold imports and launched offshore vaults and yuan-denominated gold contracts in Hong Kong to internationalize its currency and increase trading volumes. This move could attract nations looking to secure reserves and mitigate risks of financial isolation, particularly after the US and allies froze Russia’s foreign exchange reserves in 2022.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975a0-eb15-7cc5-9c6a-62ab675798d3" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Gold Hits Record High on U.S. Rate-Cut Hopes】Gold prices continue to push higher, setting a record high on Tuesday on expectations that the Federal Reserve will cut interest rates further this year. In early trade, futures rise 0.4% to $3,788.80 a troy ounce, after touching $3,795.10 earlier in the session as traders await Fed Chair Jerome Powell&#x27;s speech for further policy cues. Meanwhile, Fed Gov. Stephen Miran made the case that interest rates are too high. Miran said steeper cuts are needed to avoid unnecessary damage to the labor market. &lt;b&gt;The precious metal is up 43.5% this year, driven by strong safe-haven demand, ETF inflows, a softer dollar, and continued diversification by central banks away from dollar holdings. Traders now await Friday&#x27;s U.S. personal consumption expenditures data, which could boost the case for additional monetary stimulus.&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997545-4ba0-7cc5-9c69-434aea3e434a" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Gold Holds Near Record High Ahead of Powell’s Speech】Gold prices steadied on Tuesday after hitting a record high, supported by expectations of further U.S. rate cuts and a weaker dollar, while investors awaited comments from Federal Reserve Chair Jerome Powell for policy signals.&lt;br/&gt;Spot gold rose 0.2% to $3,753.25 per ounce at 0604 GMT, after reaching an all-time high of $3,759.02 earlier in the session.&lt;br/&gt;“This is predominantly driven by monetary policy expectations, potentially lower interest rates, and upside risks to inflation,” said Capital.com analyst Kyle Rodda.&lt;br/&gt;“The short-term trend remains bullish, but we expect a near-term pullback due to technical factors,” added OANDA senior market analyst Kelvin Wong.&lt;br/&gt;Powell’s speech at 1635 GMT is in focus, with investors also watching Friday’s release of the U.S. Personal Consumption Expenditures index, the Fed’s preferred inflation measure.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997444-d2fb-7cc5-9c66-f95f53c201ca" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Gold Hits Record High of $3,749.27 in Asia, Driven by ETF Inflows Amid Fed Rate-Cut Cycle】Gold edged up to a record high of $3,749.27/oz in Asia on Tuesday. “After pulling back the day after the Fed’s 25 basis-point rate cut — potentially on some perceived caution in Powell’s FOMC comments — new upward momentum has taken root with ETF inflows still the driving force,” BMO Capital Markets analysts including Helen Amos and George Heppel said in a note late Monday. “With a rate-cutting cycle firmly on the table we think risk-reward remains positive for prices into” the fourth quarter.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.douyin.com/hot/2239005" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI抖音求真</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">抖音</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997428-2e7a-7cc5-9c66-2a903d6abaad" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Gold Steady, Supported by Hopes for More Fed Rate Cuts: FFA Kings】Gold is steady in the early Asian trade, supported by hopes for more Fed rate cuts. Fed Chair Powell is scheduled to deliver comments on the U.S. economy later today. The precious metal hit another record high overnight, building on momentum from last week&#x27;s Fed rate cut and guidance that further easing is likely as the labor market weakens, FFA Kings&#x27; Fadi Al Kurdi says in an email. &quot;Expectations of continued monetary loosening have reinforced demand for the non-yielding asset,&quot; the founder and CEO adds. Spot gold is little changed at $3,747.22/oz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019972ea-0fa8-7cc5-9c65-0f0fdcf72793" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Gold Hits Record $3,749 as Fed Cut Bets Weigh on Dollar】Gold surged to a fresh all-time high of $3,749, up 1.6%, as traders price in Fed rate cuts and the US Dollar falls. Safe-haven flows were supported by ongoing geopolitical tensions in Ukraine and rising central bank demand, with Societe Generale noting 2025 purchases rebounding to 63 tonnes.&lt;br/&gt;US Treasury yields climbed slightly, but real yields remained supportive of bullion. Atlanta Fed’s Bostic expressed caution on cuts, while Richmond’s Barkin, St. Louis’ Musalem, Cleveland’s Hammack, and Fed Governor Miran signaled openness to easing if labor market or inflation trends shift. Fed rate cut odds for October 19 stand at 89%.&lt;br/&gt;Swiss gold exports to the US plunged 99% in August due to tariffs, but China’s imports jumped to 35 tonnes, the highest since May 2024.&lt;br/&gt;Technically, gold eyes $3,750 next, with potential targets at $3,800–$4,000. Support lies at $3,700, $3,650, and $3,600.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250923171748176800" 
+                                class="news-link" 
+                                target="_blank"
+                            >葡萄牙监管机构表示，欧洲必须关注大型科技公司的AI发展。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45299987" 
+                                class="news-link" 
+                                target="_blank"
+                            >The Common Pile v0.1: An 8TB Dataset of Public Domain and Openly Licensed Text</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2153418?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >【风口研报·公司】公司汽配主业积攒起丰富注塑工艺+模具制造技术，叠加客户关系和全球化等方面的潜在优势，未来有望在机器人轻量化领域打开第二成长曲线；本土AI生态发展带动上游先进半导体制程建设需求提升</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.31%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975e3-24e4-7cc5-9c6b-2c15c2138506" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Fed Can&#x27;t Hand out Cuts Like Candy at a Party: Swissquote】The U.S. two-year yield has rebounded past 3.60% even after Trump-linked economist Stephen Miran argued that the neutral rate is much lower than current levels and that he would cut rates by 150 basis points very quickly to get there. It&#x27;s the kind of comments that are so far-stretched they can&#x27;t be taken seriously enough to shift market expectations, says Ipek Ozkardeskaya, senior analyst at Swissquote. Proof? The two-year yields have moved higher, she adds. That&#x27;s a sign that lowering rates wouldn&#x27;t necessarily bring down long-term borrowing costs if the size and the speed of easing aren&#x27;t warranted, she says. The reality is that the Fed can&#x27;t hand out rate cuts like candy at a party, she says.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975c0-2edf-7cc5-9c6a-b77d46ef745e" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Expect Gradual Fed Rate Cuts Over Next Six Months: Julius Baer】The Federal Reserve is likely to cut rates gradually over the next six months, according to Julius Baer&#x27;s David Kohl. Amid political pressure, the FOMC resumed exiting its restrictive monetary policy despite elevated inflation, the economist says in a note. However, there is limited risk of stoking inflation further due to weak domestic demand and slower income growth, Kohl writes. &lt;b&gt;&quot;We are becoming increasingly confident that rates will continue to be cut gradually at each of the forthcoming meetings until March 2026.&quot; The policy stance will then shift to being broadly neutral, with a Fed funds target rate of 3.00%-3.25%, he says.&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>11 条</span>
+                            <span>占比 7.19%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975d7-1622-7cc5-9c6a-f8e2c4c68095" 
+                                class="news-link" 
+                                target="_blank">OECD SEES FED CUTTING KEY RATE AGAIN IN 2025, TWICE IN EARLY 2026</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975ab-6182-7cc5-9c6a-78390f074824" 
+                                class="news-link" 
+                                target="_blank">【China Seeks to Store Foreign Sovereign Gold to Boost Global Market Role】China is seeking to become a global custodian of foreign sovereign gold reserves to bolster its position in the international bullion market, according to sources familiar with the matter. The People’s Bank of China (PBOC), through the Shanghai Gold Exchange (SGE), has been encouraging central banks from friendly nations to purchase and store gold within China’s borders. This initiative aligns with Beijing’s broader goal of reducing dependence on the US dollar and Western financial hubs such as London and Switzerland. The reserves would be housed in SGE-linked custodian warehouses and consist of newly acquired gold that contributes to foreign countries&#x27; reserves, rather than relocating existing stockpiles. While China’s domestic gold market is the largest globally, its reported central bank reserves rank fifth worldwide, far behind the UK’s 5,000 tons stored in the Bank of England’s vaults. However, the PBOC has been on a gold-buying spree for ten consecutive months, and demand from central banks has helped push gold prices to record highs. China has also eased restrictions on gold imports and launched offshore vaults and yuan-denominated gold contracts in Hong Kong to internationalize its currency and increase trading volumes. This move could attract nations looking to secure reserves and mitigate risks of financial isolation, particularly after the US and allies froze Russia’s foreign exchange reserves in 2022.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975a0-eb15-7cc5-9c6a-62ab675798d3" 
+                                class="news-link" 
+                                target="_blank">【Gold Hits Record High on U.S. Rate-Cut Hopes】Gold prices continue to push higher, setting a record high on Tuesday on expectations that the Federal Reserve will cut interest rates further this year. In early trade, futures rise 0.4% to $3,788.80 a troy ounce, after touching $3,795.10 earlier in the session as traders await Fed Chair Jerome Powell&#x27;s speech for further policy cues. Meanwhile, Fed Gov. Stephen Miran made the case that interest rates are too high. Miran said steeper cuts are needed to avoid unnecessary damage to the labor market. &lt;b&gt;The precious metal is up 43.5% this year, driven by strong safe-haven demand, ETF inflows, a softer dollar, and continued diversification by central banks away from dollar holdings. Traders now await Friday&#x27;s U.S. personal consumption expenditures data, which could boost the case for additional monetary stimulus.&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997545-4ba0-7cc5-9c69-434aea3e434a" 
+                                class="news-link" 
+                                target="_blank">【Gold Holds Near Record High Ahead of Powell’s Speech】Gold prices steadied on Tuesday after hitting a record high, supported by expectations of further U.S. rate cuts and a weaker dollar, while investors awaited comments from Federal Reserve Chair Jerome Powell for policy signals.&lt;br/&gt;Spot gold rose 0.2% to $3,753.25 per ounce at 0604 GMT, after reaching an all-time high of $3,759.02 earlier in the session.&lt;br/&gt;“This is predominantly driven by monetary policy expectations, potentially lower interest rates, and upside risks to inflation,” said Capital.com analyst Kyle Rodda.&lt;br/&gt;“The short-term trend remains bullish, but we expect a near-term pullback due to technical factors,” added OANDA senior market analyst Kelvin Wong.&lt;br/&gt;Powell’s speech at 1635 GMT is in focus, with investors also watching Friday’s release of the U.S. Personal Consumption Expenditures index, the Fed’s preferred inflation measure.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997444-d2fb-7cc5-9c66-f95f53c201ca" 
+                                class="news-link" 
+                                target="_blank">【Gold Hits Record High of $3,749.27 in Asia, Driven by ETF Inflows Amid Fed Rate-Cut Cycle】Gold edged up to a record high of $3,749.27/oz in Asia on Tuesday. “After pulling back the day after the Fed’s 25 basis-point rate cut — potentially on some perceived caution in Powell’s FOMC comments — new upward momentum has taken root with ETF inflows still the driving force,” BMO Capital Markets analysts including Helen Amos and George Heppel said in a note late Monday. “With a rate-cutting cycle firmly on the table we think risk-reward remains positive for prices into” the fourth quarter.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.douyin.com/hot/2239005" 
+                                class="news-link" 
+                                target="_blank">AI抖音求真</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">抖音</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01997428-2e7a-7cc5-9c66-2a903d6abaad" 
+                                class="news-link" 
+                                target="_blank">【Gold Steady, Supported by Hopes for More Fed Rate Cuts: FFA Kings】Gold is steady in the early Asian trade, supported by hopes for more Fed rate cuts. Fed Chair Powell is scheduled to deliver comments on the U.S. economy later today. The precious metal hit another record high overnight, building on momentum from last week&#x27;s Fed rate cut and guidance that further easing is likely as the labor market weakens, FFA Kings&#x27; Fadi Al Kurdi says in an email. &quot;Expectations of continued monetary loosening have reinforced demand for the non-yielding asset,&quot; the founder and CEO adds. Spot gold is little changed at $3,747.22/oz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019972ea-0fa8-7cc5-9c65-0f0fdcf72793" 
+                                class="news-link" 
+                                target="_blank">【Gold Hits Record $3,749 as Fed Cut Bets Weigh on Dollar】Gold surged to a fresh all-time high of $3,749, up 1.6%, as traders price in Fed rate cuts and the US Dollar falls. Safe-haven flows were supported by ongoing geopolitical tensions in Ukraine and rising central bank demand, with Societe Generale noting 2025 purchases rebounding to 63 tonnes.&lt;br/&gt;US Treasury yields climbed slightly, but real yields remained supportive of bullion. Atlanta Fed’s Bostic expressed caution on cuts, while Richmond’s Barkin, St. Louis’ Musalem, Cleveland’s Hammack, and Fed Governor Miran signaled openness to easing if labor market or inflation trends shift. Fed rate cut odds for October 19 stand at 89%.&lt;br/&gt;Swiss gold exports to the US plunged 99% in August due to tariffs, but China’s imports jumped to 35 tonnes, the highest since May 2024.&lt;br/&gt;Technically, gold eyes $3,750 next, with potential targets at $3,800–$4,000. Support lies at $3,700, $3,650, and $3,600.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250923171748176800" 
+                                class="news-link" 
+                                target="_blank">葡萄牙监管机构表示，欧洲必须关注大型科技公司的AI发展。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45299987" 
+                                class="news-link" 
+                                target="_blank">The Common Pile v0.1: An 8TB Dataset of Public Domain and Openly Licensed Text</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2153418?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【风口研报·公司】公司汽配主业积攒起丰富注塑工艺+模具制造技术，叠加客户关系和全球化等方面的潜在优势，未来有望在机器人轻量化领域打开第二成长曲线；本土AI生态发展带动上游先进半导体制程建设需求提升</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.31%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975e3-24e4-7cc5-9c6b-2c15c2138506" 
+                                class="news-link" 
+                                target="_blank">【Fed Can&#x27;t Hand out Cuts Like Candy at a Party: Swissquote】The U.S. two-year yield has rebounded past 3.60% even after Trump-linked economist Stephen Miran argued that the neutral rate is much lower than current levels and that he would cut rates by 150 basis points very quickly to get there. It&#x27;s the kind of comments that are so far-stretched they can&#x27;t be taken seriously enough to shift market expectations, says Ipek Ozkardeskaya, senior analyst at Swissquote. Proof? The two-year yields have moved higher, she adds. That&#x27;s a sign that lowering rates wouldn&#x27;t necessarily bring down long-term borrowing costs if the size and the speed of easing aren&#x27;t warranted, she says. The reality is that the Fed can&#x27;t hand out rate cuts like candy at a party, she says.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019975c0-2edf-7cc5-9c6a-b77d46ef745e" 
+                                class="news-link" 
+                                target="_blank">【Expect Gradual Fed Rate Cuts Over Next Six Months: Julius Baer】The Federal Reserve is likely to cut rates gradually over the next six months, according to Julius Baer&#x27;s David Kohl. Amid political pressure, the FOMC resumed exiting its restrictive monetary policy despite elevated inflation, the economist says in a note. However, there is limited risk of stoking inflation further due to weak domestic demand and slower income growth, Kohl writes. &lt;b&gt;&quot;We are becoming increasingly confident that rates will continue to be cut gradually at each of the forthcoming meetings until March 2026.&quot; The policy stance will then shift to being broadly neutral, with a Fed funds target rate of 3.00%-3.25%, he says.&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
