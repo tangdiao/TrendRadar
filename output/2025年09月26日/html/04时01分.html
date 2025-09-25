@@ -1,0 +1,764 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="04时01分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">75</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">09-26</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04:01</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 10.67%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998272-77a2-711c-87fe-f28ba350981d" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Fed’s Cook Urges Supreme Court to Block Trump’s Attempted Removal】Federal Reserve Governor Lisa Cook asked the U.S. Supreme Court to reject President Trump’s effort to fire her, citing risks to central bank independence and financial stability. A federal judge blocked her removal, noting the 1913 law allows governors to be ousted only “for cause” while in office. Cook denies Trump’s mortgage fraud allegations. Eighteen former Fed chairs and Treasury officials also urged the Court to uphold her protection.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998266-f3c9-711c-87fe-c84849a2f0fc" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Fed’s Daly: A Little More Rate Cutting Will Be Needed Over Time】- U.S. economy is in “okay” shape.&lt;br/&gt;- Rates remain modestly restrictive; Fed should not go all the way to neutral as it would be too risky.&lt;br/&gt;- Fed is in a “tradeoff” space, balancing economic growth and inflation risks.&lt;br/&gt;- Inflation impact of tariffs has been smaller than expected, but labor market effects have been larger.&lt;br/&gt;- Fed must monitor both inflation and labor market for potential weakness.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199825f-3796-711c-87fe-c37520260a84" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Cloudflare Launches NET Dollar Stablecoin: Crypto Daily Digest】- &lt;b&gt;Cloudflare stablecoin&lt;/b&gt;: CEO Matthew Prince announced the NET Dollar, fully backed by the U.S. dollar, aimed at machine-to-machine payments amid rising AI agent usage. Citi projects stablecoin issuance could reach $1.9–$4 trillion by 2030.&lt;br/&gt;- &lt;b&gt;U.S. Senate hearing&lt;/b&gt;: Finance Committee schedules Oct. 1 hearing on digital asset taxation; Coinbase, Coin Center, ASKramer Law, and AICPA experts to testify.&lt;br/&gt;- &lt;b&gt;Cipher AI hosting deal&lt;/b&gt;: Bitcoin miner Cipher signs $3B, 10-year Google-backed AI data center agreement; optional renewals could raise total to $7B.&lt;br/&gt;- &lt;b&gt;South Korea&lt;/b&gt;: Naver plans Upbit merger via stock swap; both entities remain legally intact.&lt;br/&gt;- &lt;b&gt;Metaplanet outlook&lt;/b&gt;: Benchmark maintains buy rating; 25,555 BTC holdings after $632.5M purchase.&lt;br/&gt;- &lt;b&gt;Market&lt;/b&gt;: BTC ~$109,900, ETH ~$3,930; $17B BTC options expiring with max pain $110K; Crypto Fear &amp; Greed Index at 45 (neutral).</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998247-05cc-711c-87fe-8239cddc82c0" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Intel Eyes TSMC Partnership in U.S.-Backed Comeback】Intel CEO Lip-Bu Tan is pursuing investments and manufacturing partnerships with Apple, TSMC, and others following the U.S. government’s 10% stake acquisition. SoftBank invested $2 billion in August, while Nvidia contributed $5 billion, including a provision for Intel to design hardware compatible with Nvidia chips. Despite a $3.7 billion loss in H1 2025, Intel may seek additional capital from private equity and institutional investors. Tan emphasized national security, maintaining separation between design and fabrication: “building a firewall between its design and fabrication businesses to encourage customers that design their own chips and entrust Intel with making them.”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926032650158800" 
+                                class="news-link" 
+                                target="_blank"
+                            >Meta：在Meta AI应用中心推出VIBES，一个全新的AI视频信息流。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926031234527800" 
+                                class="news-link" 
+                                target="_blank"
+                            >美国国务院：美国国务院已决定批准向德国政府出售AIM-120D-3先进中程空对空导弹及相关设备，预计售价12.3亿美元。国防安全合作局已向国会提交了必要的认证。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45377748" 
+                                class="news-link" 
+                                target="_blank"
+                            >Can a model trained on satellite data really find brambles on the ground?</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45375450" 
+                                class="news-link" 
+                                target="_blank"
+                            >Austria hails &#x27;brain gain&#x27; in luring 25 academics away from US after cuts</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 5.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3682336_100_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >加拿大多伦多S&amp;P/TSX综合指数（GSPTSE）收跌24.97点，跌幅0.08%，报29731.98点。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="rank-tag">#1-21</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45377030" 
+                                class="news-link" 
+                                target="_blank"
+                            >Tracing JITs in the Real World CPython Core Dev Sprint</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45373564" 
+                                class="news-link" 
+                                target="_blank"
+                            >Microsoft blocks Israel’s use of its tech in mass surveillance of Palestinians</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926025925726800" 
+                                class="news-link" 
+                                target="_blank"
+                            >据华尔街日报：英特尔(INTC.O)已就投资或制造合作伙伴关系与台积电(TSM.N)接洽。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 10.67%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998272-77a2-711c-87fe-f28ba350981d" 
+                                class="news-link" 
+                                target="_blank">【Fed’s Cook Urges Supreme Court to Block Trump’s Attempted Removal】Federal Reserve Governor Lisa Cook asked the U.S. Supreme Court to reject President Trump’s effort to fire her, citing risks to central bank independence and financial stability. A federal judge blocked her removal, noting the 1913 law allows governors to be ousted only “for cause” while in office. Cook denies Trump’s mortgage fraud allegations. Eighteen former Fed chairs and Treasury officials also urged the Court to uphold her protection.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998266-f3c9-711c-87fe-c84849a2f0fc" 
+                                class="news-link" 
+                                target="_blank">【Fed’s Daly: A Little More Rate Cutting Will Be Needed Over Time】- U.S. economy is in “okay” shape.&lt;br/&gt;- Rates remain modestly restrictive; Fed should not go all the way to neutral as it would be too risky.&lt;br/&gt;- Fed is in a “tradeoff” space, balancing economic growth and inflation risks.&lt;br/&gt;- Inflation impact of tariffs has been smaller than expected, but labor market effects have been larger.&lt;br/&gt;- Fed must monitor both inflation and labor market for potential weakness.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199825f-3796-711c-87fe-c37520260a84" 
+                                class="news-link" 
+                                target="_blank">【Cloudflare Launches NET Dollar Stablecoin: Crypto Daily Digest】- &lt;b&gt;Cloudflare stablecoin&lt;/b&gt;: CEO Matthew Prince announced the NET Dollar, fully backed by the U.S. dollar, aimed at machine-to-machine payments amid rising AI agent usage. Citi projects stablecoin issuance could reach $1.9–$4 trillion by 2030.&lt;br/&gt;- &lt;b&gt;U.S. Senate hearing&lt;/b&gt;: Finance Committee schedules Oct. 1 hearing on digital asset taxation; Coinbase, Coin Center, ASKramer Law, and AICPA experts to testify.&lt;br/&gt;- &lt;b&gt;Cipher AI hosting deal&lt;/b&gt;: Bitcoin miner Cipher signs $3B, 10-year Google-backed AI data center agreement; optional renewals could raise total to $7B.&lt;br/&gt;- &lt;b&gt;South Korea&lt;/b&gt;: Naver plans Upbit merger via stock swap; both entities remain legally intact.&lt;br/&gt;- &lt;b&gt;Metaplanet outlook&lt;/b&gt;: Benchmark maintains buy rating; 25,555 BTC holdings after $632.5M purchase.&lt;br/&gt;- &lt;b&gt;Market&lt;/b&gt;: BTC ~$109,900, ETH ~$3,930; $17B BTC options expiring with max pain $110K; Crypto Fear &amp; Greed Index at 45 (neutral).</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01998247-05cc-711c-87fe-8239cddc82c0" 
+                                class="news-link" 
+                                target="_blank">【Intel Eyes TSMC Partnership in U.S.-Backed Comeback】Intel CEO Lip-Bu Tan is pursuing investments and manufacturing partnerships with Apple, TSMC, and others following the U.S. government’s 10% stake acquisition. SoftBank invested $2 billion in August, while Nvidia contributed $5 billion, including a provision for Intel to design hardware compatible with Nvidia chips. Despite a $3.7 billion loss in H1 2025, Intel may seek additional capital from private equity and institutional investors. Tan emphasized national security, maintaining separation between design and fabrication: “building a firewall between its design and fabrication businesses to encourage customers that design their own chips and entrust Intel with making them.”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926032650158800" 
+                                class="news-link" 
+                                target="_blank">Meta：在Meta AI应用中心推出VIBES，一个全新的AI视频信息流。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926031234527800" 
+                                class="news-link" 
+                                target="_blank">美国国务院：美国国务院已决定批准向德国政府出售AIM-120D-3先进中程空对空导弹及相关设备，预计售价12.3亿美元。国防安全合作局已向国会提交了必要的认证。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45377748" 
+                                class="news-link" 
+                                target="_blank">Can a model trained on satellite data really find brambles on the ground?</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45375450" 
+                                class="news-link" 
+                                target="_blank">Austria hails &#x27;brain gain&#x27; in luring 25 academics away from US after cuts</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 5.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3682336_100_1" 
+                                class="news-link" 
+                                target="_blank">加拿大多伦多S&amp;P/TSX综合指数（GSPTSE）收跌24.97点，跌幅0.08%，报29731.98点。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="rank-tag">#1-21</span><span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45377030" 
+                                class="news-link" 
+                                target="_blank">Tracing JITs in the Real World CPython Core Dev Sprint</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45373564" 
+                                class="news-link" 
+                                target="_blank">Microsoft blocks Israel’s use of its tech in mass surveillance of Palestinians</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20250926025925726800" 
+                                class="news-link" 
+                                target="_blank">据华尔街日报：英特尔(INTC.O)已就投资或制造合作伙伴关系与台积电(TSM.N)接洽。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">04时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
