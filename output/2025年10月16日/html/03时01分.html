@@ -1,0 +1,602 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="03时01分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">75</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">10-16</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">03:01</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 6.67%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199e90f-da74-7771-bdde-da84225f9544" 
+                                class="news-link" 
+                                target="_blank"
+                            >【October 2025 Beige Book – Key Points】&lt;b&gt;Overall Activity:&lt;/b&gt;&lt;br/&gt;- Economic activity largely unchanged; three Districts grew slightly, five flat, four softened.&lt;br/&gt;- Retail spending down; auto sales supported by EV demand.&lt;br/&gt;- Leisure/hospitality demand fell for international travelers; luxury travel strong.&lt;br/&gt;- Manufacturing, agriculture, energy, transportation mostly weak; financial services mixed.&lt;br/&gt;- Outlook uncertain; government shutdown cited as a downside risk.&lt;br/&gt;&lt;b&gt;Labor Markets:&lt;/b&gt;&lt;br/&gt;- Employment stable; layoffs rising due to weak demand and AI investments.&lt;br/&gt;- Temporary/part-time hiring favored; labor shortages in hospitality, agriculture, construction, manufacturing.&lt;br/&gt;- Wages rising modestly; health insurance costs adding pressure.&lt;br/&gt;&lt;b&gt;Prices:&lt;/b&gt;&lt;br/&gt;- Input costs up from tariffs, imports, and service expenses.&lt;br/&gt;- Some firms absorbed costs; others passed them to customers.&lt;br/&gt;- Certain materials (steel, lumber) saw price declines due to weak demand.&lt;br/&gt;&lt;b&gt;District Highlights:&lt;/b&gt;&lt;br/&gt;- &lt;b&gt;Growing: &lt;/b&gt;Boston, Philadelphia, Richmond&lt;br/&gt;- &lt;b&gt;Flat: &lt;/b&gt;Cleveland, Atlanta, Chicago, St. Louis, Dallas&lt;br/&gt;- &lt;b&gt;Declining: &lt;/b&gt;New York, Minneapolis, Kansas City, San Francisco&lt;br/&gt;- Boston &amp; Philadelphia: modest growth, cautious optimism.&lt;br/&gt;- New York &amp; San Francisco: slight contraction; retail, real estate, and agriculture weak.&lt;br/&gt;- Cleveland &amp; Kansas City: flat/soft, but some optimism for 2026.&lt;br/&gt;- St. Louis &amp; Minneapolis: mixed; agriculture and commercial real estate weak.&lt;br/&gt;&lt;b&gt;Overall Takeaway:&lt;/b&gt;&lt;br/&gt;- Mixed regional conditions, stable employment, rising prices, modest consumer and manufacturing softness, ongoing uncertainty.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45596602" 
+                                class="news-link" 
+                                target="_blank"
+                            >Things I&#x27;ve learned in my 7 Years Implementing AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199e8fe-f3a9-7771-bdde-7af86ed134de" 
+                                class="news-link" 
+                                target="_blank"
+                            >【Miran: End QT, Two Rate Cuts This Year, No Large Cuts】&lt;b&gt;Monetary Policy &amp; QT&lt;br/&gt;&lt;/b&gt;- &lt;b&gt;Two rate cuts this year appear realistic; large cuts (&gt;50 bps) unnecessary&lt;/b&gt;.&lt;br/&gt;- &lt;b&gt;Supports ending QT soon&lt;/b&gt;; further balance sheet reductions offer limited benefit.&lt;br/&gt;- Policy focus should shift to a&lt;b&gt; neutral stance &lt;/b&gt;rather than exact balance sheet size.&lt;br/&gt;- &lt;b&gt;Policy decisions should focus on forecasts&lt;/b&gt;, not just past data.&lt;br/&gt;- &lt;b&gt;Current policy is more restrictive&lt;/b&gt; than perceived.&lt;br/&gt;&lt;b&gt;Inflation &amp; Economy&lt;br/&gt;&lt;/b&gt;- Housing market reflects restrictive conditions despite equity market signals.&lt;br/&gt;- Goods inflation in the U.S. aligns with other countries; imported goods not rising differently.&lt;br/&gt;- &lt;b&gt;Housing and labor markets show weakness&lt;/b&gt;.&lt;br/&gt;&lt;b&gt;AI &amp; Technology&lt;br/&gt;&lt;/b&gt;- &lt;b&gt;AI could raise the neutral rate&lt;/b&gt;; productivity may rise with deregulation.&lt;br/&gt;&lt;b&gt;Trade &amp; U.S.-China Relations&lt;br/&gt;&lt;/b&gt;- China’s &lt;b&gt;rare-earth &lt;/b&gt;moves and trade tensions create &lt;b&gt;material economic risks&lt;/b&gt;.&lt;br/&gt;- Threats may&lt;b&gt; take weeks &lt;/b&gt;to impact but carry downside potential.&lt;br/&gt;- U.S.-China tensions increase &lt;b&gt;downside risks for jobs and trade&lt;/b&gt;.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45596168" 
+                                class="news-link" 
+                                target="_blank"
+                            >Claude Haiku 4.5 System Card [pdf]</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20251016015840392800" 
+                                class="news-link" 
+                                target="_blank"
+                            >达利欧：欢迎大家留下有关黄金等看法的疑问 正在利用此训练AI克隆体</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20251016020809874800" 
+                                class="news-link" 
+                                target="_blank"
+                            >据华尔街日报：美国银行因与杰弗里·爱泼斯坦的关联被起诉。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 6.67%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199e90f-da74-7771-bdde-da84225f9544" 
+                                class="news-link" 
+                                target="_blank">【October 2025 Beige Book – Key Points】&lt;b&gt;Overall Activity:&lt;/b&gt;&lt;br/&gt;- Economic activity largely unchanged; three Districts grew slightly, five flat, four softened.&lt;br/&gt;- Retail spending down; auto sales supported by EV demand.&lt;br/&gt;- Leisure/hospitality demand fell for international travelers; luxury travel strong.&lt;br/&gt;- Manufacturing, agriculture, energy, transportation mostly weak; financial services mixed.&lt;br/&gt;- Outlook uncertain; government shutdown cited as a downside risk.&lt;br/&gt;&lt;b&gt;Labor Markets:&lt;/b&gt;&lt;br/&gt;- Employment stable; layoffs rising due to weak demand and AI investments.&lt;br/&gt;- Temporary/part-time hiring favored; labor shortages in hospitality, agriculture, construction, manufacturing.&lt;br/&gt;- Wages rising modestly; health insurance costs adding pressure.&lt;br/&gt;&lt;b&gt;Prices:&lt;/b&gt;&lt;br/&gt;- Input costs up from tariffs, imports, and service expenses.&lt;br/&gt;- Some firms absorbed costs; others passed them to customers.&lt;br/&gt;- Certain materials (steel, lumber) saw price declines due to weak demand.&lt;br/&gt;&lt;b&gt;District Highlights:&lt;/b&gt;&lt;br/&gt;- &lt;b&gt;Growing: &lt;/b&gt;Boston, Philadelphia, Richmond&lt;br/&gt;- &lt;b&gt;Flat: &lt;/b&gt;Cleveland, Atlanta, Chicago, St. Louis, Dallas&lt;br/&gt;- &lt;b&gt;Declining: &lt;/b&gt;New York, Minneapolis, Kansas City, San Francisco&lt;br/&gt;- Boston &amp; Philadelphia: modest growth, cautious optimism.&lt;br/&gt;- New York &amp; San Francisco: slight contraction; retail, real estate, and agriculture weak.&lt;br/&gt;- Cleveland &amp; Kansas City: flat/soft, but some optimism for 2026.&lt;br/&gt;- St. Louis &amp; Minneapolis: mixed; agriculture and commercial real estate weak.&lt;br/&gt;&lt;b&gt;Overall Takeaway:&lt;/b&gt;&lt;br/&gt;- Mixed regional conditions, stable employment, rising prices, modest consumer and manufacturing softness, ongoing uncertainty.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45596602" 
+                                class="news-link" 
+                                target="_blank">Things I&#x27;ve learned in my 7 Years Implementing AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=0199e8fe-f3a9-7771-bdde-7af86ed134de" 
+                                class="news-link" 
+                                target="_blank">【Miran: End QT, Two Rate Cuts This Year, No Large Cuts】&lt;b&gt;Monetary Policy &amp; QT&lt;br/&gt;&lt;/b&gt;- &lt;b&gt;Two rate cuts this year appear realistic; large cuts (&gt;50 bps) unnecessary&lt;/b&gt;.&lt;br/&gt;- &lt;b&gt;Supports ending QT soon&lt;/b&gt;; further balance sheet reductions offer limited benefit.&lt;br/&gt;- Policy focus should shift to a&lt;b&gt; neutral stance &lt;/b&gt;rather than exact balance sheet size.&lt;br/&gt;- &lt;b&gt;Policy decisions should focus on forecasts&lt;/b&gt;, not just past data.&lt;br/&gt;- &lt;b&gt;Current policy is more restrictive&lt;/b&gt; than perceived.&lt;br/&gt;&lt;b&gt;Inflation &amp; Economy&lt;br/&gt;&lt;/b&gt;- Housing market reflects restrictive conditions despite equity market signals.&lt;br/&gt;- Goods inflation in the U.S. aligns with other countries; imported goods not rising differently.&lt;br/&gt;- &lt;b&gt;Housing and labor markets show weakness&lt;/b&gt;.&lt;br/&gt;&lt;b&gt;AI &amp; Technology&lt;br/&gt;&lt;/b&gt;- &lt;b&gt;AI could raise the neutral rate&lt;/b&gt;; productivity may rise with deregulation.&lt;br/&gt;&lt;b&gt;Trade &amp; U.S.-China Relations&lt;br/&gt;&lt;/b&gt;- China’s &lt;b&gt;rare-earth &lt;/b&gt;moves and trade tensions create &lt;b&gt;material economic risks&lt;/b&gt;.&lt;br/&gt;- Threats may&lt;b&gt; take weeks &lt;/b&gt;to impact but carry downside potential.&lt;br/&gt;- U.S.-China tensions increase &lt;b&gt;downside risks for jobs and trade&lt;/b&gt;.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=45596168" 
+                                class="news-link" 
+                                target="_blank">Claude Haiku 4.5 System Card [pdf]</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20251016015840392800" 
+                                class="news-link" 
+                                target="_blank">达利欧：欢迎大家留下有关黄金等看法的疑问 正在利用此训练AI克隆体</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20251016020809874800" 
+                                class="news-link" 
+                                target="_blank">据华尔街日报：美国银行因与杰弗里·爱泼斯坦的关联被起诉。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时01分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
