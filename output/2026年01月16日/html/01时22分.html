@@ -1,0 +1,951 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="01时22分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">122</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">01-16</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">01:22</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>9 条</span>
+                            <span>占比 7.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc298-6a49-744e-b24b-e4de284b2e2b" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED&#x27;S BARR: IN THAT SCENARIO, HE SAID, POLICYMAKERS CAN TAKE SOME TIME AS RATES REMAIN AROUND THE NEUTRAL LEVEL, NEITHER BOOSTING NOR COOLING THE ECONOMY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc296-c9f0-744e-b24b-dcc4a9f46377" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED&#x27;S BARR: INFLATION REMAINS ELEVATED WHILE THE LABOR MARKET HAS SHOWN SIGNS OF STABILIZING</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=46569640" 
+                                class="news-link" 
+                                target="_blank"
+                            >Sinclair C5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2259554?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社1月16日电，OpenAI据称正在寻求美国供应商为其规划中的机器人技术和人工智能设备项目提供支持。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116004856986800" 
+                                class="news-link" 
+                                target="_blank"
+                            >华尔街六大行裁员创十年新高 AI转型与效率至上成主旋律</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc27d-292c-744e-b24b-68b142217c8f" 
+                                class="news-link" 
+                                target="_blank"
+                            >TRUMP HEALTH PLAN WOULD REQUIRE COMPANIES TO PUBLISH PERCENTAGE OF REJECTED CLAIMS, PERCENTAGE OF REVENUES PAID ON CLAIMS VS OVERHEAD -WHITE HOUSE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc279-623a-744e-b24b-5743febb3b92" 
+                                class="news-link" 
+                                target="_blank"
+                            >TRUMP&#x27;S HEALTHCARE PLAN PROMISES TO MAKE MORE PHARMACEUTICAL DRUGS AVAILABLE FOR OVER-THE-COUNTER PURCHASE -WHITE HOUSE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3860981_101_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >台积电三季度业绩报告要点总结：Ai巨头需求引爆，Q4利润激增35%再破纪录</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc269-c022-744e-b24b-2d932c2e5a64" 
+                                class="news-link" 
+                                target="_blank"
+                            >TRUMP: PLAN WOULD END &#x27;KICKBACKS&#x27; PAID BY PBMS TO MIDDLEMEN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 4.1%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116010245688800" 
+                                class="news-link" 
+                                target="_blank"
+                            >阿尔斯通将为多伦多地铁网络提供70列新型地铁列车（NSTS），预计在加拿大创造逾1700个间接就业岗位，以支持该项目的劳动力需求。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc291-b49f-744e-b24b-caa25ca9eb8e" 
+                                class="news-link" 
+                                target="_blank"
+                            >WHITE HOUSE OFFICIAL: WHITE HOUSE EXPECTS BIPARTISAN ADOPTION OF ITS HEALTHCARE PLAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc289-f60a-744e-b24b-bc2adf71b04f" 
+                                class="news-link" 
+                                target="_blank"
+                            >EUROPEAN MARKETS CLOSED MIXED: DAX +0.18%, FTSE 100 +0.49%, CAC 40 -0.21%, ESTX50 +0.60%, IBEX 35 -0.36%, FTSE MIB +0.37%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc27d-b997-744e-b24b-7cb1ef800051" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;B&gt;FORD COULD USE BYD BATTERIES IN FACTORIES OUTSIDE U.S., SOURCES SAY - WSJ&lt;/B&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc269-77d5-744e-b24b-1c0c2f937a09" 
+                                class="news-link" 
+                                target="_blank"
+                            >TRUMP: WANTS LOW INSURANCE PREMIUMS, INSURANCE COS ACCOUNTABLE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.64%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116002858964800" 
+                                class="news-link" 
+                                target="_blank"
+                            >美国白宫：美国总统特朗普的医疗计划旨在针对药房福利管理机构的支付。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E9%A4%90%E5%8E%85%E4%B8%BA%E7%8E%AF%E5%8D%AB%E5%B7%A5%E6%8F%90%E4%BE%9B49%E5%85%83%E8%87%AA%E5%8A%A9%E7%A6%8F%E5%88%A9%E5%BC%95%E4%BA%89%E8%AE%AE" 
+                                class="news-link" 
+                                target="_blank"
+                            >餐厅为环卫工提供49元自助福利引争议</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.82%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32388373" 
+                                class="news-link" 
+                                target="_blank"
+                            >郭京飞人民日报撰文：普通人不能被演得太“苦”，与好角色一起“折腾”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>9 条</span>
+                            <span>占比 7.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc298-6a49-744e-b24b-e4de284b2e2b" 
+                                class="news-link" 
+                                target="_blank">FED&#x27;S BARR: IN THAT SCENARIO, HE SAID, POLICYMAKERS CAN TAKE SOME TIME AS RATES REMAIN AROUND THE NEUTRAL LEVEL, NEITHER BOOSTING NOR COOLING THE ECONOMY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc296-c9f0-744e-b24b-dcc4a9f46377" 
+                                class="news-link" 
+                                target="_blank">FED&#x27;S BARR: INFLATION REMAINS ELEVATED WHILE THE LABOR MARKET HAS SHOWN SIGNS OF STABILIZING</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=46569640" 
+                                class="news-link" 
+                                target="_blank">Sinclair C5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2259554?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">财联社1月16日电，OpenAI据称正在寻求美国供应商为其规划中的机器人技术和人工智能设备项目提供支持。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116004856986800" 
+                                class="news-link" 
+                                target="_blank">华尔街六大行裁员创十年新高 AI转型与效率至上成主旋律</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc27d-292c-744e-b24b-68b142217c8f" 
+                                class="news-link" 
+                                target="_blank">TRUMP HEALTH PLAN WOULD REQUIRE COMPANIES TO PUBLISH PERCENTAGE OF REJECTED CLAIMS, PERCENTAGE OF REVENUES PAID ON CLAIMS VS OVERHEAD -WHITE HOUSE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc279-623a-744e-b24b-5743febb3b92" 
+                                class="news-link" 
+                                target="_blank">TRUMP&#x27;S HEALTHCARE PLAN PROMISES TO MAKE MORE PHARMACEUTICAL DRUGS AVAILABLE FOR OVER-THE-COUNTER PURCHASE -WHITE HOUSE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/3860981_101_1" 
+                                class="news-link" 
+                                target="_blank">台积电三季度业绩报告要点总结：Ai巨头需求引爆，Q4利润激增35%再破纪录</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc269-c022-744e-b24b-2d932c2e5a64" 
+                                class="news-link" 
+                                target="_blank">TRUMP: PLAN WOULD END &#x27;KICKBACKS&#x27; PAID BY PBMS TO MIDDLEMEN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 4.1%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116010245688800" 
+                                class="news-link" 
+                                target="_blank">阿尔斯通将为多伦多地铁网络提供70列新型地铁列车（NSTS），预计在加拿大创造逾1700个间接就业岗位，以支持该项目的劳动力需求。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc291-b49f-744e-b24b-caa25ca9eb8e" 
+                                class="news-link" 
+                                target="_blank">WHITE HOUSE OFFICIAL: WHITE HOUSE EXPECTS BIPARTISAN ADOPTION OF ITS HEALTHCARE PLAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc289-f60a-744e-b24b-bc2adf71b04f" 
+                                class="news-link" 
+                                target="_blank">EUROPEAN MARKETS CLOSED MIXED: DAX +0.18%, FTSE 100 +0.49%, CAC 40 -0.21%, ESTX50 +0.60%, IBEX 35 -0.36%, FTSE MIB +0.37%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc27d-b997-744e-b24b-7cb1ef800051" 
+                                class="news-link" 
+                                target="_blank">&lt;B&gt;FORD COULD USE BYD BATTERIES IN FACTORIES OUTSIDE U.S., SOURCES SAY - WSJ&lt;/B&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019bc269-77d5-744e-b24b-1c0c2f937a09" 
+                                class="news-link" 
+                                target="_blank">TRUMP: WANTS LOW INSURANCE PREMIUMS, INSURANCE COS ACCOUNTABLE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.64%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260116002858964800" 
+                                class="news-link" 
+                                target="_blank">美国白宫：美国总统特朗普的医疗计划旨在针对药房福利管理机构的支付。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E9%A4%90%E5%8E%85%E4%B8%BA%E7%8E%AF%E5%8D%AB%E5%B7%A5%E6%8F%90%E4%BE%9B49%E5%85%83%E8%87%AA%E5%8A%A9%E7%A6%8F%E5%88%A9%E5%BC%95%E4%BA%89%E8%AE%AE" 
+                                class="news-link" 
+                                target="_blank">餐厅为环卫工提供49元自助福利引争议</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.82%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32388373" 
+                                class="news-link" 
+                                target="_blank">郭京飞人民日报撰文：普通人不能被演得太“苦”，与好角色一起“折腾”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">01时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
