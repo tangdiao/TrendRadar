@@ -1,0 +1,872 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="14时31分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">124</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">01-29</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">14:31</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>12 条</span>
+                            <span>占比 9.68%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2273917?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >华为加码医疗AI，即将发布智慧医疗专区</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0869-b004-755c-875f-ab8af877684e" 
+                                class="news-link" 
+                                target="_blank"
+                            >SHANGHAI MOST ACTIVE SILVER FUTURES CONTRACT BREAKS 31,000/KG YUAN, UP 8.89%, HITS RECORD HIGH, UP OVER 70% THIS MONTH</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5159859" 
+                                class="news-link" 
+                                target="_blank"
+                            >大行评级｜花旗：上调快手目标价至95港元，看好可灵AI增长势头</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0861-a330-755c-875f-9158d3987c27" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;A-SHARE KWEICHOW MOUTAI UP 8%, TURNOVER EXCEEDS 20B YUAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2273898?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >【盘中宝】华为在该AI细分领域将再放大招，行业已迈入商业化落地的关键阶段，这家公司此前联合华为发布AI相关领域解决方案</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23papi%E9%85%B1%E7%9B%AE%E5%89%8D%E6%9C%80%E5%A4%A7%E5%B0%BA%E5%BA%A6%E5%98%89%E5%AE%BE%23&t=31&band_rank=15&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >papi酱目前最大尺度嘉宾</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0857-60c6-755c-875f-43560b3bf878" 
+                                class="news-link" 
+                                target="_blank"
+                            >HYUNDAI MOTOR: SHARES UP 7%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260129135917654800" 
+                                class="news-link" 
+                                target="_blank"
+                            >受资金流入与AI热潮提振 韩元有望创13年来最长连涨纪录</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0857-3d93-755c-875f-36befe97941c" 
+                                class="news-link" 
+                                target="_blank"
+                            >ALIBABA TO MERGE AUTONOMOUS DRIVING BUSINESS WITH ZELOS TECHNOLOGY, SOURCES SAY&lt;br/&gt;&lt;br/&gt;ALIBABA&#x27;S CAINIAO DRIVERLESS VEHICLE UNIT TO BE FOLDED INTO ZELOS, SOURCES SAY&lt;br/&gt;&lt;br/&gt;ALIBABA TO RECEIVE STAKE IN ZELOS UNDER DEAL, SOURCES SAY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084f-0b52-755c-875f-23c08ec2f480" 
+                                class="news-link" 
+                                target="_blank"
+                            >HYUNDAI MOTOR: 2026 U.S. TARIFF IMPACT WILL BE SIMILAR TO THAT OF THIS YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260129134256119800" 
+                                class="news-link" 
+                                target="_blank"
+                            >英伟达CEO黄仁勋：非常愿意投资OpenAI。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084b-d2bc-755c-875e-fbf377f8c080" 
+                                class="news-link" 
+                                target="_blank"
+                            >D.A. DAVIDSON RAISES META TARGET PRICE TO $850 FROM $825</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 3.23%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0868-b2b9-755c-875f-a7659368490e" 
+                                class="news-link" 
+                                target="_blank"
+                            >SPOT SILVER HITS A FRESH RECORD HIGH OF $120/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c085d-1869-755c-875f-7c6f7219f785" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA&#x27;S XI: WE SHOULD TRANSFORM THE &#x27;GREAT POTENTIAL&#x27; FOR CHINA-UK COOPERATION INTO &#x27;GREAT ACHIEVEMENTS&#x27;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0856-22b6-755c-875f-2846feef8f9d" 
+                                class="news-link" 
+                                target="_blank"
+                            >FTSE CHINA A50 INDEX FUTURES UP OVER 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084e-a61d-755c-875f-1ec81c6083b6" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA&#x27;S UBS SDIC SILVER FUTURES FUND HITS LIMIT UP, TURNOVER NEAR 2.7 BILLION YUAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>12 条</span>
+                            <span>占比 9.68%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2273917?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">华为加码医疗AI，即将发布智慧医疗专区</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0869-b004-755c-875f-ab8af877684e" 
+                                class="news-link" 
+                                target="_blank">SHANGHAI MOST ACTIVE SILVER FUTURES CONTRACT BREAKS 31,000/KG YUAN, UP 8.89%, HITS RECORD HIGH, UP OVER 70% THIS MONTH</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5159859" 
+                                class="news-link" 
+                                target="_blank">大行评级｜花旗：上调快手目标价至95港元，看好可灵AI增长势头</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0861-a330-755c-875f-9158d3987c27" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;A-SHARE KWEICHOW MOUTAI UP 8%, TURNOVER EXCEEDS 20B YUAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2273898?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【盘中宝】华为在该AI细分领域将再放大招，行业已迈入商业化落地的关键阶段，这家公司此前联合华为发布AI相关领域解决方案</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23papi%E9%85%B1%E7%9B%AE%E5%89%8D%E6%9C%80%E5%A4%A7%E5%B0%BA%E5%BA%A6%E5%98%89%E5%AE%BE%23&t=31&band_rank=15&Refer=top" 
+                                class="news-link" 
+                                target="_blank">papi酱目前最大尺度嘉宾</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0857-60c6-755c-875f-43560b3bf878" 
+                                class="news-link" 
+                                target="_blank">HYUNDAI MOTOR: SHARES UP 7%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260129135917654800" 
+                                class="news-link" 
+                                target="_blank">受资金流入与AI热潮提振 韩元有望创13年来最长连涨纪录</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0857-3d93-755c-875f-36befe97941c" 
+                                class="news-link" 
+                                target="_blank">ALIBABA TO MERGE AUTONOMOUS DRIVING BUSINESS WITH ZELOS TECHNOLOGY, SOURCES SAY&lt;br/&gt;&lt;br/&gt;ALIBABA&#x27;S CAINIAO DRIVERLESS VEHICLE UNIT TO BE FOLDED INTO ZELOS, SOURCES SAY&lt;br/&gt;&lt;br/&gt;ALIBABA TO RECEIVE STAKE IN ZELOS UNDER DEAL, SOURCES SAY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084f-0b52-755c-875f-23c08ec2f480" 
+                                class="news-link" 
+                                target="_blank">HYUNDAI MOTOR: 2026 U.S. TARIFF IMPACT WILL BE SIMILAR TO THAT OF THIS YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260129134256119800" 
+                                class="news-link" 
+                                target="_blank">英伟达CEO黄仁勋：非常愿意投资OpenAI。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084b-d2bc-755c-875e-fbf377f8c080" 
+                                class="news-link" 
+                                target="_blank">D.A. DAVIDSON RAISES META TARGET PRICE TO $850 FROM $825</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 3.23%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0868-b2b9-755c-875f-a7659368490e" 
+                                class="news-link" 
+                                target="_blank">SPOT SILVER HITS A FRESH RECORD HIGH OF $120/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c085d-1869-755c-875f-7c6f7219f785" 
+                                class="news-link" 
+                                target="_blank">CHINA&#x27;S XI: WE SHOULD TRANSFORM THE &#x27;GREAT POTENTIAL&#x27; FOR CHINA-UK COOPERATION INTO &#x27;GREAT ACHIEVEMENTS&#x27;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c0856-22b6-755c-875f-2846feef8f9d" 
+                                class="news-link" 
+                                target="_blank">FTSE CHINA A50 INDEX FUTURES UP OVER 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c084e-a61d-755c-875f-1ec81c6083b6" 
+                                class="news-link" 
+                                target="_blank">CHINA&#x27;S UBS SDIC SILVER FUTURES FUND HITS LIMIT UP, TURNOVER NEAR 2.7 BILLION YUAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
