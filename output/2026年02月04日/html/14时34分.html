@@ -1,0 +1,898 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="14时34分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">138</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">02-04</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">14:34</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>12 条</span>
+                            <span>占比 8.7%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c273f-0dfc-7553-a554-5ad4073c6c0d" 
+                                class="news-link" 
+                                target="_blank"
+                            >SEBI CHAIR: REGULATOR TO ENGAGE WITH STAKEHOLDERS ON IMPLEMENTING BUDGET PROPOSALS FOR BOND MARKET&lt;br/&gt;&lt;br/&gt;SEBI CHAIR: DERIVATIVES ON CORPORATE BONDS WILL HELP INVESTORS IN RISK MANAGEMENT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202602/0463959.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >英媒：受美国安全审查影响 英伟达对华AI晶片销售停滞</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2736-3973-7553-a554-494a267e796f" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINESE PV FIRMS TCL ZHONGHUAN SURGES STRAIGHT TO LIMIT UP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2735-2528-7553-a554-3d8271826c56" 
+                                class="news-link" 
+                                target="_blank"
+                            >INSIDERS SAY MUSK TEAM CONDUCTED SITE VISITS LAST WEEK TO CHINESE PV FIRMS INCLUDING TCL ZHONGHUAN, JINKOSOLAR, AND JINGGONG MECHANICAL &amp; ELECTRICAL – CAILIANPRESS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2734-7cb4-7553-a554-328de8e9f4cb" 
+                                class="news-link" 
+                                target="_blank"
+                            >Moutai’s DTC Expansion Broadens Reach Without Denting Prices: Daiwa</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3764901" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI颠覆性冲击引发担忧，亚洲软件股跟随美股大跌，现货黄金站上5080美元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2732-ffd1-7553-a554-2123b4f3197b" 
+                                class="news-link" 
+                                target="_blank"
+                            >INDIA MARKET REGULATOR CHAIR: TO FUND OUR INFRASTRUCTURE PUSH, GREEN TRANSITION WE NEED STRONG BANKING SYSTEM COMPLEMENTED BY DEEP LIQUID BOND MARKET</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c272f-b93b-7553-a554-1d54317c2fc7" 
+                                class="news-link" 
+                                target="_blank"
+                            >UBS: NET NEW ASSET INFLOWS IN GLOBAL WEALTH MANAGEMENT FOR THE YEAR REACHED $101 BLN&lt;br/&gt;&lt;br/&gt;UBS: INTEND TO REPURCHASE $3 BLN OF SHARES IN 2026, WITH AIM TO DO MORE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c272f-2cec-7553-a554-179fe9af7b34" 
+                                class="news-link" 
+                                target="_blank"
+                            >UBS: Q4 CET1 CAPITAL RATIO 14.4% VS COMPANY-PROVIDED CONSENSUS FOR 14.4%&lt;br/&gt;&lt;br/&gt;UBS: SET 2028 NEW AMBITIONS WITH 18% RETURN ON CET1 CAPITAL AND 67% COST/INCOME RATION FOR GROUP&lt;br/&gt;&lt;br/&gt;UBS: REMAIN ON TRACK TO COMPLETE INTEGRATION BY YEAR-END, WITH GREATER PROPORTION OF NET SAVES WEIGHTED TO H2 2026&lt;br/&gt;&lt;br/&gt;UBS CEO: AS WE APPROACH END OF INTEGRATION, CONFIDENT IN ABILITY TO CAPTURE REMAINING SYNERGIES BY YEAR-END, WHICH WE INCREASED BY $500 MLN TO $13.5 BLN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2726-48fb-7553-a554-07e9bf5440ae" 
+                                class="news-link" 
+                                target="_blank"
+                            >TAIWAN WEIGHTED INDEX CLOSES UP 94.45 POINTS, +0.29% AT 32,289.81</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2716-dce3-7553-a553-ede87e61b91d" 
+                                class="news-link" 
+                                target="_blank"
+                            >SPOT GOLD EXTENDS GAINS, LAST UP NEARLY 3% AT $5,085.16/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2700-8403-7553-a553-b34ddaf8c5c6" 
+                                class="news-link" 
+                                target="_blank"
+                            >ZHIPU AI: HYBRID REASONING MODEL GLM-4.7-FLASH HITS OVER 1 MILLION DOWNLOADS ON HUGGING FACE TWO WEEKS AFTER RELEASE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 2.17%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2733-6f3c-7553-a554-29495e93fa6a" 
+                                class="news-link" 
+                                target="_blank"
+                            >UBS: GLOBAL WEALTH MANAGEMENT ATTRACTED $8.5B IN NET NEW ASSETS IN 4Q</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c271b-81d8-7553-a553-fea8bbe40814" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;S&amp;PGRBULLETIN: SAMSUNG TO REAP BENEFITS OF HIGHER CHIP DEMAND&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c270d-1035-7553-a553-e212c6472ffe" 
+                                class="news-link" 
+                                target="_blank"
+                            >A-SHARE JINKOSOLAR HITS LIMIT UP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.72%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%9D%8E%E5%AD%90%E6%9F%92%E5%9C%A8%E3%80%8A%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E3%80%8B%E6%92%B0%E6%96%87" 
+                                class="news-link" 
+                                target="_blank"
+                            >李子柒在《人民日报》撰文</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>12 条</span>
+                            <span>占比 8.7%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c273f-0dfc-7553-a554-5ad4073c6c0d" 
+                                class="news-link" 
+                                target="_blank">SEBI CHAIR: REGULATOR TO ENGAGE WITH STAKEHOLDERS ON IMPLEMENTING BUDGET PROPOSALS FOR BOND MARKET&lt;br/&gt;&lt;br/&gt;SEBI CHAIR: DERIVATIVES ON CORPORATE BONDS WILL HELP INVESTORS IN RISK MANAGEMENT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202602/0463959.html" 
+                                class="news-link" 
+                                target="_blank">英媒：受美国安全审查影响 英伟达对华AI晶片销售停滞</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2736-3973-7553-a554-494a267e796f" 
+                                class="news-link" 
+                                target="_blank">CHINESE PV FIRMS TCL ZHONGHUAN SURGES STRAIGHT TO LIMIT UP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2735-2528-7553-a554-3d8271826c56" 
+                                class="news-link" 
+                                target="_blank">INSIDERS SAY MUSK TEAM CONDUCTED SITE VISITS LAST WEEK TO CHINESE PV FIRMS INCLUDING TCL ZHONGHUAN, JINKOSOLAR, AND JINGGONG MECHANICAL &amp; ELECTRICAL – CAILIANPRESS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2734-7cb4-7553-a554-328de8e9f4cb" 
+                                class="news-link" 
+                                target="_blank">Moutai’s DTC Expansion Broadens Reach Without Denting Prices: Daiwa</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3764901" 
+                                class="news-link" 
+                                target="_blank">AI颠覆性冲击引发担忧，亚洲软件股跟随美股大跌，现货黄金站上5080美元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2732-ffd1-7553-a554-2123b4f3197b" 
+                                class="news-link" 
+                                target="_blank">INDIA MARKET REGULATOR CHAIR: TO FUND OUR INFRASTRUCTURE PUSH, GREEN TRANSITION WE NEED STRONG BANKING SYSTEM COMPLEMENTED BY DEEP LIQUID BOND MARKET</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c272f-b93b-7553-a554-1d54317c2fc7" 
+                                class="news-link" 
+                                target="_blank">UBS: NET NEW ASSET INFLOWS IN GLOBAL WEALTH MANAGEMENT FOR THE YEAR REACHED $101 BLN&lt;br/&gt;&lt;br/&gt;UBS: INTEND TO REPURCHASE $3 BLN OF SHARES IN 2026, WITH AIM TO DO MORE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c272f-2cec-7553-a554-179fe9af7b34" 
+                                class="news-link" 
+                                target="_blank">UBS: Q4 CET1 CAPITAL RATIO 14.4% VS COMPANY-PROVIDED CONSENSUS FOR 14.4%&lt;br/&gt;&lt;br/&gt;UBS: SET 2028 NEW AMBITIONS WITH 18% RETURN ON CET1 CAPITAL AND 67% COST/INCOME RATION FOR GROUP&lt;br/&gt;&lt;br/&gt;UBS: REMAIN ON TRACK TO COMPLETE INTEGRATION BY YEAR-END, WITH GREATER PROPORTION OF NET SAVES WEIGHTED TO H2 2026&lt;br/&gt;&lt;br/&gt;UBS CEO: AS WE APPROACH END OF INTEGRATION, CONFIDENT IN ABILITY TO CAPTURE REMAINING SYNERGIES BY YEAR-END, WHICH WE INCREASED BY $500 MLN TO $13.5 BLN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2726-48fb-7553-a554-07e9bf5440ae" 
+                                class="news-link" 
+                                target="_blank">TAIWAN WEIGHTED INDEX CLOSES UP 94.45 POINTS, +0.29% AT 32,289.81</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2716-dce3-7553-a553-ede87e61b91d" 
+                                class="news-link" 
+                                target="_blank">SPOT GOLD EXTENDS GAINS, LAST UP NEARLY 3% AT $5,085.16/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2700-8403-7553-a553-b34ddaf8c5c6" 
+                                class="news-link" 
+                                target="_blank">ZHIPU AI: HYBRID REASONING MODEL GLM-4.7-FLASH HITS OVER 1 MILLION DOWNLOADS ON HUGGING FACE TWO WEEKS AFTER RELEASE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 2.17%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c2733-6f3c-7553-a554-29495e93fa6a" 
+                                class="news-link" 
+                                target="_blank">UBS: GLOBAL WEALTH MANAGEMENT ATTRACTED $8.5B IN NET NEW ASSETS IN 4Q</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c271b-81d8-7553-a553-fea8bbe40814" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;S&amp;PGRBULLETIN: SAMSUNG TO REAP BENEFITS OF HIGHER CHIP DEMAND&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019c270d-1035-7553-a553-e212c6472ffe" 
+                                class="news-link" 
+                                target="_blank">A-SHARE JINKOSOLAR HITS LIMIT UP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.72%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%9D%8E%E5%AD%90%E6%9F%92%E5%9C%A8%E3%80%8A%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E3%80%8B%E6%92%B0%E6%96%87" 
+                                class="news-link" 
+                                target="_blank">李子柒在《人民日报》撰文</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">14时34分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
