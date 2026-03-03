@@ -1,0 +1,817 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="17时29分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">168</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">03-03</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">17:29</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 4.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2fb-84ca-7006-9e96-4911f5e1d720" 
+                                class="news-link" 
+                                target="_blank"
+                            >TRADERS ADD TO ECB RATE BETS, SEE 20% CHANCE OF A HIKE BY JUNE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2f6-5327-7006-9e96-3e42607340b4" 
+                                class="news-link" 
+                                target="_blank"
+                            >RUSSIAN OIL PRODUCT EXPORTS FROM BLACK SEA PORT OF TUAPSE PLANNED AT 755,000 T IN MARCH VS 312,000 T SCHEDULED FOR FEBRUARY, TRADERS SAY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-a2dd-7006-9e95-df06225a52e1" 
+                                class="news-link" 
+                                target="_blank"
+                            >IMF: WE ARE CLOSELY MONITORING DEVELOPMENTS IN MIDDLE EAST. SO FAR, WE HAVE OBSERVED DISRUPTIONS TO TRADE AND ECONOMIC ACTIVITY, SURGES IN ENERGY PRICES, AND VOLATILITY IN FINANCIAL MARKETS.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-4eea-7006-9e95-d6cf9ee1989b" 
+                                class="news-link" 
+                                target="_blank"
+                            >EUROPEAN SHARES EXTEND FALL, STOXX 600 DOWN 2.6%; FTSE 100 DOWN 2.2%, DAX DOWN 3%, CAC 40 DOWN 2.4%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2df-2a04-7006-9e95-b63bcbdd8d37" 
+                                class="news-link" 
+                                target="_blank"
+                            >CBOE VOLATILITY INDEX AT FRESH THREE-MONTH HIGH, LAST UP 3.86 POINTS AT 25.3</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2db-b57b-7006-9e95-9a78a60002be" 
+                                class="news-link" 
+                                target="_blank"
+                            >EUROPEAN EQUITIES EXTEND LOSSES: FTSE MIB DROPS 3%, EURO STOXX 50 DOWN 2.5%, DAX FALLS 2.7%, FTSE 100 AND CAC 40 SLIP NEARLY 2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2d8-9189-7006-9e95-97911e46b311" 
+                                class="news-link" 
+                                target="_blank"
+                            >MONEY MARKETS NOW SEE 25% CHANCE OF ECB RATE HIKE BY YEAR-END</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2cf-f5dd-7006-9e95-84274567954d" 
+                                class="news-link" 
+                                target="_blank"
+                            >ISRAEL PREPARES FOR POTENTIAL EXPANSION OF FRONTS: MINISTRY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 2.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/03/03/9702c1111ad94c5faa8704e5725c23fc.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >美企高管建议AI培训“看看中国”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/03/03/42df38fba0f94ba0b843c8f1244ca2dc.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >美媒：美国AI与中国比“输”在哪里？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-e0e3-7006-9e95-e15030f427c3" 
+                                class="news-link" 
+                                target="_blank"
+                            >INDIAN BASMATI RICE SHIPMENTS OF 400,000 METRIC TONS TO MIDDLE EAST HELD UP AT PORTS, IN TRANSIT AMID IRAN CONFLICT - TRADE OFFICIALS&lt;br/&gt;&lt;br/&gt;INDIAN EXPORTERS AVOIDING DEALS FOR MIDDLE EAST AS CONTAINER FREIGHT COSTS RISE - TRADE OFFICIALS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2e1-c94e-7006-9e95-c638d8908921" 
+                                class="news-link" 
+                                target="_blank"
+                            >HYUNDAI MOTOR AMERICA: REPORTED TOTAL FEBRUARY SALES OF 65,677 UNITS, A 6% INCREASE COMPARED WITH FEBRUARY 2025</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.6%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%94%BF%E5%8D%8F%E5%A7%94%E5%91%98%EF%BC%9A%E5%81%9C%E6%AD%A2%E5%86%85%E5%8D%B7%E5%BC%8F%E5%8A%A0%E7%8F%AD%E9%9C%80%E5%9B%BD%E5%AE%B6%E5%87%BA%E6%89%8B" 
+                                class="news-link" 
+                                target="_blank"
+                            >政协委员：停止内卷式加班需国家出手</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 4.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2fb-84ca-7006-9e96-4911f5e1d720" 
+                                class="news-link" 
+                                target="_blank">TRADERS ADD TO ECB RATE BETS, SEE 20% CHANCE OF A HIKE BY JUNE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2f6-5327-7006-9e96-3e42607340b4" 
+                                class="news-link" 
+                                target="_blank">RUSSIAN OIL PRODUCT EXPORTS FROM BLACK SEA PORT OF TUAPSE PLANNED AT 755,000 T IN MARCH VS 312,000 T SCHEDULED FOR FEBRUARY, TRADERS SAY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-a2dd-7006-9e95-df06225a52e1" 
+                                class="news-link" 
+                                target="_blank">IMF: WE ARE CLOSELY MONITORING DEVELOPMENTS IN MIDDLE EAST. SO FAR, WE HAVE OBSERVED DISRUPTIONS TO TRADE AND ECONOMIC ACTIVITY, SURGES IN ENERGY PRICES, AND VOLATILITY IN FINANCIAL MARKETS.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-4eea-7006-9e95-d6cf9ee1989b" 
+                                class="news-link" 
+                                target="_blank">EUROPEAN SHARES EXTEND FALL, STOXX 600 DOWN 2.6%; FTSE 100 DOWN 2.2%, DAX DOWN 3%, CAC 40 DOWN 2.4%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2df-2a04-7006-9e95-b63bcbdd8d37" 
+                                class="news-link" 
+                                target="_blank">CBOE VOLATILITY INDEX AT FRESH THREE-MONTH HIGH, LAST UP 3.86 POINTS AT 25.3</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2db-b57b-7006-9e95-9a78a60002be" 
+                                class="news-link" 
+                                target="_blank">EUROPEAN EQUITIES EXTEND LOSSES: FTSE MIB DROPS 3%, EURO STOXX 50 DOWN 2.5%, DAX FALLS 2.7%, FTSE 100 AND CAC 40 SLIP NEARLY 2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2d8-9189-7006-9e95-97911e46b311" 
+                                class="news-link" 
+                                target="_blank">MONEY MARKETS NOW SEE 25% CHANCE OF ECB RATE HIKE BY YEAR-END</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2cf-f5dd-7006-9e95-84274567954d" 
+                                class="news-link" 
+                                target="_blank">ISRAEL PREPARES FOR POTENTIAL EXPANSION OF FRONTS: MINISTRY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 2.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/03/03/9702c1111ad94c5faa8704e5725c23fc.html" 
+                                class="news-link" 
+                                target="_blank">美企高管建议AI培训“看看中国”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/03/03/42df38fba0f94ba0b843c8f1244ca2dc.html" 
+                                class="news-link" 
+                                target="_blank">美媒：美国AI与中国比“输”在哪里？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2ea-e0e3-7006-9e95-e15030f427c3" 
+                                class="news-link" 
+                                target="_blank">INDIAN BASMATI RICE SHIPMENTS OF 400,000 METRIC TONS TO MIDDLE EAST HELD UP AT PORTS, IN TRANSIT AMID IRAN CONFLICT - TRADE OFFICIALS&lt;br/&gt;&lt;br/&gt;INDIAN EXPORTERS AVOIDING DEALS FOR MIDDLE EAST AS CONTAINER FREIGHT COSTS RISE - TRADE OFFICIALS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019cb2e1-c94e-7006-9e95-c638d8908921" 
+                                class="news-link" 
+                                target="_blank">HYUNDAI MOTOR AMERICA: REPORTED TOTAL FEBRUARY SALES OF 65,677 UNITS, A 6% INCREASE COMPARED WITH FEBRUARY 2025</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.6%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%94%BF%E5%8D%8F%E5%A7%94%E5%91%98%EF%BC%9A%E5%81%9C%E6%AD%A2%E5%86%85%E5%8D%B7%E5%BC%8F%E5%8A%A0%E7%8F%AD%E9%9C%80%E5%9B%BD%E5%AE%B6%E5%87%BA%E6%89%8B" 
+                                class="news-link" 
+                                target="_blank">政协委员：停止内卷式加班需国家出手</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时29分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
