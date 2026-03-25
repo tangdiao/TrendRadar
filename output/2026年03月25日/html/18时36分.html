@@ -1,0 +1,763 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="18时36分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">130</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">03-25</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">18:36</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 6.15%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d248c-de70-7dd1-8fc2-12694dd4ea16" 
+                                class="news-link" 
+                                target="_blank"
+                            >PDD HOLDINGS: EXTERNAL ENVIRONMENT, COMPETITIVE LANDSCAPE UNDERGOING RAPID CHANGES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d247b-ae16-7dd1-8fc1-db9dc11b05e2" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;THE SIX MOST TRACKED FLIGHTS AT FLIGHTRADAR24 RIGHT NOW ARE ALL US AIR FORCE BOEING KC-135R STRATOTANKER’S OUT OF TEL AVIV’S BEN GURION AIRPORT&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2477-2e62-7dd1-8fc1-cd31f51facb4" 
+                                class="news-link" 
+                                target="_blank"
+                            >AIRSTRIKES HIT IRAQ’S SHI’ITE POPULAR MOBILIZATION FORCES POSITIONS IN AL-QAIM ON THE SYRIAN BORDER - ARMY SOURCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2475-9dd0-7dd1-8fc1-c588827639bd" 
+                                class="news-link" 
+                                target="_blank"
+                            >UKRAINIAN DRONES STRUCK RUSSIA&#x27;S BALTIC SEA PORT OF UST-LUGA, DRONE FORCES COMMANDER SAYS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d246a-3b5e-7dd1-8fc1-a8b4e2d804e0" 
+                                class="news-link" 
+                                target="_blank"
+                            >CITIGROUP RAISES AMAZON TARGET PRICE TO $285 FROM $265</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2465-dce9-7dd1-8fc1-99cc684272b6" 
+                                class="news-link" 
+                                target="_blank"
+                            >KREMLIN ON REPORTS OF 15 POINTS ON IRAN: WE HAVE NOT RECEIVED SUCH INFORMATION FROM OUR IRANIAN FRIENDS&lt;br/&gt;&lt;br/&gt;KREMLIN ON UKRAINE TALKS: CONTACTS WITH THE AMERICANS CONTINUE&lt;br/&gt;&lt;br/&gt;KREMLIN ON REPORTS OF 15 POINTS ON IRAN: WE DO NOT KNOW HOW RELIABLE THESE REPORTS ARE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2010673619001419372" 
+                                class="news-link" 
+                                target="_blank"
+                            >我是来自德国的游戏制作人 Kai ，想问问中国玩家如何评价我们做的游戏《困兽之国》？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2460-2e36-7dd1-8fc1-90f806d67fa5" 
+                                class="news-link" 
+                                target="_blank"
+                            >GAC&#x27;S FIRST OVERSEAS SERVICE BRAND LAUNCHES AT BANGKOK MOTOR SHOW, THAILAND ACTION 2.0 COMMENCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.54%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2480-c9cb-7dd1-8fc1-ee1bae074f91" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;B&gt;REPORTS: ALEXANDRIA OCASIO-CORTEZ, THE REPUBLICAN REPRESENTATIVE, OFFICIALLY CALLED FOR TRUMP&#x27;S REMOVAL FROM OFFICE UNDER THE TWENTY-FIFTH AMENDMENT OF THE CONSTITUTION&lt;/B&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d247c-e318-7dd1-8fc1-e13f2a36e33b" 
+                                class="news-link" 
+                                target="_blank"
+                            >UBS CUTS MICROSOFT TARGET PRICE TO $510 FROM $600</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.77%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ifeng.com/c/8rmYLlYjEYV" 
+                                class="news-link" 
+                                target="_blank"
+                            >美军合作商急眼，竟狂言“终将破解并瘫痪北斗信号”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">凤凰网</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 6.15%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d248c-de70-7dd1-8fc2-12694dd4ea16" 
+                                class="news-link" 
+                                target="_blank">PDD HOLDINGS: EXTERNAL ENVIRONMENT, COMPETITIVE LANDSCAPE UNDERGOING RAPID CHANGES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d247b-ae16-7dd1-8fc1-db9dc11b05e2" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;THE SIX MOST TRACKED FLIGHTS AT FLIGHTRADAR24 RIGHT NOW ARE ALL US AIR FORCE BOEING KC-135R STRATOTANKER’S OUT OF TEL AVIV’S BEN GURION AIRPORT&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2477-2e62-7dd1-8fc1-cd31f51facb4" 
+                                class="news-link" 
+                                target="_blank">AIRSTRIKES HIT IRAQ’S SHI’ITE POPULAR MOBILIZATION FORCES POSITIONS IN AL-QAIM ON THE SYRIAN BORDER - ARMY SOURCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2475-9dd0-7dd1-8fc1-c588827639bd" 
+                                class="news-link" 
+                                target="_blank">UKRAINIAN DRONES STRUCK RUSSIA&#x27;S BALTIC SEA PORT OF UST-LUGA, DRONE FORCES COMMANDER SAYS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d246a-3b5e-7dd1-8fc1-a8b4e2d804e0" 
+                                class="news-link" 
+                                target="_blank">CITIGROUP RAISES AMAZON TARGET PRICE TO $285 FROM $265</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2465-dce9-7dd1-8fc1-99cc684272b6" 
+                                class="news-link" 
+                                target="_blank">KREMLIN ON REPORTS OF 15 POINTS ON IRAN: WE HAVE NOT RECEIVED SUCH INFORMATION FROM OUR IRANIAN FRIENDS&lt;br/&gt;&lt;br/&gt;KREMLIN ON UKRAINE TALKS: CONTACTS WITH THE AMERICANS CONTINUE&lt;br/&gt;&lt;br/&gt;KREMLIN ON REPORTS OF 15 POINTS ON IRAN: WE DO NOT KNOW HOW RELIABLE THESE REPORTS ARE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2010673619001419372" 
+                                class="news-link" 
+                                target="_blank">我是来自德国的游戏制作人 Kai ，想问问中国玩家如何评价我们做的游戏《困兽之国》？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2460-2e36-7dd1-8fc1-90f806d67fa5" 
+                                class="news-link" 
+                                target="_blank">GAC&#x27;S FIRST OVERSEAS SERVICE BRAND LAUNCHES AT BANGKOK MOTOR SHOW, THAILAND ACTION 2.0 COMMENCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 1.54%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d2480-c9cb-7dd1-8fc1-ee1bae074f91" 
+                                class="news-link" 
+                                target="_blank">&lt;B&gt;REPORTS: ALEXANDRIA OCASIO-CORTEZ, THE REPUBLICAN REPRESENTATIVE, OFFICIALLY CALLED FOR TRUMP&#x27;S REMOVAL FROM OFFICE UNDER THE TWENTY-FIFTH AMENDMENT OF THE CONSTITUTION&lt;/B&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d247c-e318-7dd1-8fc1-e13f2a36e33b" 
+                                class="news-link" 
+                                target="_blank">UBS CUTS MICROSOFT TARGET PRICE TO $510 FROM $600</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.77%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ifeng.com/c/8rmYLlYjEYV" 
+                                class="news-link" 
+                                target="_blank">美军合作商急眼，竟狂言“终将破解并瘫痪北斗信号”</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">凤凰网</span>
+                    <span class="time-tag">18时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
