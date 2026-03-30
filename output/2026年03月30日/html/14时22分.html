@@ -1,0 +1,926 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="14时22分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">169</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">03-30</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">14:22</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>14 条</span>
+                            <span>占比 8.28%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d3f-5155-7cc4-bf2a-3cc9286827b0" 
+                                class="news-link" 
+                                target="_blank"
+                            >S&amp;P: OUTLOOK ON JAPAN&#x27;S LONG-TERM RATINGS REFLECTS VIEW NOMINAL GDP &amp; REV GROWTH WILL REMAIN RESILIENT DESPITE RISKS FROM GEOPOLITICAL DEVELOPMENTS&lt;br/&gt;&lt;br/&gt;S&amp;P: UNCERTAINTY OVER U.S. TARIFF POLICIES IS LIKELY TO ABATE SIGNIFICANTLY FOLLOWING AGREEMENT REACHED BETWEEN THE U.S. AND JAPAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d3d-e45a-7cc4-bf2a-37360ade168d" 
+                                class="news-link" 
+                                target="_blank"
+                            >TAIWAN&#x27;S WEIGHTED INDEX CLOSED DOWN 1.8%, AT 32518.16</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260330140530245800" 
+                                class="news-link" 
+                                target="_blank"
+                            >阿里达摩院与东软医疗达成战略合作 推动多癌早筛AI普及</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d39-3be3-7cc4-bf2a-1656790e6a8b" 
+                                class="news-link" 
+                                target="_blank"
+                            >RIO TINTO PROVIDES IRON ORE UPDATE FOLLOWING TROPICAL CYCLONE NARELLE&lt;br/&gt;&lt;br/&gt;RIO TINTO - 2026 PILBARA IRON ORE SHIPMENT GUIDANCE UNCHANGED AT 323-338 MLN TONNES&lt;br/&gt;&lt;br/&gt;RIO TINTO - WEATHER EVENTS IMPACT IRON ORE SHIPMENTS BY 8 MLN TONNES; HALF EXPECTED TO BE RECOVERED&lt;br/&gt;&lt;br/&gt;RIO TINTO - IRON ORE PORT OPERATIONS RESUME AFTER CYCLONE NARELLE&lt;br/&gt;&lt;br/&gt;RIO TINTO - SHIP LOADING RECOMMENCES AT THREE PILBARA PORTS ON MARCH 28, 2026&lt;br/&gt;&lt;br/&gt;RIO TINTO - CAPE LAMBERT A REPAIRS UNDERWAY; SHIPPING TO RECOMMENCE IN COMING DAYS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d2a-7e7a-7cc4-bf29-fde355a21956" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA&#x27;S MARKET REGULATOR: TO TACKLE &#x27;INVOLUTION-STYLE&#x27; COMPETITION IN PLATFORM ECONOMY, PHOTOVOLTAIC, LITHIUM BATTERY AND NEV SECTORS&lt;br/&gt;&lt;br/&gt;CHINA&#x27;S MARKET REGULATOR: TO FORMULATE REGULATIONS PROHIBITING UNFAIR COMPETITION IN CYBERSPACE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d28-9622-7cc4-bf29-f2c8dd186820" 
+                                class="news-link" 
+                                target="_blank"
+                            >China to Explore Extraterritorial Enforcement of Anti-Unfair Competition Law</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d26-2591-7cc4-bf29-ef11b19a44a7" 
+                                class="news-link" 
+                                target="_blank"
+                            >China to Tighten Antitrust Enforcement Against “Involutionary” Competition in Key Industries</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d24-8d9e-7cc4-bf29-e49f9c6cd9b0" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;CHINA A-SHARE HIGH-SPEED RAIL STOCKS SURGE; CHINA RAILWAY INDUSTRIAL AND OTHERS HIT LIMIT UP&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E8%B1%86%E5%8C%85%E8%B0%88DeepSeek%E9%A2%91%E7%B9%81%E5%B4%A9%E6%BA%83%23&t=31&band_rank=18&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >豆包谈DeepSeek频繁崩溃</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d0c-94c7-7cc4-bf29-b1a513d10f4a" 
+                                class="news-link" 
+                                target="_blank"
+                            >EXPLOSIONS REPORTED IN KUWAIT DUE TO IRANIAN MISSILES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d0b-a6ca-7cc4-bf29-ac33d9439e2a" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. POSITIONS IN SEVERAL COUNTRIES IN THE REGION, INCLUDING BAHRAIN, SAUDI ARABIA, THE UAE, KUWAIT, AND IRAQ, WERE SIMULTANEOUSLY TARGETED IN ATTACKS: SOURCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d05-65a7-7cc4-bf29-a556b59316a2" 
+                                class="news-link" 
+                                target="_blank"
+                            >China Advances $500bn Yangtze River High-Speed Rail Corridor Project</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d03-94f8-7cc4-bf29-9c3add10aef6" 
+                                class="news-link" 
+                                target="_blank"
+                            >IDF HAS IDENTIFIED ANOTHER BALLISTIC MISSILE ATTACK FROM IRAN, AGAIN TARGETING SOUTHERN ISRAEL</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek%E5%B7%B2%E6%81%A2%E5%A4%8D%E6%9C%8D%E5%8A%A1" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek已恢复服务</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 2.37%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d4d-a757-7cc4-bf2a-5da9741c5818" 
+                                class="news-link" 
+                                target="_blank"
+                            >BYD Sees 2026 Exports Beating Target by 15% on Overseas Growth</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d40-28a7-7cc4-bf2a-4f23bdcf4dd6" 
+                                class="news-link" 
+                                target="_blank"
+                            >S&amp;P: BELIEVE JAPAN HAS SUBSTANTIAL ABILITY TO WITHSTAND SUPPLY SHORTAGES, GIVEN ITS LARGE OIL RESERVES OF AROUND EIGHT MONTHS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d38-9c81-7cc4-bf2a-0ce2c3cd8c50" 
+                                class="news-link" 
+                                target="_blank"
+                            >BLACKROCK MANAGED FUNDS AND ACCOUNTS TO PROVIDE 50 MILLION EUROS IN FINANCING TO FINLAND-BASED IQM QUANTUM COMPUTERS AHEAD OF U.S. IPO</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d11-7b6c-7cc4-bf29-bda085421335" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;LOCAL ACCOUNTS REPORT AT LEAST 20 EXPLOSIONS HEARD NEAR THE OIL REFINERY AND PETROCHEMICAL, ALIF SQUARE IN ABADAN, IRAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>14 条</span>
+                            <span>占比 8.28%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d3f-5155-7cc4-bf2a-3cc9286827b0" 
+                                class="news-link" 
+                                target="_blank">S&amp;P: OUTLOOK ON JAPAN&#x27;S LONG-TERM RATINGS REFLECTS VIEW NOMINAL GDP &amp; REV GROWTH WILL REMAIN RESILIENT DESPITE RISKS FROM GEOPOLITICAL DEVELOPMENTS&lt;br/&gt;&lt;br/&gt;S&amp;P: UNCERTAINTY OVER U.S. TARIFF POLICIES IS LIKELY TO ABATE SIGNIFICANTLY FOLLOWING AGREEMENT REACHED BETWEEN THE U.S. AND JAPAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d3d-e45a-7cc4-bf2a-37360ade168d" 
+                                class="news-link" 
+                                target="_blank">TAIWAN&#x27;S WEIGHTED INDEX CLOSED DOWN 1.8%, AT 32518.16</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260330140530245800" 
+                                class="news-link" 
+                                target="_blank">阿里达摩院与东软医疗达成战略合作 推动多癌早筛AI普及</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d39-3be3-7cc4-bf2a-1656790e6a8b" 
+                                class="news-link" 
+                                target="_blank">RIO TINTO PROVIDES IRON ORE UPDATE FOLLOWING TROPICAL CYCLONE NARELLE&lt;br/&gt;&lt;br/&gt;RIO TINTO - 2026 PILBARA IRON ORE SHIPMENT GUIDANCE UNCHANGED AT 323-338 MLN TONNES&lt;br/&gt;&lt;br/&gt;RIO TINTO - WEATHER EVENTS IMPACT IRON ORE SHIPMENTS BY 8 MLN TONNES; HALF EXPECTED TO BE RECOVERED&lt;br/&gt;&lt;br/&gt;RIO TINTO - IRON ORE PORT OPERATIONS RESUME AFTER CYCLONE NARELLE&lt;br/&gt;&lt;br/&gt;RIO TINTO - SHIP LOADING RECOMMENCES AT THREE PILBARA PORTS ON MARCH 28, 2026&lt;br/&gt;&lt;br/&gt;RIO TINTO - CAPE LAMBERT A REPAIRS UNDERWAY; SHIPPING TO RECOMMENCE IN COMING DAYS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d2a-7e7a-7cc4-bf29-fde355a21956" 
+                                class="news-link" 
+                                target="_blank">CHINA&#x27;S MARKET REGULATOR: TO TACKLE &#x27;INVOLUTION-STYLE&#x27; COMPETITION IN PLATFORM ECONOMY, PHOTOVOLTAIC, LITHIUM BATTERY AND NEV SECTORS&lt;br/&gt;&lt;br/&gt;CHINA&#x27;S MARKET REGULATOR: TO FORMULATE REGULATIONS PROHIBITING UNFAIR COMPETITION IN CYBERSPACE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d28-9622-7cc4-bf29-f2c8dd186820" 
+                                class="news-link" 
+                                target="_blank">China to Explore Extraterritorial Enforcement of Anti-Unfair Competition Law</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d26-2591-7cc4-bf29-ef11b19a44a7" 
+                                class="news-link" 
+                                target="_blank">China to Tighten Antitrust Enforcement Against “Involutionary” Competition in Key Industries</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d24-8d9e-7cc4-bf29-e49f9c6cd9b0" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;CHINA A-SHARE HIGH-SPEED RAIL STOCKS SURGE; CHINA RAILWAY INDUSTRIAL AND OTHERS HIT LIMIT UP&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E8%B1%86%E5%8C%85%E8%B0%88DeepSeek%E9%A2%91%E7%B9%81%E5%B4%A9%E6%BA%83%23&t=31&band_rank=18&Refer=top" 
+                                class="news-link" 
+                                target="_blank">豆包谈DeepSeek频繁崩溃</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d0c-94c7-7cc4-bf29-b1a513d10f4a" 
+                                class="news-link" 
+                                target="_blank">EXPLOSIONS REPORTED IN KUWAIT DUE TO IRANIAN MISSILES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d0b-a6ca-7cc4-bf29-ac33d9439e2a" 
+                                class="news-link" 
+                                target="_blank">U.S. POSITIONS IN SEVERAL COUNTRIES IN THE REGION, INCLUDING BAHRAIN, SAUDI ARABIA, THE UAE, KUWAIT, AND IRAQ, WERE SIMULTANEOUSLY TARGETED IN ATTACKS: SOURCES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d05-65a7-7cc4-bf29-a556b59316a2" 
+                                class="news-link" 
+                                target="_blank">China Advances $500bn Yangtze River High-Speed Rail Corridor Project</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d03-94f8-7cc4-bf29-9c3add10aef6" 
+                                class="news-link" 
+                                target="_blank">IDF HAS IDENTIFIED ANOTHER BALLISTIC MISSILE ATTACK FROM IRAN, AGAIN TARGETING SOUTHERN ISRAEL</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek%E5%B7%B2%E6%81%A2%E5%A4%8D%E6%9C%8D%E5%8A%A1" 
+                                class="news-link" 
+                                target="_blank">DeepSeek已恢复服务</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 2.37%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d4d-a757-7cc4-bf2a-5da9741c5818" 
+                                class="news-link" 
+                                target="_blank">BYD Sees 2026 Exports Beating Target by 15% on Overseas Growth</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d40-28a7-7cc4-bf2a-4f23bdcf4dd6" 
+                                class="news-link" 
+                                target="_blank">S&amp;P: BELIEVE JAPAN HAS SUBSTANTIAL ABILITY TO WITHSTAND SUPPLY SHORTAGES, GIVEN ITS LARGE OIL RESERVES OF AROUND EIGHT MONTHS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d38-9c81-7cc4-bf2a-0ce2c3cd8c50" 
+                                class="news-link" 
+                                target="_blank">BLACKROCK MANAGED FUNDS AND ACCOUNTS TO PROVIDE 50 MILLION EUROS IN FINANCING TO FINLAND-BASED IQM QUANTUM COMPUTERS AHEAD OF U.S. IPO</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d3d11-7b6c-7cc4-bf29-bda085421335" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;LOCAL ACCOUNTS REPORT AT LEAST 20 EXPLOSIONS HEARD NEAR THE OIL REFINERY AND PETROCHEMICAL, ALIF SQUARE IN ABADAN, IRAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">14时22分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
