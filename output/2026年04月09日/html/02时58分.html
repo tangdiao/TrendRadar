@@ -1,0 +1,980 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="02时58分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">95</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04-09</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">02:58</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #1</div>
+                        <div class="word-stats">
+                            <span>13 条</span>
+                            <span>占比 13.68%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e52-0ee2-7880-9eb0-abf7655cfb74" 
+                                class="news-link" 
+                                target="_blank"
+                            >UAE FOREIGN MINISTRY SAYS IT EXERTED INTENSIVE DIPLOMATIC EFFORTS TO PREVENT THE WAR, STRESSES THE GULF COUNTRY WAS NOT INVOLVED IN IT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e50-bdd7-7880-9eb0-a54ebe1ca89e" 
+                                class="news-link" 
+                                target="_blank"
+                            >UAE FOREIGN MINISTRY SPOKESPERSON SAYS ADDRESSING IRANIAN THREATS MUST BE COMPREHENSIVE AND COMPLETE, INCLUDING NUCLEAR AND MILITARY CAPABILITIES AND ITS PROXIES IN THE REGION</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47694036" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Orange Juice – Small UX improvements that make HN much easier to read</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-ea33-7880-9eb0-5cb0583de150" 
+                                class="news-link" 
+                                target="_blank"
+                            >AZERI BTC CRUDE OIL EXPORTS FROM CEYHAN PORT SET AT 15.67 MLN BARRELS IN MAY VS 16.38 MLN BARRELS IN APRIL, SCHEDULE SHOWS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-6293-7880-9eb0-4238702f1dac" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: VAST MAJORITY OF PARTICIPANTS NOTED PROGRESS TOWARD 2% INFLATION TARGET COULD BE SLOWER THAN EXPECTED, SAW HIGHER RISK OF INFLATION RUNNING PERSISTENTLY ABOVE TARGET</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-4b20-7880-9eb0-3ec95ef510ed" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;FED MINUTES: THESE PARTICIPANTS GENERALLY VIEWED CURRENT POLICY RATE AS WITHIN RANGE OF PLAUSIBLE LEVEL OF NEUTRAL RATE&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-1d40-7880-9eb0-2dfd5c917ff1" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;FED MINUTES: A COUPLE OF PARTICIPANTS PUSHED THEIR ASSESSMENTS FOR TIMING OF RATE CUTS FURTHER INTO THE FUTURE&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-ffba-7880-9eb0-226250aeb7d8" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: MAJORITY OF PARTICIPANTS SAW RISKS HAD INCREASED WITH MIDDLE EAST DEVELOPMENTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-bdaa-7880-9eb0-195194952972" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: MANY PARTICIPANTS JUDGED IT WOULD LIKELY BECOME APPROPRIATE TO LOWER RATES IF INFLATION WERE TO DECLINE IN LINE WITH EXPECTATIONS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47693047" 
+                                class="news-link" 
+                                target="_blank"
+                            >Claude Managed Agents</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-9439-7880-9eb0-0b308e2892e7" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: ALMOST ALL PARTICIPANTS SUPPORTED NO RATE CUT AT MARCH MEETING</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-85cb-7880-9eb0-00ea87f0961f" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: MOST PARTICIPANTS WERE CONCERNED A PROTRACTED CONFLICT COULD LEAD TO FURTHER LABOR MARKET SOFTENING, WHICH COULD WARRANT ADDITIONAL RATE CUTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-6fa6-7880-9eaf-f83a5c3c6ae2" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: VAST MAJORITY OF PARTICIPANTS SAW UPSIDE RISKS TO INFLATION AND DOWNSIDE RISKS TO EMPLOYMENT AS ELEVATED</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #2</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 7.37%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47694093" 
+                                class="news-link" 
+                                target="_blank"
+                            >One item purchased, Ten emails</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e57-9cd7-7880-9eb0-bb69346cee51" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;S&amp;P FUTURES SLIGHTLY PARE GAINS, LAST UP 2.4% &lt;br/&gt;&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e4e-ef59-7880-9eb0-9eeed3d3b98e" 
+                                class="news-link" 
+                                target="_blank"
+                            >UAE FOREIGN MINISTRY SPOKESPERSON SAYS IRANIAN ATTACKS ON THE GULF COUNTRY REQURES FIRM POSITION AGAINST IRAN AND TEHRAN PROVIDING FULL COMPENSATION ON LOSSES AND DAMAGE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e4d-64de-7880-9eb0-8d761f3a7504" 
+                                class="news-link" 
+                                target="_blank"
+                            >UAE FOREIGN MINISTRY SPOKESPERSON SAYS CLARIFICATIONS ON AGREEMENT WOULD BE TO ENSURE IRAN&#x27;S FULL COMPLIANCE TO IMMEDIATE CESSATION OF ALL ATTACKS IN THE REGION AND UNCONDITIONAL REOPENING OF STRAIT OF HORMUZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-ba63-7880-9eb0-5613c4982081" 
+                                class="news-link" 
+                                target="_blank"
+                            >SPOT GOLD HOLDS GAINS AFTER US FED MINUTES, LAST UP 0.7% AT $4,735.27/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-2841-7880-9eb0-36cc2f625230" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: MOST PARTICIPANTS SAID IT WAS TOO EARLY TO KNOW HOW MIDDLE EAST DEVELOPMENTS WOULD AFFECT U.S. ECONOMY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-a63f-7880-9eb0-130d76ac34fe" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED MINUTES: MANY PARTICIPANTS SAW RISK OF INFLATION REMAINING ELEVATED FOR LONGER THAN EXPECTED AMID PERSISTENT OIL PRICE INCREASE, WHICH COULD CALL FOR RATE HIKES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #1</div>
+                        <div class="word-stats">
+                            <span>13 条</span>
+                            <span>占比 13.68%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e52-0ee2-7880-9eb0-abf7655cfb74" 
+                                class="news-link" 
+                                target="_blank">UAE FOREIGN MINISTRY SAYS IT EXERTED INTENSIVE DIPLOMATIC EFFORTS TO PREVENT THE WAR, STRESSES THE GULF COUNTRY WAS NOT INVOLVED IN IT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e50-bdd7-7880-9eb0-a54ebe1ca89e" 
+                                class="news-link" 
+                                target="_blank">UAE FOREIGN MINISTRY SPOKESPERSON SAYS ADDRESSING IRANIAN THREATS MUST BE COMPREHENSIVE AND COMPLETE, INCLUDING NUCLEAR AND MILITARY CAPABILITIES AND ITS PROXIES IN THE REGION</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47694036" 
+                                class="news-link" 
+                                target="_blank">Show HN: Orange Juice – Small UX improvements that make HN much easier to read</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-ea33-7880-9eb0-5cb0583de150" 
+                                class="news-link" 
+                                target="_blank">AZERI BTC CRUDE OIL EXPORTS FROM CEYHAN PORT SET AT 15.67 MLN BARRELS IN MAY VS 16.38 MLN BARRELS IN APRIL, SCHEDULE SHOWS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-6293-7880-9eb0-4238702f1dac" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: VAST MAJORITY OF PARTICIPANTS NOTED PROGRESS TOWARD 2% INFLATION TARGET COULD BE SLOWER THAN EXPECTED, SAW HIGHER RISK OF INFLATION RUNNING PERSISTENTLY ABOVE TARGET</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-4b20-7880-9eb0-3ec95ef510ed" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;FED MINUTES: THESE PARTICIPANTS GENERALLY VIEWED CURRENT POLICY RATE AS WITHIN RANGE OF PLAUSIBLE LEVEL OF NEUTRAL RATE&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-1d40-7880-9eb0-2dfd5c917ff1" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;FED MINUTES: A COUPLE OF PARTICIPANTS PUSHED THEIR ASSESSMENTS FOR TIMING OF RATE CUTS FURTHER INTO THE FUTURE&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-ffba-7880-9eb0-226250aeb7d8" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: MAJORITY OF PARTICIPANTS SAW RISKS HAD INCREASED WITH MIDDLE EAST DEVELOPMENTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-bdaa-7880-9eb0-195194952972" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: MANY PARTICIPANTS JUDGED IT WOULD LIKELY BECOME APPROPRIATE TO LOWER RATES IF INFLATION WERE TO DECLINE IN LINE WITH EXPECTATIONS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47693047" 
+                                class="news-link" 
+                                target="_blank">Claude Managed Agents</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-9439-7880-9eb0-0b308e2892e7" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: ALMOST ALL PARTICIPANTS SUPPORTED NO RATE CUT AT MARCH MEETING</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-85cb-7880-9eb0-00ea87f0961f" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: MOST PARTICIPANTS WERE CONCERNED A PROTRACTED CONFLICT COULD LEAD TO FURTHER LABOR MARKET SOFTENING, WHICH COULD WARRANT ADDITIONAL RATE CUTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-6fa6-7880-9eaf-f83a5c3c6ae2" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: VAST MAJORITY OF PARTICIPANTS SAW UPSIDE RISKS TO INFLATION AND DOWNSIDE RISKS TO EMPLOYMENT AS ELEVATED</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #2</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 7.37%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47694093" 
+                                class="news-link" 
+                                target="_blank">One item purchased, Ten emails</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e57-9cd7-7880-9eb0-bb69346cee51" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;S&amp;P FUTURES SLIGHTLY PARE GAINS, LAST UP 2.4% &lt;br/&gt;&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e4e-ef59-7880-9eb0-9eeed3d3b98e" 
+                                class="news-link" 
+                                target="_blank">UAE FOREIGN MINISTRY SPOKESPERSON SAYS IRANIAN ATTACKS ON THE GULF COUNTRY REQURES FIRM POSITION AGAINST IRAN AND TEHRAN PROVIDING FULL COMPENSATION ON LOSSES AND DAMAGE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e4d-64de-7880-9eb0-8d761f3a7504" 
+                                class="news-link" 
+                                target="_blank">UAE FOREIGN MINISTRY SPOKESPERSON SAYS CLARIFICATIONS ON AGREEMENT WOULD BE TO ENSURE IRAN&#x27;S FULL COMPLIANCE TO IMMEDIATE CESSATION OF ALL ATTACKS IN THE REGION AND UNCONDITIONAL REOPENING OF STRAIT OF HORMUZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-ba63-7880-9eb0-5613c4982081" 
+                                class="news-link" 
+                                target="_blank">SPOT GOLD HOLDS GAINS AFTER US FED MINUTES, LAST UP 0.7% AT $4,735.27/OZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e42-2841-7880-9eb0-36cc2f625230" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: MOST PARTICIPANTS SAID IT WAS TOO EARLY TO KNOW HOW MIDDLE EAST DEVELOPMENTS WOULD AFFECT U.S. ECONOMY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d6e41-a63f-7880-9eb0-130d76ac34fe" 
+                                class="news-link" 
+                                target="_blank">FED MINUTES: MANY PARTICIPANTS SAW RISK OF INFLATION REMAINING ELEVATED FOR LONGER THAN EXPECTED AMID PERSISTENT OIL PRICE INCREASE, WHICH COULD CALL FOR RATE HIKES</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
