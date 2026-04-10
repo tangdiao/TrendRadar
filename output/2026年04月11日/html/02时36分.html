@@ -1,0 +1,843 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="02时36分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">77</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04-11</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">02:36</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 9.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7891-02dc-7550-a96a-3e7653b97087" 
+                                class="news-link" 
+                                target="_blank"
+                            >WHITE HOUSE OFFICIAL: DOUBTS PREVAIL IN THE WHITE HOUSE, AND TRUMP NOW BELIEVES THAT OPENING THE STRAIT OF HORMUZ IS UNLIKELY ANYTIME SOON</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47720418" 
+                                class="news-link" 
+                                target="_blank"
+                            >Launch HN: Twill.ai (YC S25) – Delegate to cloud agents, get back PRs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47721207" 
+                                class="news-link" 
+                                target="_blank"
+                            >HBO Obtains DMCA Subpoena to Unmask &#x27;Euphoria&#x27; Spoiler Account on X</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d787d-43c7-7550-a969-ca1f67e9cb1e" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;UK TO HOST OFFICIALS FOR STRAIT OF HORMUZ TALKS NEXT WEEK – POLITICO&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7879-7981-7550-a969-c63131a83219" 
+                                class="news-link" 
+                                target="_blank"
+                            >AIR TRAFFIC DATA FROM FLIGHTRADAR24 SHOWS TWO IRANIAN FLIGHTS, IRAN04 AND IRAN05, EN ROUTE TO PAKISTAN AHEAD OF TALKS WITH THE UNITED STATES IN ISLAMABAD ON SATURDAY. IT IS NOT YET CONFIRMED WHETHER THE PLANES ARE CARRYING IRANIAN NEGOTIATORS, BUT THE FLIGHT NUMBERS ARE TYPICALLY USED FOR THE PLANES TRANSPORTING GOVERNMENT OFFICIALS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7879-0d67-7550-a969-bc6ffd01e86f" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINESE AI STARTUP DEEPSEEK IS ADVERTISING TWO DATA CENTER POSITIONS IN INNER MONGOLIA, WHERE THE COMPANY REPORTEDLY IS RELYING ON BANNED NVIDIA CORP.’S BLACKWELL CHIPS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7864-563c-7550-a969-a4ac2af0b3e2" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;ISRAEL&#x27;S CHANNEL 11: NETANYAHU HAS CHANGED THE POLICY OF ATTACKING LEBANON FOLLOWING TRUMP&#x27;S CALL &lt;br/&gt;&lt;br/&gt;FROM NOW ON, ANY ATTACK ON BEIRUT REQUIRES NETANYAHU&#x27;S SPECIAL APPROVAL&lt;br/&gt;&lt;br/&gt;ANOTHER ISRAELI OFFICIAL SAID THERE IS NO CEASEFIRE, BUT THE INTENSITY OF ATTACKS HAS BEEN SHARPLY REDUCED AND IS SUBJECT TO STRICTER POLITICAL RESTRICTIONS &lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 5.19%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d788d-4e5e-7550-a96a-28fe4eb0120d" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. MARCH BUDGET OUTLAYS $549 BLN VS $528 BLN IN MARCH 2025; RECEIPTS $385 BLN, RECORD FOR MONTH OF MARCH, VS $368 BLN IN MARCH 2025</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d788d-41db-7550-a96a-243f328c972f" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. MARCH NET CUSTOMS RECEIPTS $22.16 BLN - TREASURY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7888-1812-7550-a96a-0cb5d183e803" 
+                                class="news-link" 
+                                target="_blank"
+                            >ICE- BRENT CRUDE SPECULATORS CUT NET LONG POSITIONS BY 5,158 CONTRACTS TO 424,270 IN WEEK TO APRIL 7&lt;br/&gt;&lt;br/&gt;ICE- GASOIL SPECULATORS CUT NET LONG POSITIONS BY 7,553 CONTRACTS TO 63,987 IN WEEK TO APRIL 7</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7864-d651-7550-a969-a971e15171dd" 
+                                class="news-link" 
+                                target="_blank"
+                            >NEW YORK FED ACCEPTS $0.507 BLN OF $0.507 BLN SUBMITTED TO REVERSE REPO FACILITY ON APR 10</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E7%BD%91%E7%BA%A6%E8%BD%A6%E6%88%90%E2%80%9C%E7%A2%B0%E7%93%B7%E2%80%9D%E5%B7%A5%E5%85%B7+46%E4%BA%BA%E8%A2%AB%E6%8A%93" 
+                                class="news-link" 
+                                target="_blank"
+                            >网约车成“碰瓷”工具 46人被抓</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260411012054037800" 
+                                class="news-link" 
+                                target="_blank"
+                            >据《以色列今日报》：可能最早在明天就会有美国方面的声明，内容涉及以色列与黎巴嫩之间的会谈开启事宜，以及基于去年11月24日的协议的停火。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 9.09%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7891-02dc-7550-a96a-3e7653b97087" 
+                                class="news-link" 
+                                target="_blank">WHITE HOUSE OFFICIAL: DOUBTS PREVAIL IN THE WHITE HOUSE, AND TRUMP NOW BELIEVES THAT OPENING THE STRAIT OF HORMUZ IS UNLIKELY ANYTIME SOON</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47720418" 
+                                class="news-link" 
+                                target="_blank">Launch HN: Twill.ai (YC S25) – Delegate to cloud agents, get back PRs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47721207" 
+                                class="news-link" 
+                                target="_blank">HBO Obtains DMCA Subpoena to Unmask &#x27;Euphoria&#x27; Spoiler Account on X</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d787d-43c7-7550-a969-ca1f67e9cb1e" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;UK TO HOST OFFICIALS FOR STRAIT OF HORMUZ TALKS NEXT WEEK – POLITICO&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7879-7981-7550-a969-c63131a83219" 
+                                class="news-link" 
+                                target="_blank">AIR TRAFFIC DATA FROM FLIGHTRADAR24 SHOWS TWO IRANIAN FLIGHTS, IRAN04 AND IRAN05, EN ROUTE TO PAKISTAN AHEAD OF TALKS WITH THE UNITED STATES IN ISLAMABAD ON SATURDAY. IT IS NOT YET CONFIRMED WHETHER THE PLANES ARE CARRYING IRANIAN NEGOTIATORS, BUT THE FLIGHT NUMBERS ARE TYPICALLY USED FOR THE PLANES TRANSPORTING GOVERNMENT OFFICIALS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7879-0d67-7550-a969-bc6ffd01e86f" 
+                                class="news-link" 
+                                target="_blank">CHINESE AI STARTUP DEEPSEEK IS ADVERTISING TWO DATA CENTER POSITIONS IN INNER MONGOLIA, WHERE THE COMPANY REPORTEDLY IS RELYING ON BANNED NVIDIA CORP.’S BLACKWELL CHIPS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7864-563c-7550-a969-a4ac2af0b3e2" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;ISRAEL&#x27;S CHANNEL 11: NETANYAHU HAS CHANGED THE POLICY OF ATTACKING LEBANON FOLLOWING TRUMP&#x27;S CALL &lt;br/&gt;&lt;br/&gt;FROM NOW ON, ANY ATTACK ON BEIRUT REQUIRES NETANYAHU&#x27;S SPECIAL APPROVAL&lt;br/&gt;&lt;br/&gt;ANOTHER ISRAELI OFFICIAL SAID THERE IS NO CEASEFIRE, BUT THE INTENSITY OF ATTACKS HAS BEEN SHARPLY REDUCED AND IS SUBJECT TO STRICTER POLITICAL RESTRICTIONS &lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 5.19%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d788d-4e5e-7550-a96a-28fe4eb0120d" 
+                                class="news-link" 
+                                target="_blank">U.S. MARCH BUDGET OUTLAYS $549 BLN VS $528 BLN IN MARCH 2025; RECEIPTS $385 BLN, RECORD FOR MONTH OF MARCH, VS $368 BLN IN MARCH 2025</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d788d-41db-7550-a96a-243f328c972f" 
+                                class="news-link" 
+                                target="_blank">U.S. MARCH NET CUSTOMS RECEIPTS $22.16 BLN - TREASURY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7888-1812-7550-a96a-0cb5d183e803" 
+                                class="news-link" 
+                                target="_blank">ICE- BRENT CRUDE SPECULATORS CUT NET LONG POSITIONS BY 5,158 CONTRACTS TO 424,270 IN WEEK TO APRIL 7&lt;br/&gt;&lt;br/&gt;ICE- GASOIL SPECULATORS CUT NET LONG POSITIONS BY 7,553 CONTRACTS TO 63,987 IN WEEK TO APRIL 7</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d7864-d651-7550-a969-a971e15171dd" 
+                                class="news-link" 
+                                target="_blank">NEW YORK FED ACCEPTS $0.507 BLN OF $0.507 BLN SUBMITTED TO REVERSE REPO FACILITY ON APR 10</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E7%BD%91%E7%BA%A6%E8%BD%A6%E6%88%90%E2%80%9C%E7%A2%B0%E7%93%B7%E2%80%9D%E5%B7%A5%E5%85%B7+46%E4%BA%BA%E8%A2%AB%E6%8A%93" 
+                                class="news-link" 
+                                target="_blank">网约车成“碰瓷”工具 46人被抓</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260411012054037800" 
+                                class="news-link" 
+                                target="_blank">据《以色列今日报》：可能最早在明天就会有美国方面的声明，内容涉及以色列与黎巴嫩之间的会谈开启事宜，以及基于去年11月24日的协议的停火。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">02时36分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
