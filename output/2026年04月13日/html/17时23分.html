@@ -1,0 +1,844 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="17时23分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">231</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04-13</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">17:23</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>10 条</span>
+                            <span>占比 4.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8612-d03b-7443-8ef2-37bd20114dc9" 
+                                class="news-link" 
+                                target="_blank"
+                            >SHARES OF U.S. CHEMICAL COMPANIES GAIN IN PREMARKET TRADING AFTER U.S.-IRAN TALKS FAIL&lt;br/&gt;&lt;br/&gt;DOW UP 1.9%, MOSAIC UP 1.6%, LYONDELLBASELL UP 3.1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d860d-a134-7443-8ef2-2b1e775782f5" 
+                                class="news-link" 
+                                target="_blank"
+                            >FRENCH PRESIDENT MACRON: CONFIRMS THAT FRANCE WILL ORGANISE, ALONG WITH UK, A CONFERENCE IN COMING DAYS AIMED AT RESTORING FREEDOM OF NAVIGATION IN HORMUZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8606-1a62-7443-8ef2-24a6086d318d" 
+                                class="news-link" 
+                                target="_blank"
+                            >China’s 30-Year Bonds Gain Amid Bets on Issuance Duration Cut</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8603-c188-7443-8ef2-1c20cf521c37" 
+                                class="news-link" 
+                                target="_blank"
+                            >PHILIPPINES FOREIGN AFFAIRS SECRETARY: ASEAN MEETING DISCUSSED PRIORITISING ENERGY SUPPLY TO FELLOW MEMBER STATES IN TIMES OF CRISIS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f8-f617-7443-8ef2-082e627ce4b5" 
+                                class="news-link" 
+                                target="_blank"
+                            >SPAIN REOPENS ITS EMBASSY IN IRAN&#x27;S CAPITAL - TASNIM</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f4-f00e-7443-8ef1-ea02563583d7" 
+                                class="news-link" 
+                                target="_blank"
+                            >TURKISH FOREIGN MINISTER: I DON&#x27;T SEE ANY ISSUE IN OPENING STRAIT OF HORMUZ THROUGH NEGOTIATIONS, PROBLEM IS WHETHER THERE WILL BE NEW REGULATIONS PROPOSED DURING TALKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32957872" 
+                                class="news-link" 
+                                target="_blank"
+                            >马上评｜谁来斩断AI“造黄”产业链</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f2-2db3-7443-8ef1-d6572d540e5d" 
+                                class="news-link" 
+                                target="_blank"
+                            >TURKISH FOREIGN MINISTER: THERE ARE MANY DIFFICULTIES TO INTERNATIONAL FORCE ON STRAIT OF HORMUZ, NEEDS TO BE OPENED THROUGH DIPLOMACY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47749222" 
+                                class="news-link" 
+                                target="_blank"
+                            >Caffeine, cocaine, and painkillers detected in sharks from The Bahamas</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85e9-8b1b-7443-8ef1-9dbe25a4a348" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;U.S. LNG COMPANIES GAIN IN PREMARKET TRADING AS NATURAL GAS PRICES EDGE HIGHER: VENTURE GLOBAL UP 6%, NEXTDECADE UP 3.9% CHENIERE ENERGY GAINS 2.1%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8613-796b-7443-8ef2-4acb07ba745c" 
+                                class="news-link" 
+                                target="_blank"
+                            >PBOC: PRELIM DATA SHOWS THAT AS OF END-MARCH 2026, CHINA’S OUTSTANDING TOTAL SOCIAL FINANCING REACHED CNY 456.46 TRILLION, UP 7.9% Y/Y</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f8-ed5d-7443-8ef2-0612eb8ff92a" 
+                                class="news-link" 
+                                target="_blank"
+                            >HKEX - LAUNCHES HKEX KRX SEMICONDUCTOR INDEX AND HKEX TECH &amp; US TECH 100 INDEX&lt;br/&gt;&lt;br/&gt;HKEX - ENTERS LICENSING AGREEMENTS WITH 5 ISSUERS TO DEVELOP ETFS IN HONG KONG TRACKING 2 NEW BENCHMARKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f4-e8e5-7443-8ef1-e7684257e93b" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA NORTHERN RARE EARTH EXPECTS Q1 2026 NET PROFIT OF 900–940 MLN YUAN, UP 109–118% Y/Y</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28353146&amp;topic_name=%E4%BD%A0%E9%97%AE%E6%88%91%E7%AD%94%21%E5%8F%B0%E6%B9%BE%E5%90%A7%E5%8F%8B%E8%81%8A%E5%B2%9B%E5%86%85%E7%94%9F%E6%B4%BB" 
+                                class="news-link" 
+                                target="_blank"
+                            >你问我答!台湾吧友聊岛内生活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>10 条</span>
+                            <span>占比 4.33%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8612-d03b-7443-8ef2-37bd20114dc9" 
+                                class="news-link" 
+                                target="_blank">SHARES OF U.S. CHEMICAL COMPANIES GAIN IN PREMARKET TRADING AFTER U.S.-IRAN TALKS FAIL&lt;br/&gt;&lt;br/&gt;DOW UP 1.9%, MOSAIC UP 1.6%, LYONDELLBASELL UP 3.1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d860d-a134-7443-8ef2-2b1e775782f5" 
+                                class="news-link" 
+                                target="_blank">FRENCH PRESIDENT MACRON: CONFIRMS THAT FRANCE WILL ORGANISE, ALONG WITH UK, A CONFERENCE IN COMING DAYS AIMED AT RESTORING FREEDOM OF NAVIGATION IN HORMUZ</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8606-1a62-7443-8ef2-24a6086d318d" 
+                                class="news-link" 
+                                target="_blank">China’s 30-Year Bonds Gain Amid Bets on Issuance Duration Cut</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8603-c188-7443-8ef2-1c20cf521c37" 
+                                class="news-link" 
+                                target="_blank">PHILIPPINES FOREIGN AFFAIRS SECRETARY: ASEAN MEETING DISCUSSED PRIORITISING ENERGY SUPPLY TO FELLOW MEMBER STATES IN TIMES OF CRISIS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f8-f617-7443-8ef2-082e627ce4b5" 
+                                class="news-link" 
+                                target="_blank">SPAIN REOPENS ITS EMBASSY IN IRAN&#x27;S CAPITAL - TASNIM</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f4-f00e-7443-8ef1-ea02563583d7" 
+                                class="news-link" 
+                                target="_blank">TURKISH FOREIGN MINISTER: I DON&#x27;T SEE ANY ISSUE IN OPENING STRAIT OF HORMUZ THROUGH NEGOTIATIONS, PROBLEM IS WHETHER THERE WILL BE NEW REGULATIONS PROPOSED DURING TALKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32957872" 
+                                class="news-link" 
+                                target="_blank">马上评｜谁来斩断AI“造黄”产业链</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f2-2db3-7443-8ef1-d6572d540e5d" 
+                                class="news-link" 
+                                target="_blank">TURKISH FOREIGN MINISTER: THERE ARE MANY DIFFICULTIES TO INTERNATIONAL FORCE ON STRAIT OF HORMUZ, NEEDS TO BE OPENED THROUGH DIPLOMACY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47749222" 
+                                class="news-link" 
+                                target="_blank">Caffeine, cocaine, and painkillers detected in sharks from The Bahamas</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85e9-8b1b-7443-8ef1-9dbe25a4a348" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;U.S. LNG COMPANIES GAIN IN PREMARKET TRADING AS NATURAL GAS PRICES EDGE HIGHER: VENTURE GLOBAL UP 6%, NEXTDECADE UP 3.9% CHENIERE ENERGY GAINS 2.1%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 1.3%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d8613-796b-7443-8ef2-4acb07ba745c" 
+                                class="news-link" 
+                                target="_blank">PBOC: PRELIM DATA SHOWS THAT AS OF END-MARCH 2026, CHINA’S OUTSTANDING TOTAL SOCIAL FINANCING REACHED CNY 456.46 TRILLION, UP 7.9% Y/Y</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f8-ed5d-7443-8ef2-0612eb8ff92a" 
+                                class="news-link" 
+                                target="_blank">HKEX - LAUNCHES HKEX KRX SEMICONDUCTOR INDEX AND HKEX TECH &amp; US TECH 100 INDEX&lt;br/&gt;&lt;br/&gt;HKEX - ENTERS LICENSING AGREEMENTS WITH 5 ISSUERS TO DEVELOP ETFS IN HONG KONG TRACKING 2 NEW BENCHMARKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d85f4-e8e5-7443-8ef1-e7684257e93b" 
+                                class="news-link" 
+                                target="_blank">CHINA NORTHERN RARE EARTH EXPECTS Q1 2026 NET PROFIT OF 900–940 MLN YUAN, UP 109–118% Y/Y</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28353146&amp;topic_name=%E4%BD%A0%E9%97%AE%E6%88%91%E7%AD%94%21%E5%8F%B0%E6%B9%BE%E5%90%A7%E5%8F%8B%E8%81%8A%E5%B2%9B%E5%86%85%E7%94%9F%E6%B4%BB" 
+                                class="news-link" 
+                                target="_blank">你问我答!台湾吧友聊岛内生活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">17时23分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
