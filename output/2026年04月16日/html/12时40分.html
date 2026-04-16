@@ -1,0 +1,1408 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="12时40分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">258</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04-16</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12:40</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>19 条</span>
+                            <span>占比 7.36%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d947c-dd46-7cc3-8f32-9175ca7fd3d9" 
+                                class="news-link" 
+                                target="_blank"
+                            >China Data Show Economy Remains &#x27;Bifurcated&#x27;: Goldman Sachs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-c828-7cc3-8f32-86bf38900370" 
+                                class="news-link" 
+                                target="_blank"
+                            >EBA CHAIR SAYS PRIVATE CREDIT &#x27;NOT A SYSTEMIC ISSUE&#x27; FOR EUROPEAN BANKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-aa22-7cc3-8f32-7a0f4b141e7c" 
+                                class="news-link" 
+                                target="_blank"
+                            >EBA CHAIR SAYS ASSESSING CYBERSECURITY RISKS TO BANKS IS A PRIORITY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3770049" 
+                                class="news-link" 
+                                target="_blank"
+                            >特斯拉AI芯片里程碑！马斯克官宣AI5成功流片，双芯性能对标Blackwell</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-9819-7cc3-8f32-760976a50b4f" 
+                                class="news-link" 
+                                target="_blank"
+                            >ON STABLECOINS, EBA CHAIR SAYS IF EUROPEAN COMMISSION ALLOWS MULTI-ISSUANCE, IT WILL NEED SAFEGUARDS TO STOP NON-EU REDEMPTIONS FROM HARMING EU</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260416120712209800" 
+                                class="news-link" 
+                                target="_blank"
+                            >卖鞋的也来做AI！“硅谷标配球鞋”公司一夜暴涨近600%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d945a-c272-7cc3-8f32-521c83402e7f" 
+                                class="news-link" 
+                                target="_blank"
+                            >RBC RAISES ASML TARGET PRICE TO $1,700 FROM $1,625</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5210518" 
+                                class="news-link" 
+                                target="_blank"
+                            >3年11月！&quot;AI+光储一体化第一股&quot;思格新能源刷新中国企业港股IPO最快纪录，获淡马锡、高瓴等&quot;全明星&quot;资本加持</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%98%8E%E6%98%9FAI%E9%A1%B9%E7%9B%AE%E8%A2%AB%E6%9B%9D%E6%8A%84%E8%A2%AD%E4%B8%AD%E5%9B%BD%E5%9B%A2%E9%98%9F" 
+                                class="news-link" 
+                                target="_blank"
+                            >明星AI项目被曝抄袭中国团队</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9457-d053-7cc3-8f32-39a84d23a9b8" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA&#x27;S BSE 50 INDEX EXTENDS GAINS TO 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28353287&amp;topic_name=%E7%8E%A9%E5%AE%B6AI%E7%94%9F%E5%9B%BE%E6%8D%A7%E6%B4%9B%E5%85%8B%2C%E7%BD%91%E5%8F%8B%E4%B8%80%E7%A7%92%E6%88%B3%E7%A9%BF" 
+                                class="news-link" 
+                                target="_blank"
+                            >玩家AI生图捧洛克,网友一秒戳穿</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9448-79b9-7cc3-8f32-177cd8cf5deb" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;CHINA STAR 50 INDEX EXTENDS GAINS TO 1%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9446-c773-7cc3-8f32-043a8b24d8fb" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: OVERALL, CONDITIONS REMAIN SUPPORTIVE FOR CONTINUED SOLID GROWTH IN ENTERPRISE IMPORTS AND EXPORTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9442-1019-7cc3-8f31-e83f72915525" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: DAILY TOKEN USAGE EXCEEDS 140 TRILLION, UP 40% FROM END OF LAST YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-da6c-7cc3-8f31-e655198ecb38" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: CHINA&#x27;S ECONOMY FACES SOME DIFFICULTIES AND CHALLENGES AS GLOBAL UNCERTAINTIES ARE EXPECTED TO INCREASE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-c01d-7cc3-8f31-dcbbec796a3f" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: AI’S SPILLOVER EFFECTS ARE EXTENDING UPSTREAM INTO SECTORS SUCH AS RAW MATERIALS, CHEMICALS, AND POWER SUPPLY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-6cc8-7cc3-8f31-d25ba875f8e4" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: CHINA’S AI COMMERCIALIZATION AND LARGE-SCALE APPLICATION HAVE ACHIEVED PHASED BREAKTHROUGHS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d943c-94fc-7cc3-8f31-cca8397919f9" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;BAIDU UP OVER 7%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9436-cf24-7cc3-8f31-b64f240b438a" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: CHINA ABLE TO MAINTAIN RELATIVELY FAST ECONOMIC GROWTH DESPITE MIDDLE EAST CONFLICT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 3.1%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d947e-7669-7cc3-8f32-9ce718f4909c" 
+                                class="news-link" 
+                                target="_blank"
+                            >AUSTRALIA PM: HAS SECURED AN ADDITIONAL 100 MILLION LITRES OF DIESEL FROM 2 SHIPMENTS, ONE FROM BRUNEI AND ONE FROM SOUTH KOREA</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9469-41f4-7cc3-8f32-6e905ee45d79" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;CENTCOM: U.S. SERVICE MEMBERS CONTINUE TO MONITOR AND PATROL REGIONAL WATERS IN SUPPORT OF U.S. BLOCKADE ON SHIPS ENTERING OR EXITING IRANIAN PORTS&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47786791" 
+                                class="news-link" 
+                                target="_blank"
+                            >YouTube users get option to set their Shorts time limit to zero minutes</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9450-8120-7cc3-8f32-1d5af65675ee" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: DOMESTIC DEMAND CONTRIBUTED TO 84.7% OF Q1 GDP GROWTH</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9446-f995-7cc3-8f32-0aec3644f76e" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;CHINA STATS BUREAU DEPUTY HEAD: CHINA HAS AMPLE POLICY SPACE AND SUBSTANTIAL POLICY RESERVES&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9443-0fdb-7cc3-8f31-fd7dc3cae6d9" 
+                                class="news-link" 
+                                target="_blank"
+                            >China Stats Bureau: Oil Price Volatility Has Limited Impact on China Energy Mix</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9442-d357-7cc3-8f31-f41a2570b82d" 
+                                class="news-link" 
+                                target="_blank"
+                            >CHINA STATS BUREAU DEPUTY HEAD: CONDITIONS ARE IN PLACE TO ENSURE STABLE ECONOMIC PERFORMANCE AND HIGH-QUALITY GROWTH FOR THE FULL YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9439-d5e0-7cc3-8f31-bb61770ba505" 
+                                class="news-link" 
+                                target="_blank"
+                            >Lens Technology: Foldable Phone Shipments to Ramp in 2H26</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.78%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2345656" 
+                                class="news-link" 
+                                target="_blank"
+                            >算力涨价潮席卷全球！阿里、Anthropic连续调价 严重算力荒再现</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5210522" 
+                                class="news-link" 
+                                target="_blank"
+                            >算力涨价潮席卷全球，算力概念股爆发，创业板人工智能ETF涨超4%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260416120224659800" 
+                                class="news-link" 
+                                target="_blank"
+                            >马来西亚总理：马来西亚与澳大利亚达成协议，深化农业合作，包括在生产和灌溉方面分享专业知识。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-5">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #5</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32981647" 
+                                class="news-link" 
+                                target="_blank"
+                            >多地出台中考新方案：“不考不学”怎么破解，是否会造成初高中脱节？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-6">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #6</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32981257" 
+                                class="news-link" 
+                                target="_blank"
+                            >人民日报刊文： 着力纠正做“太平官”的错误政绩观</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>19 条</span>
+                            <span>占比 7.36%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d947c-dd46-7cc3-8f32-9175ca7fd3d9" 
+                                class="news-link" 
+                                target="_blank">China Data Show Economy Remains &#x27;Bifurcated&#x27;: Goldman Sachs</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-c828-7cc3-8f32-86bf38900370" 
+                                class="news-link" 
+                                target="_blank">EBA CHAIR SAYS PRIVATE CREDIT &#x27;NOT A SYSTEMIC ISSUE&#x27; FOR EUROPEAN BANKS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-aa22-7cc3-8f32-7a0f4b141e7c" 
+                                class="news-link" 
+                                target="_blank">EBA CHAIR SAYS ASSESSING CYBERSECURITY RISKS TO BANKS IS A PRIORITY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3770049" 
+                                class="news-link" 
+                                target="_blank">特斯拉AI芯片里程碑！马斯克官宣AI5成功流片，双芯性能对标Blackwell</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9473-9819-7cc3-8f32-760976a50b4f" 
+                                class="news-link" 
+                                target="_blank">ON STABLECOINS, EBA CHAIR SAYS IF EUROPEAN COMMISSION ALLOWS MULTI-ISSUANCE, IT WILL NEED SAFEGUARDS TO STOP NON-EU REDEMPTIONS FROM HARMING EU</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260416120712209800" 
+                                class="news-link" 
+                                target="_blank">卖鞋的也来做AI！“硅谷标配球鞋”公司一夜暴涨近600%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d945a-c272-7cc3-8f32-521c83402e7f" 
+                                class="news-link" 
+                                target="_blank">RBC RAISES ASML TARGET PRICE TO $1,700 FROM $1,625</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5210518" 
+                                class="news-link" 
+                                target="_blank">3年11月！&quot;AI+光储一体化第一股&quot;思格新能源刷新中国企业港股IPO最快纪录，获淡马锡、高瓴等&quot;全明星&quot;资本加持</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%98%8E%E6%98%9FAI%E9%A1%B9%E7%9B%AE%E8%A2%AB%E6%9B%9D%E6%8A%84%E8%A2%AD%E4%B8%AD%E5%9B%BD%E5%9B%A2%E9%98%9F" 
+                                class="news-link" 
+                                target="_blank">明星AI项目被曝抄袭中国团队</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9457-d053-7cc3-8f32-39a84d23a9b8" 
+                                class="news-link" 
+                                target="_blank">CHINA&#x27;S BSE 50 INDEX EXTENDS GAINS TO 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28353287&amp;topic_name=%E7%8E%A9%E5%AE%B6AI%E7%94%9F%E5%9B%BE%E6%8D%A7%E6%B4%9B%E5%85%8B%2C%E7%BD%91%E5%8F%8B%E4%B8%80%E7%A7%92%E6%88%B3%E7%A9%BF" 
+                                class="news-link" 
+                                target="_blank">玩家AI生图捧洛克,网友一秒戳穿</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9448-79b9-7cc3-8f32-177cd8cf5deb" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;CHINA STAR 50 INDEX EXTENDS GAINS TO 1%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9446-c773-7cc3-8f32-043a8b24d8fb" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: OVERALL, CONDITIONS REMAIN SUPPORTIVE FOR CONTINUED SOLID GROWTH IN ENTERPRISE IMPORTS AND EXPORTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9442-1019-7cc3-8f31-e83f72915525" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: DAILY TOKEN USAGE EXCEEDS 140 TRILLION, UP 40% FROM END OF LAST YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-da6c-7cc3-8f31-e655198ecb38" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: CHINA&#x27;S ECONOMY FACES SOME DIFFICULTIES AND CHALLENGES AS GLOBAL UNCERTAINTIES ARE EXPECTED TO INCREASE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-c01d-7cc3-8f31-dcbbec796a3f" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: AI’S SPILLOVER EFFECTS ARE EXTENDING UPSTREAM INTO SECTORS SUCH AS RAW MATERIALS, CHEMICALS, AND POWER SUPPLY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9440-6cc8-7cc3-8f31-d25ba875f8e4" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: CHINA’S AI COMMERCIALIZATION AND LARGE-SCALE APPLICATION HAVE ACHIEVED PHASED BREAKTHROUGHS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d943c-94fc-7cc3-8f31-cca8397919f9" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;BAIDU UP OVER 7%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9436-cf24-7cc3-8f31-b64f240b438a" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: CHINA ABLE TO MAINTAIN RELATIVELY FAST ECONOMIC GROWTH DESPITE MIDDLE EAST CONFLICT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>8 条</span>
+                            <span>占比 3.1%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d947e-7669-7cc3-8f32-9ce718f4909c" 
+                                class="news-link" 
+                                target="_blank">AUSTRALIA PM: HAS SECURED AN ADDITIONAL 100 MILLION LITRES OF DIESEL FROM 2 SHIPMENTS, ONE FROM BRUNEI AND ONE FROM SOUTH KOREA</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9469-41f4-7cc3-8f32-6e905ee45d79" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;CENTCOM: U.S. SERVICE MEMBERS CONTINUE TO MONITOR AND PATROL REGIONAL WATERS IN SUPPORT OF U.S. BLOCKADE ON SHIPS ENTERING OR EXITING IRANIAN PORTS&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47786791" 
+                                class="news-link" 
+                                target="_blank">YouTube users get option to set their Shorts time limit to zero minutes</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9450-8120-7cc3-8f32-1d5af65675ee" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: DOMESTIC DEMAND CONTRIBUTED TO 84.7% OF Q1 GDP GROWTH</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9446-f995-7cc3-8f32-0aec3644f76e" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;CHINA STATS BUREAU DEPUTY HEAD: CHINA HAS AMPLE POLICY SPACE AND SUBSTANTIAL POLICY RESERVES&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9443-0fdb-7cc3-8f31-fd7dc3cae6d9" 
+                                class="news-link" 
+                                target="_blank">China Stats Bureau: Oil Price Volatility Has Limited Impact on China Energy Mix</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9442-d357-7cc3-8f31-f41a2570b82d" 
+                                class="news-link" 
+                                target="_blank">CHINA STATS BUREAU DEPUTY HEAD: CONDITIONS ARE IN PLACE TO ENSURE STABLE ECONOMIC PERFORMANCE AND HIGH-QUALITY GROWTH FOR THE FULL YEAR</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019d9439-d5e0-7cc3-8f31-bb61770ba505" 
+                                class="news-link" 
+                                target="_blank">Lens Technology: Foldable Phone Shipments to Ramp in 2H26</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.78%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2345656" 
+                                class="news-link" 
+                                target="_blank">算力涨价潮席卷全球！阿里、Anthropic连续调价 严重算力荒再现</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5210522" 
+                                class="news-link" 
+                                target="_blank">算力涨价潮席卷全球，算力概念股爆发，创业板人工智能ETF涨超4%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260416120224659800" 
+                                class="news-link" 
+                                target="_blank">马来西亚总理：马来西亚与澳大利亚达成协议，深化农业合作，包括在生产和灌溉方面分享专业知识。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #5</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32981647" 
+                                class="news-link" 
+                                target="_blank">多地出台中考新方案：“不考不学”怎么破解，是否会造成初高中脱节？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #6</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.39%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_32981257" 
+                                class="news-link" 
+                                target="_blank">人民日报刊文： 着力纠正做“太平官”的错误政绩观</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时40分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
