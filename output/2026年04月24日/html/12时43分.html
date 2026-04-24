@@ -1,0 +1,1599 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="12时43分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">262</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">04-24</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12:43</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>36 条</span>
+                            <span>占比 13.74%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2030963929510310856" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek V4 预览版本上线并同步开源，哪些亮点值得关注？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47884971" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek v4</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbda9-53f2-766f-899a-1693c31b52fa" 
+                                class="news-link" 
+                                target="_blank"
+                            >JP MORGAN RAISES INTEL TARGET PRICE TO $45 FROM $35</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5217468" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI 推理需求爆发驱动 联想股价飙升越过12港元大关</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424123610967800" 
+                                class="news-link" 
+                                target="_blank"
+                            >华为：DeepSeek V4正式发布，昇腾超节点系列产品全面支持</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3770782" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek V4预览版发布：显存和算力需求大降，Agent能力领跑国内开源，体验超越Sonnet 4.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=UP%E4%B8%BB%E8%AF%84%E6%B5%8BDeepSeek%20V4" 
+                                class="news-link" 
+                                target="_blank"
+                            >UP主评测DeepSeek V4</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424122631112800" 
+                                class="news-link" 
+                                target="_blank"
+                            >寒武纪已完成DeepSeek-V4适配</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek-V4+%E9%A2%84%E8%A7%88%E7%89%88%E6%AD%A3%E5%BC%8F%E4%B8%8A%E7%BA%BF" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek-V4 预览版正式上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202604/2470139.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >强大到“比核弹还糟糕”的AI：Mythos拉响网络安全警报</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2354408" 
+                                class="news-link" 
+                                target="_blank"
+                            >“CPU重归AI核心地位”！英特尔财报会实录：半导体市场规模已近万亿美元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd8f-92e8-766f-8999-ec5809619e5f" 
+                                class="news-link" 
+                                target="_blank"
+                            >Meituan Tests Trillion-Parameter Model Trained on Domestic Compute</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=DeepSeek%20v4%20%E7%99%BE%E4%B8%87%E4%B8%8A%E4%B8%8B%E6%96%87&t=31&band_rank=8&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek v4 百万上下文</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd8a-81eb-766f-8999-de951cd9670c" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek Unveils New Flagship AI Model a Year After Breakthrough</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2354272" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI深夜王炸！GPT-5.5正式发布：更会编程和使用计算机的最强模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47882645" 
+                                class="news-link" 
+                                target="_blank"
+                            >US special forces soldier arrested after allegedly winning $400k on Maduro raid</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd89-f632-766f-8999-d7571da4e5e1" 
+                                class="news-link" 
+                                target="_blank"
+                            >HONG KONG AI MODEL FIRMS ZHIPU AND MINIMAX EXTEND LOSSES AFTER DEEPSEEK V4 RELEASE, FALLING AS MUCH AS 6.3% AND 3.9% RESPECTIVELY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=DeepSeekV4%E9%A2%84%E8%A7%88%E7%89%88%E6%9C%AC%E4%B8%8A%E7%BA%BF" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeekV4预览版本上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2030235662557951222" 
+                                class="news-link" 
+                                target="_blank"
+                            >如何看待 MiroMind 被指要求在中国孵化的 AI 大模型核心技术和团队转移到国外，否则竞业限制？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd72-e5d1-766f-8999-bb624f218700" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek Launches v4 API With Flash and Pro Models</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23DeepSeekV4%E5%8F%91%E5%B8%83%23&t=31&band_rank=14&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeekV4发布</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd65-5277-766f-8999-aecdafef64ef" 
+                                class="news-link" 
+                                target="_blank"
+                            >SAIC VW EXECUTIVE: WILL DEVELOP THE NEXT GEN ADP PLATFORM TO ADOPT THE LATEST CHIP AND INTELLIGENT TECHNOLOGIES IN CARS OF THE FOUR-LETTER AUDI BRAND</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5217455" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek V4发布且适配国产芯片，模型重大迭代带动国产算力，科创芯片设计ETF易方达(589030)、科创芯片ETF易方达(589130)涨超2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E9%87%8D%E7%A3%85%EF%BC%81DeepSeek+V4%E6%9D%A5%E4%BA%86+%E5%AE%9A%E4%BB%B7%E6%8F%AD%E6%99%93" 
+                                class="news-link" 
+                                target="_blank"
+                            >重磅！DeepSeek V4来了 定价揭晓</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-fbf9-766f-8999-a502493a8efa" 
+                                class="news-link" 
+                                target="_blank"
+                            >SAIC VW EXECUTIVE: WILL START PRE-SALE OF E7X ON MAY 8</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-d4e1-766f-8999-9c36673ed304" 
+                                class="news-link" 
+                                target="_blank"
+                            >HONG KONG CHIP STOCKS SURGE: NOVOSENSE UP OVER 13%, HUA HONG SEMICONDUCTOR RISES OVER 7%, SMIC GAINS OVER 5%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-7fca-766f-8999-963ba723eb0c" 
+                                class="news-link" 
+                                target="_blank"
+                            >SAIC VW EXECUTIVE: CHINA AND GERMANY WILL CONTRIBUTE THEIR STRONGEST CAPABILITIES TO THE FOUR-LETTER AUDI BRAND</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-712a-766f-8999-8e43d3e20344" 
+                                class="news-link" 
+                                target="_blank"
+                            >SOUTH KOREA PROSECUTOR SEEKS 30-YEAR JAIL TERM FOR EX-PRESIDENT YOON SUK YEOL IN CASE INVOLVING SUSPICION OF SENDING DRONE TO PYONGYANG - MEDIA</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424120224909800" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;a href=&quot;https://cdn.jin10.com/vip_column/index.html#/detail?id=850513&amp;skuID=1671010697886&amp;type=article&amp;courseID=225&amp;from=flash&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;https://img.jin10.com/misc/26/04/9ymXYJo1cwbwZfBZFdS2R.jpg/lite&quot; height=&quot;120&quot;/&gt;&lt;/a&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd61-bfa1-766f-8999-84a0671da0fa" 
+                                class="news-link" 
+                                target="_blank"
+                            >NIO FOUNDER, CHAIRMAN AND CEO WILLIAM LI SAYS ONVO L90 HAS DELIVERED 50,000 UNITS AS OF APRIL 3, RANKING NO. 1 IN SALES AMONG LARGE SUVS PRICED AROUND 300,000 YUAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek-V4%E4%B8%8A%E7%BA%BF+%E5%9B%BD%E4%BA%A7AI%E8%8A%AF%E7%89%87%E8%82%A1%E6%8B%89%E5%8D%87" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek-V4上线 国产AI芯片股拉升</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd61-3387-766f-8999-7f0b06b0f2bd" 
+                                class="news-link" 
+                                target="_blank"
+                            >SAIC VW EXECUTIVE: THE ESTABLISHMENT OF NEW SAIC AUDI RESEARCH CENTRE REPRESENTS THE START OF THE 3.0 ERA OF JOINT VENTURE PATNERSHIP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47885014" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd5e-69c7-766f-8999-750b305cd3be" 
+                                class="news-link" 
+                                target="_blank"
+                            >TSMC Hits Record as Taiwan Eases Fund Limits, JPMorgan Sees $6B Inflows</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd58-e1a1-766f-8999-677ff0228dcc" 
+                                class="news-link" 
+                                target="_blank"
+                            >OPENAI: SALES AND MARKETING NEED TO FEEL AGI THAN ENGINEERS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd50-481d-766f-8999-4cc047da51ed" 
+                                class="news-link" 
+                                target="_blank"
+                            >ChiNext Outperformance Driven by AI Hardware, Analysts Cite Earnings Visibility Gap</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2354518?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社4月24日电，美国俄克拉何马州北部遭龙卷风袭击，造成至少10人受伤。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424115805131800" 
+                                class="news-link" 
+                                target="_blank"
+                            >据美媒23日报道，美国俄克拉何马州北部遭龙卷风袭击，造成至少10人受伤。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd91-bde6-766f-8999-f4d2b98afd19" 
+                                class="news-link" 
+                                target="_blank"
+                            >CNH 1-Month HIBOR Hits Record Low at 1.44%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd7c-212a-766f-8999-c11aba433758" 
+                                class="news-link" 
+                                target="_blank"
+                            >FTSE CHINA A50 INDEX FUTURES DOWN 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_33035635" 
+                                class="news-link" 
+                                target="_blank"
+                            >全国首例“职场性侵认定工伤案”开庭，崔丽丽：今天是场硬仗，等我出来</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>36 条</span>
+                            <span>占比 13.74%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2030963929510310856" 
+                                class="news-link" 
+                                target="_blank">DeepSeek V4 预览版本上线并同步开源，哪些亮点值得关注？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47884971" 
+                                class="news-link" 
+                                target="_blank">DeepSeek v4</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbda9-53f2-766f-899a-1693c31b52fa" 
+                                class="news-link" 
+                                target="_blank">JP MORGAN RAISES INTEL TARGET PRICE TO $45 FROM $35</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5217468" 
+                                class="news-link" 
+                                target="_blank">AI 推理需求爆发驱动 联想股价飙升越过12港元大关</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424123610967800" 
+                                class="news-link" 
+                                target="_blank">华为：DeepSeek V4正式发布，昇腾超节点系列产品全面支持</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3770782" 
+                                class="news-link" 
+                                target="_blank">DeepSeek V4预览版发布：显存和算力需求大降，Agent能力领跑国内开源，体验超越Sonnet 4.5</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=UP%E4%B8%BB%E8%AF%84%E6%B5%8BDeepSeek%20V4" 
+                                class="news-link" 
+                                target="_blank">UP主评测DeepSeek V4</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424122631112800" 
+                                class="news-link" 
+                                target="_blank">寒武纪已完成DeepSeek-V4适配</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek-V4+%E9%A2%84%E8%A7%88%E7%89%88%E6%AD%A3%E5%BC%8F%E4%B8%8A%E7%BA%BF" 
+                                class="news-link" 
+                                target="_blank">DeepSeek-V4 预览版正式上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202604/2470139.html" 
+                                class="news-link" 
+                                target="_blank">强大到“比核弹还糟糕”的AI：Mythos拉响网络安全警报</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2354408" 
+                                class="news-link" 
+                                target="_blank">“CPU重归AI核心地位”！英特尔财报会实录：半导体市场规模已近万亿美元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd8f-92e8-766f-8999-ec5809619e5f" 
+                                class="news-link" 
+                                target="_blank">Meituan Tests Trillion-Parameter Model Trained on Domestic Compute</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=DeepSeek%20v4%20%E7%99%BE%E4%B8%87%E4%B8%8A%E4%B8%8B%E6%96%87&t=31&band_rank=8&Refer=top" 
+                                class="news-link" 
+                                target="_blank">DeepSeek v4 百万上下文</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd8a-81eb-766f-8999-de951cd9670c" 
+                                class="news-link" 
+                                target="_blank">DeepSeek Unveils New Flagship AI Model a Year After Breakthrough</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2354272" 
+                                class="news-link" 
+                                target="_blank">OpenAI深夜王炸！GPT-5.5正式发布：更会编程和使用计算机的最强模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47882645" 
+                                class="news-link" 
+                                target="_blank">US special forces soldier arrested after allegedly winning $400k on Maduro raid</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd89-f632-766f-8999-d7571da4e5e1" 
+                                class="news-link" 
+                                target="_blank">HONG KONG AI MODEL FIRMS ZHIPU AND MINIMAX EXTEND LOSSES AFTER DEEPSEEK V4 RELEASE, FALLING AS MUCH AS 6.3% AND 3.9% RESPECTIVELY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=DeepSeekV4%E9%A2%84%E8%A7%88%E7%89%88%E6%9C%AC%E4%B8%8A%E7%BA%BF" 
+                                class="news-link" 
+                                target="_blank">DeepSeekV4预览版本上线</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2030235662557951222" 
+                                class="news-link" 
+                                target="_blank">如何看待 MiroMind 被指要求在中国孵化的 AI 大模型核心技术和团队转移到国外，否则竞业限制？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd72-e5d1-766f-8999-bb624f218700" 
+                                class="news-link" 
+                                target="_blank">DeepSeek Launches v4 API With Flash and Pro Models</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23DeepSeekV4%E5%8F%91%E5%B8%83%23&t=31&band_rank=14&Refer=top" 
+                                class="news-link" 
+                                target="_blank">DeepSeekV4发布</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd65-5277-766f-8999-aecdafef64ef" 
+                                class="news-link" 
+                                target="_blank">SAIC VW EXECUTIVE: WILL DEVELOP THE NEXT GEN ADP PLATFORM TO ADOPT THE LATEST CHIP AND INTELLIGENT TECHNOLOGIES IN CARS OF THE FOUR-LETTER AUDI BRAND</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5217455" 
+                                class="news-link" 
+                                target="_blank">DeepSeek V4发布且适配国产芯片，模型重大迭代带动国产算力，科创芯片设计ETF易方达(589030)、科创芯片ETF易方达(589130)涨超2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E9%87%8D%E7%A3%85%EF%BC%81DeepSeek+V4%E6%9D%A5%E4%BA%86+%E5%AE%9A%E4%BB%B7%E6%8F%AD%E6%99%93" 
+                                class="news-link" 
+                                target="_blank">重磅！DeepSeek V4来了 定价揭晓</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-fbf9-766f-8999-a502493a8efa" 
+                                class="news-link" 
+                                target="_blank">SAIC VW EXECUTIVE: WILL START PRE-SALE OF E7X ON MAY 8</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-d4e1-766f-8999-9c36673ed304" 
+                                class="news-link" 
+                                target="_blank">HONG KONG CHIP STOCKS SURGE: NOVOSENSE UP OVER 13%, HUA HONG SEMICONDUCTOR RISES OVER 7%, SMIC GAINS OVER 5%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-7fca-766f-8999-963ba723eb0c" 
+                                class="news-link" 
+                                target="_blank">SAIC VW EXECUTIVE: CHINA AND GERMANY WILL CONTRIBUTE THEIR STRONGEST CAPABILITIES TO THE FOUR-LETTER AUDI BRAND</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd62-712a-766f-8999-8e43d3e20344" 
+                                class="news-link" 
+                                target="_blank">SOUTH KOREA PROSECUTOR SEEKS 30-YEAR JAIL TERM FOR EX-PRESIDENT YOON SUK YEOL IN CASE INVOLVING SUSPICION OF SENDING DRONE TO PYONGYANG - MEDIA</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424120224909800" 
+                                class="news-link" 
+                                target="_blank">&lt;a href=&quot;https://cdn.jin10.com/vip_column/index.html#/detail?id=850513&amp;skuID=1671010697886&amp;type=article&amp;courseID=225&amp;from=flash&quot; target=&quot;_blank&quot;&gt;&lt;img src=&quot;https://img.jin10.com/misc/26/04/9ymXYJo1cwbwZfBZFdS2R.jpg/lite&quot; height=&quot;120&quot;/&gt;&lt;/a&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd61-bfa1-766f-8999-84a0671da0fa" 
+                                class="news-link" 
+                                target="_blank">NIO FOUNDER, CHAIRMAN AND CEO WILLIAM LI SAYS ONVO L90 HAS DELIVERED 50,000 UNITS AS OF APRIL 3, RANKING NO. 1 IN SALES AMONG LARGE SUVS PRICED AROUND 300,000 YUAN</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=DeepSeek-V4%E4%B8%8A%E7%BA%BF+%E5%9B%BD%E4%BA%A7AI%E8%8A%AF%E7%89%87%E8%82%A1%E6%8B%89%E5%8D%87" 
+                                class="news-link" 
+                                target="_blank">DeepSeek-V4上线 国产AI芯片股拉升</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd61-3387-766f-8999-7f0b06b0f2bd" 
+                                class="news-link" 
+                                target="_blank">SAIC VW EXECUTIVE: THE ESTABLISHMENT OF NEW SAIC AUDI RESEARCH CENTRE REPRESENTS THE START OF THE 3.0 ERA OF JOINT VENTURE PATNERSHIP</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=47885014" 
+                                class="news-link" 
+                                target="_blank">DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd5e-69c7-766f-8999-750b305cd3be" 
+                                class="news-link" 
+                                target="_blank">TSMC Hits Record as Taiwan Eases Fund Limits, JPMorgan Sees $6B Inflows</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd58-e1a1-766f-8999-677ff0228dcc" 
+                                class="news-link" 
+                                target="_blank">OPENAI: SALES AND MARKETING NEED TO FEEL AGI THAN ENGINEERS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd50-481d-766f-8999-4cc047da51ed" 
+                                class="news-link" 
+                                target="_blank">ChiNext Outperformance Driven by AI Hardware, Analysts Cite Earnings Visibility Gap</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #2</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2354518?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">财联社4月24日电，美国俄克拉何马州北部遭龙卷风袭击，造成至少10人受伤。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260424115805131800" 
+                                class="news-link" 
+                                target="_blank">据美媒23日报道，美国俄克拉何马州北部遭龙卷风袭击，造成至少10人受伤。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.76%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd91-bde6-766f-8999-f4d2b98afd19" 
+                                class="news-link" 
+                                target="_blank">CNH 1-Month HIBOR Hits Record Low at 1.44%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019dbd7c-212a-766f-8999-c11aba433758" 
+                                class="news-link" 
+                                target="_blank">FTSE CHINA A50 INDEX FUTURES DOWN 1%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://m.thepaper.cn/newsDetail_forward_33035635" 
+                                class="news-link" 
+                                target="_blank">全国首例“职场性侵认定工伤案”开庭，崔丽丽：今天是场硬仗，等我出来</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">澎湃新闻</span>
+                    <span class="time-tag">12时43分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
