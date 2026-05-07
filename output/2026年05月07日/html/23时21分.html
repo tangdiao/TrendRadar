@@ -1,0 +1,924 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="23时21分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">234</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">05-07</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">23:21</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>13 条</span>
+                            <span>占比 5.56%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02d3-50ff-766d-bbae-b84a61fed261" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED&#x27;S HAMMACK: UNCERTAINTY OVER OUTLOOK SHOULD TRANSLATE TO POLICY UNCERTAINTY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48049160" 
+                                class="news-link" 
+                                target="_blank"
+                            >Cloudflare responded to the &quot;Copy Fail&quot; Linux vulnerability</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48050278" 
+                                class="news-link" 
+                                target="_blank"
+                            >AlphaEvolve: Gemini-powered coding agent scaling impact across fields</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3771688" 
+                                class="news-link" 
+                                target="_blank"
+                            >Anthropic与SpaceX签署300兆瓦算力协议，旨在满足AI需求增长</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02cb-9b90-766d-bbae-7e5a42fe77fa" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED&#x27;S HAMMACK: JOB MARKET REMAINS LOW HIRE, LOW FIRE ENVIRONMENT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2364817?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >【金牌纪要库】AI算力需求拉动+供给交期显著拉长，海外机床先进产能已被排产至2027年，且高端数控系统在华或出现5万至10万台年内供给缺口，这些公司迎来被动替代潜在市场增量</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c7-ef48-766d-bbae-6d73336177de" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;NVIDIA SHARES EXTEND GAIN TO SESSION-HIGH 2.2%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-d9a7-766d-bbae-384bdb1acf09" 
+                                class="news-link" 
+                                target="_blank"
+                            >GOOGLE: MAKING GOOGLE HEALTH COACH PUBLICLY AVAILABLE AS PART OF GOOGLE HEALTH PREMIUM - WEBSITE&lt;br/&gt;&lt;br/&gt;GOOGLE: PREMIUM PLANS START AT $9.99 PER MONTH OR $99 PER YEAR, ARE AUTOMATICALLY BUNDLED AS PART OF GOOGLE AI PRO &amp; ULTRA TIERS- WEBSITE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2365273?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank"
+                            >【电报解读】五年内增长24倍！高盛称企业级智能体将推动全球Token消耗量爆发式增长，算力租赁到云到大模型有望持续涨价，这家公司具备从服务器生产制造、AIDC建设到算力云服务的全产业链能力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-d3cb-766d-bbae-35ce51d71440" 
+                                class="news-link" 
+                                target="_blank"
+                            >GOOGLE: FITBIT AIR IS COMPATIBLE WITH ANDROID AND IOS AND AVAILABLE FOR PRE-ORDER, STARTING TODAY FOR $99.99&lt;br/&gt;&lt;br/&gt;GOOGLE- GOOGLE FITBIT AIR SPECIAL EDITION WILL BE AVAILABLE FOR PRE-ORDER TODAY, AND ON-SHELF IN THE U.S. MAY 26 FOR $129.99</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-2cd5-766d-bbae-20d742a78cd9" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;FED&#x27;S HAMMACK: I SEE A LOT OF UNCERTAINTY IN ECONOMIC OUTLOOK - PUBLIC RADIO&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02be-5b02-766d-bbae-199e46fffd34" 
+                                class="news-link" 
+                                target="_blank"
+                            >ZELENSKIY SAYS UKRAINE&#x27;S PEACE NEGOTIATOR WILL HOLD TALKS WITH U.S. TEAM</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02b3-6b52-766d-bbae-012bf4be7be0" 
+                                class="news-link" 
+                                target="_blank"
+                            >&lt;b&gt;ISRAELI PRIME MINISTER BENJAMIN NETANYAHU SAID HE WAS IN ‘ALMOST DAILY’ CONTACT WITH US PRESIDENT TRUMP AND THAT THERE WOULD BE ‘NO SURPRISES’ WHEN IT CAME TO US NEGOTIATIONS AROUND PEACE WITH IRAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260507/1071136667.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >日本前官员提醒称因出口武器日本有把自己卷入战争的风险</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    <span class="rank-tag">#4</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02d2-c407-766d-bbae-b0789dae42a9" 
+                                class="news-link" 
+                                target="_blank"
+                            >FED&#x27;S HAMMACK: IS WATCHING CLOSELY FOR HOW LONG IRAN WAR LASTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260507/1071137545.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >克宫：敦促所有各方认真对待俄国防部关于5月9日报复可能性的警告</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>13 条</span>
+                            <span>占比 5.56%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02d3-50ff-766d-bbae-b84a61fed261" 
+                                class="news-link" 
+                                target="_blank">FED&#x27;S HAMMACK: UNCERTAINTY OVER OUTLOOK SHOULD TRANSLATE TO POLICY UNCERTAINTY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48049160" 
+                                class="news-link" 
+                                target="_blank">Cloudflare responded to the &quot;Copy Fail&quot; Linux vulnerability</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48050278" 
+                                class="news-link" 
+                                target="_blank">AlphaEvolve: Gemini-powered coding agent scaling impact across fields</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3771688" 
+                                class="news-link" 
+                                target="_blank">Anthropic与SpaceX签署300兆瓦算力协议，旨在满足AI需求增长</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02cb-9b90-766d-bbae-7e5a42fe77fa" 
+                                class="news-link" 
+                                target="_blank">FED&#x27;S HAMMACK: JOB MARKET REMAINS LOW HIRE, LOW FIRE ENVIRONMENT</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2364817?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【金牌纪要库】AI算力需求拉动+供给交期显著拉长，海外机床先进产能已被排产至2027年，且高端数控系统在华或出现5万至10万台年内供给缺口，这些公司迎来被动替代潜在市场增量</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c7-ef48-766d-bbae-6d73336177de" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;NVIDIA SHARES EXTEND GAIN TO SESSION-HIGH 2.2%&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-d9a7-766d-bbae-384bdb1acf09" 
+                                class="news-link" 
+                                target="_blank">GOOGLE: MAKING GOOGLE HEALTH COACH PUBLICLY AVAILABLE AS PART OF GOOGLE HEALTH PREMIUM - WEBSITE&lt;br/&gt;&lt;br/&gt;GOOGLE: PREMIUM PLANS START AT $9.99 PER MONTH OR $99 PER YEAR, ARE AUTOMATICALLY BUNDLED AS PART OF GOOGLE AI PRO &amp; ULTRA TIERS- WEBSITE</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2365273?os=web&sv=8.4.6&app=CailianpressWeb" 
+                                class="news-link" 
+                                target="_blank">【电报解读】五年内增长24倍！高盛称企业级智能体将推动全球Token消耗量爆发式增长，算力租赁到云到大模型有望持续涨价，这家公司具备从服务器生产制造、AIDC建设到算力云服务的全产业链能力</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-d3cb-766d-bbae-35ce51d71440" 
+                                class="news-link" 
+                                target="_blank">GOOGLE: FITBIT AIR IS COMPATIBLE WITH ANDROID AND IOS AND AVAILABLE FOR PRE-ORDER, STARTING TODAY FOR $99.99&lt;br/&gt;&lt;br/&gt;GOOGLE- GOOGLE FITBIT AIR SPECIAL EDITION WILL BE AVAILABLE FOR PRE-ORDER TODAY, AND ON-SHELF IN THE U.S. MAY 26 FOR $129.99</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02c5-2cd5-766d-bbae-20d742a78cd9" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;FED&#x27;S HAMMACK: I SEE A LOT OF UNCERTAINTY IN ECONOMIC OUTLOOK - PUBLIC RADIO&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02be-5b02-766d-bbae-199e46fffd34" 
+                                class="news-link" 
+                                target="_blank">ZELENSKIY SAYS UKRAINE&#x27;S PEACE NEGOTIATOR WILL HOLD TALKS WITH U.S. TEAM</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02b3-6b52-766d-bbae-012bf4be7be0" 
+                                class="news-link" 
+                                target="_blank">&lt;b&gt;ISRAELI PRIME MINISTER BENJAMIN NETANYAHU SAID HE WAS IN ‘ALMOST DAILY’ CONTACT WITH US PRESIDENT TRUMP AND THAT THERE WOULD BE ‘NO SURPRISES’ WHEN IT CAME TO US NEGOTIATIONS AROUND PEACE WITH IRAN&lt;/b&gt;</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #2</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260507/1071136667.html" 
+                                class="news-link" 
+                                target="_blank">日本前官员提醒称因出口武器日本有把自己卷入战争的风险</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    <span class="rank-tag">#4</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e02d2-c407-766d-bbae-b0789dae42a9" 
+                                class="news-link" 
+                                target="_blank">FED&#x27;S HAMMACK: IS WATCHING CLOSELY FOR HOW LONG IRAN WAR LASTS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">23时21分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.43%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260507/1071137545.html" 
+                                class="news-link" 
+                                target="_blank">克宫：敦促所有各方认真对待俄国防部关于5月9日报复可能性的警告</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
