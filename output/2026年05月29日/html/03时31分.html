@@ -1,0 +1,1384 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="03时31分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">109</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">05-29</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">03:31</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>28 条</span>
+                            <span>占比 25.69%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e7003-2421-7eef-a302-7f277f0d6d6c" 
+                                class="news-link" 
+                                target="_blank"
+                            >BARKIN (Federal Reserve) said strong corporate earnings reduce incentives for layoffs.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e7000-b78a-7eef-a302-71a6740c30d1" 
+                                class="news-link" 
+                                target="_blank"
+                            >UN Spokesperson Says Secretary-General&#x27;s Office Remains Open To Israeli Delegation</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe7-1765-7eef-a302-405387525c11" 
+                                class="news-link" 
+                                target="_blank"
+                            >Asked whether he had asked Fed chair WARSH at breakfast to cut rates, US Treasury Secretary BESSENT declined to answer, saying only that he has never asked Powell to do so.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe6-342c-7eef-a302-3c40649d2b44" 
+                                class="news-link" 
+                                target="_blank"
+                            >BESSENT said he never asked POWELL to lower interest rates during 41 breakfasts with him.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe5-79f6-7eef-a302-36a913c96b2a" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary BESSENT said any agreement with Iran would require the Strait of Hormuz to remain fully open, and any plan to levy transit fees on the strait is an &quot;invalid proposal&quot;.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48313048" 
+                                class="news-link" 
+                                target="_blank"
+                            >Anthropic raises $65B in Series H funding at $965B post-money valuation</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe2-dc83-7eef-a302-2eb766ea7db3" 
+                                class="news-link" 
+                                target="_blank"
+                            >Treasury Secretary BESSENT met with new Fed Chair KEVIN WARSH for breakfast on Thursday.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe2-00e7-7eef-a302-20dbe0779bf5" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary BESSENT said the Treasury is preparing a new $250 banknote featuring President Trump’s portrait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48272545" 
+                                class="news-link" 
+                                target="_blank"
+                            >Using Tailscale with an OrbStack VM on macOS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe0-d8f4-7eef-a302-18df58f57da9" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary BESSENT said the United States is an AI superpower.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdf-ee2c-7eef-a302-1076cadb118e" 
+                                class="news-link" 
+                                target="_blank"
+                            >US Treasury Secretary BESSENT said Washington is using an executive order on artificial intelligence to balance innovation with security.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2042203258689672770" 
+                                class="news-link" 
+                                target="_blank"
+                            >如何看待微软取消了 Claude Code 订阅？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdf-b960-7eef-a302-0863e1317357" 
+                                class="news-link" 
+                                target="_blank"
+                            >BESSENT said on the AI executive order he is working closely with AI labs to find solutions.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fde-ad0a-7eef-a302-00f86c16b8b2" 
+                                class="news-link" 
+                                target="_blank"
+                            >ANTHROPIC Raises $65 Billion, Valued At $965 Billion, Surpassing OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260529023507958800" 
+                                class="news-link" 
+                                target="_blank"
+                            >Anthropic新一轮融资后估值达9650亿美元 超过OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48311705" 
+                                class="news-link" 
+                                target="_blank"
+                            >Dynamic Workflows in Claude Code</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-7319-7eef-a301-f9309a9bc052" 
+                                class="news-link" 
+                                target="_blank"
+                            >Night Session Main Contracts Close</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-6623-7eef-a301-f3de3f563683" 
+                                class="news-link" 
+                                target="_blank"
+                            >Shanghai Gold Exchange Gold T+D closed up 2.12% at 983.5 yuan/gram in the May 28 (Thursday) evening session. Shanghai Gold Exchange Silver T+D closed up 3.49% at 18,380 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-30c6-7eef-a301-efac22123f59" 
+                                class="news-link" 
+                                target="_blank"
+                            >BESSENT said the U.S. will continue defensive actions against Iran, but U.S. patience is not limitless.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48300280" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Open-Source AI Racing Harness</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd5-d6fe-7eef-a301-d71d0cdb8216" 
+                                class="news-link" 
+                                target="_blank"
+                            >Amazon (AMZN.O) plans to offer SpaceX&#x27;s Grok model on its flagship AI service.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd3-ad7f-7eef-a301-ca11e99be1e5" 
+                                class="news-link" 
+                                target="_blank"
+                            >BESSENT said he expects Fed Chair WARSH to take appropriate steps to balance inf and growth.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd3-8ede-7eef-a301-c7185d2f0993" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary BESSENT said on reports of a deal that the team has been in repeated contact, and that President Trump has made clear he has several red lines and will not accept a bad deal.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd1-8ed4-7eef-a301-b0afab71f5c1" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary BESSENT said nearly 2,000 vessels are waiting to depart the Gulf and that supply on the other end of the oil market will be very ample.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48298819" 
+                                class="news-link" 
+                                target="_blank"
+                            >Thornton Wilder&#x27;s Last Play Vanished into Thin Air. Or Did It?</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd0-3cfa-7eef-a301-a8ac3f542f03" 
+                                class="news-link" 
+                                target="_blank"
+                            >TASNIM NEWS, citing negotiation-team insiders, said the text of a potential memorandum of understanding has not been finalized or confirmed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fcf-ab8f-7eef-a301-a2b2f02747df" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. Treasury Secretary Bessent said he spoke with Oman&#x27;s ambassador Thursday morning; the ambassador assured there are no plans to levy transit fees on the strait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fcf-5a23-7eef-a301-9aa472338e47" 
+                                class="news-link" 
+                                target="_blank"
+                            >CBOE Global Markets plans to launch 23X5 U.S. equity trading on its CBOE EDGX exchange in December; about 20 stocks are expected to be available at launch, including the seven largest U.S. stocks.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 4.59%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6ffb-20f0-7eef-a302-68b9b9b197ca" 
+                                class="news-link" 
+                                target="_blank"
+                            >ICI: Money market fund assets rose to $7.785 trillion, the fourth consecutive week of growth.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6ff8-4189-7eef-a302-61d3230c7831" 
+                                class="news-link" 
+                                target="_blank"
+                            >Hang Seng Index futures night session closed up 0.6% at 24,995, trading 11 points below the cash index.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48309986" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Ktx – Open-source executable context layer for data agents</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48311539" 
+                                class="news-link" 
+                                target="_blank"
+                            >Trivial Pursuits</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd2-a303-7eef-a301-bde42800d95f" 
+                                class="news-link" 
+                                target="_blank"
+                            >TASNIM NEWS says reports from Western sources that an MoU between Iran and the US has been reached are inaccurate. Iran has not informed the Pakistani mediator that the text is final and will notify the Pakistani mediator and the public once it is finalized.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.92%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.douyin.com/hot/2515308" 
+                                class="news-link" 
+                                target="_blank"
+                            >够开阔生活才够鲜活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">抖音</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>28 条</span>
+                            <span>占比 25.69%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e7003-2421-7eef-a302-7f277f0d6d6c" 
+                                class="news-link" 
+                                target="_blank">BARKIN (Federal Reserve) said strong corporate earnings reduce incentives for layoffs.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e7000-b78a-7eef-a302-71a6740c30d1" 
+                                class="news-link" 
+                                target="_blank">UN Spokesperson Says Secretary-General&#x27;s Office Remains Open To Israeli Delegation</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe7-1765-7eef-a302-405387525c11" 
+                                class="news-link" 
+                                target="_blank">Asked whether he had asked Fed chair WARSH at breakfast to cut rates, US Treasury Secretary BESSENT declined to answer, saying only that he has never asked Powell to do so.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe6-342c-7eef-a302-3c40649d2b44" 
+                                class="news-link" 
+                                target="_blank">BESSENT said he never asked POWELL to lower interest rates during 41 breakfasts with him.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe5-79f6-7eef-a302-36a913c96b2a" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary BESSENT said any agreement with Iran would require the Strait of Hormuz to remain fully open, and any plan to levy transit fees on the strait is an &quot;invalid proposal&quot;.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48313048" 
+                                class="news-link" 
+                                target="_blank">Anthropic raises $65B in Series H funding at $965B post-money valuation</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe2-dc83-7eef-a302-2eb766ea7db3" 
+                                class="news-link" 
+                                target="_blank">Treasury Secretary BESSENT met with new Fed Chair KEVIN WARSH for breakfast on Thursday.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe2-00e7-7eef-a302-20dbe0779bf5" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary BESSENT said the Treasury is preparing a new $250 banknote featuring President Trump’s portrait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48272545" 
+                                class="news-link" 
+                                target="_blank">Using Tailscale with an OrbStack VM on macOS</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fe0-d8f4-7eef-a302-18df58f57da9" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary BESSENT said the United States is an AI superpower.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdf-ee2c-7eef-a302-1076cadb118e" 
+                                class="news-link" 
+                                target="_blank">US Treasury Secretary BESSENT said Washington is using an executive order on artificial intelligence to balance innovation with security.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2042203258689672770" 
+                                class="news-link" 
+                                target="_blank">如何看待微软取消了 Claude Code 订阅？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdf-b960-7eef-a302-0863e1317357" 
+                                class="news-link" 
+                                target="_blank">BESSENT said on the AI executive order he is working closely with AI labs to find solutions.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fde-ad0a-7eef-a302-00f86c16b8b2" 
+                                class="news-link" 
+                                target="_blank">ANTHROPIC Raises $65 Billion, Valued At $965 Billion, Surpassing OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260529023507958800" 
+                                class="news-link" 
+                                target="_blank">Anthropic新一轮融资后估值达9650亿美元 超过OpenAI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48311705" 
+                                class="news-link" 
+                                target="_blank">Dynamic Workflows in Claude Code</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-7319-7eef-a301-f9309a9bc052" 
+                                class="news-link" 
+                                target="_blank">Night Session Main Contracts Close</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-6623-7eef-a301-f3de3f563683" 
+                                class="news-link" 
+                                target="_blank">Shanghai Gold Exchange Gold T+D closed up 2.12% at 983.5 yuan/gram in the May 28 (Thursday) evening session. Shanghai Gold Exchange Silver T+D closed up 3.49% at 18,380 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fdc-30c6-7eef-a301-efac22123f59" 
+                                class="news-link" 
+                                target="_blank">BESSENT said the U.S. will continue defensive actions against Iran, but U.S. patience is not limitless.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48300280" 
+                                class="news-link" 
+                                target="_blank">Show HN: Open-Source AI Racing Harness</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd5-d6fe-7eef-a301-d71d0cdb8216" 
+                                class="news-link" 
+                                target="_blank">Amazon (AMZN.O) plans to offer SpaceX&#x27;s Grok model on its flagship AI service.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd3-ad7f-7eef-a301-ca11e99be1e5" 
+                                class="news-link" 
+                                target="_blank">BESSENT said he expects Fed Chair WARSH to take appropriate steps to balance inf and growth.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd3-8ede-7eef-a301-c7185d2f0993" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary BESSENT said on reports of a deal that the team has been in repeated contact, and that President Trump has made clear he has several red lines and will not accept a bad deal.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd1-8ed4-7eef-a301-b0afab71f5c1" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary BESSENT said nearly 2,000 vessels are waiting to depart the Gulf and that supply on the other end of the oil market will be very ample.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48298819" 
+                                class="news-link" 
+                                target="_blank">Thornton Wilder&#x27;s Last Play Vanished into Thin Air. Or Did It?</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd0-3cfa-7eef-a301-a8ac3f542f03" 
+                                class="news-link" 
+                                target="_blank">TASNIM NEWS, citing negotiation-team insiders, said the text of a potential memorandum of understanding has not been finalized or confirmed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fcf-ab8f-7eef-a301-a2b2f02747df" 
+                                class="news-link" 
+                                target="_blank">U.S. Treasury Secretary Bessent said he spoke with Oman&#x27;s ambassador Thursday morning; the ambassador assured there are no plans to levy transit fees on the strait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fcf-5a23-7eef-a301-9aa472338e47" 
+                                class="news-link" 
+                                target="_blank">CBOE Global Markets plans to launch 23X5 U.S. equity trading on its CBOE EDGX exchange in December; about 20 stocks are expected to be available at launch, including the seven largest U.S. stocks.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>5 条</span>
+                            <span>占比 4.59%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6ffb-20f0-7eef-a302-68b9b9b197ca" 
+                                class="news-link" 
+                                target="_blank">ICI: Money market fund assets rose to $7.785 trillion, the fourth consecutive week of growth.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6ff8-4189-7eef-a302-61d3230c7831" 
+                                class="news-link" 
+                                target="_blank">Hang Seng Index futures night session closed up 0.6% at 24,995, trading 11 points below the cash index.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48309986" 
+                                class="news-link" 
+                                target="_blank">Show HN: Ktx – Open-source executable context layer for data agents</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48311539" 
+                                class="news-link" 
+                                target="_blank">Trivial Pursuits</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019e6fd2-a303-7eef-a301-bde42800d95f" 
+                                class="news-link" 
+                                target="_blank">TASNIM NEWS says reports from Western sources that an MoU between Iran and the US has been reached are inaccurate. Iran has not informed the Pakistani mediator that the text is final and will notify the Pakistani mediator and the public once it is finalized.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.92%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.douyin.com/hot/2515308" 
+                                class="news-link" 
+                                target="_blank">够开阔生活才够鲜活</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">抖音</span>
+                    <span class="time-tag">03时31分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
