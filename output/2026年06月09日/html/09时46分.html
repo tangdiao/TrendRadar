@@ -1,0 +1,1356 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="09时46分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">266</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">06-09</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">09:46</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>24 条</span>
+                            <span>占比 9.02%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9fc-52f2-733a-9238-bd15a49008a4" 
+                                class="news-link" 
+                                target="_blank"
+                            >China A-shares opened higher: Shanghai Composite +0.46%, Shenzhen Composite +1.16%, ChiNext Index +1.41%. MLCC, memory chips, semiconductors and optical fiber sectors led gains; oilfield services/engineering and coal underperformed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394196" 
+                                class="news-link" 
+                                target="_blank"
+                            >苹果智能全面升级：AI深度整合全生态 新版本Siri登场</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2047324900080051711" 
+                                class="news-link" 
+                                target="_blank"
+                            >网友调侃 Gemini 为北美大豆包，称其为最蠢 AI，为什么会被诟病难用？你的使用感受如何？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3774148" 
+                                class="news-link" 
+                                target="_blank"
+                            >苹果WWDC 2026：Siri AI姗姗来迟，Apple Intelligence全面升级，OS集体迈入27版，股价盘中转跌</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394341?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >独家|曹操出行计划组建独立AI事业部 拟全面转型为AI原生公司</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394340?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >港股AI应用股走强 微盟集团涨近9%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/opinion/202606/0973700.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >谢伟铿：慎防反AI情绪形成风暴</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f7-af98-733a-9238-930e4f1d6981" 
+                                class="news-link" 
+                                target="_blank"
+                            >Shanghai silver main contract fell 2.00% intraday, trading at 16,281 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3774134" 
+                                class="news-link" 
+                                target="_blank"
+                            >英特尔盘前涨超14%，报道：谷歌拟下单三百万AI芯片、英伟达测试其18A工艺</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5248302" 
+                                class="news-link" 
+                                target="_blank"
+                            >江波龙(301308.SZ)：公司端侧AI存储解决方案已与AMD完成了联合调优</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394212" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI官宣已递交IPO申请文件 AI巨头资本大战或全面打响</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5248301" 
+                                class="news-link" 
+                                target="_blank"
+                            >汉得信息(300170.SZ)：公司大圣AI中台已完成国内外主流大模型适配</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394258" 
+                                class="news-link" 
+                                target="_blank"
+                            >6月9日投资避雷针：天娱数科、中望软件等公司密集澄清 没有物理AI业务</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e7-82a3-733a-9238-65ac8f654a11" 
+                                class="news-link" 
+                                target="_blank"
+                            >Shanghai Gold Exchange&#x27;s Gold T+D fell 0.21% in early trade on Tuesday June 9 to 945.15 yuan/gram; Silver T+D dropped 0.14% to 16,313.0 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394236" 
+                                class="news-link" 
+                                target="_blank"
+                            >以总理确认暂停袭击伊朗 OpenAI递交上市申请文件 | 环球市场</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e7-7454-733a-9238-5fa0b77d0c3e" 
+                                class="news-link" 
+                                target="_blank"
+                            >Taiwan Stock Exchange Weighted Index (TAIEX) opened up 467.38 points, +1.07%, at 43,970.16 on Tuesday, June 9.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e5-8823-733a-9238-4a0053f08f78" 
+                                class="news-link" 
+                                target="_blank"
+                            >MIIT and SASAC launch 2026 humanoid-robot and embodied-intelligence real-scene training campaign</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e5-1531-733a-9238-43098b3b0512" 
+                                class="news-link" 
+                                target="_blank"
+                            >At the morning open, China&#x27;s main domestic futures contracts were mixed. Coking coal dropped more than 6% and coke fell over 3%; fuel oil, caustic soda and low-sulfur fuel oil (LU) slid over 2%. Urea was down about 2%; palladium, Shanghai silver and LPG fell more than 1%. On the upside, Europe-route container freight, PTA, starch and p-xylene rose over 1%, while PET bottle chips and corn gained about 1%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e2-e96f-733a-9238-3622036311b1" 
+                                class="news-link" 
+                                target="_blank"
+                            >Japan&#x27;s Nikkei 225 index has given back earlier gains and is down 0.15%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9de-a25c-733a-9238-2b03cd59a501" 
+                                class="news-link" 
+                                target="_blank"
+                            >Caitong Fuxin periodic-open hybrid fund will suspend trading from market open on June 9, 2026 until 10:30 that morning.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9cc-23a3-733a-9237-fa5f7e7cbbd9" 
+                                class="news-link" 
+                                target="_blank"
+                            >Japan&#x27;s finance minister KATAYAMA said readiness to take decisive action remains unchanged.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48453002" 
+                                class="news-link" 
+                                target="_blank"
+                            >Show HN: Command Center, the AI coding env for people who care about quality</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9ca-c4e1-733a-9237-ee079cb1dcac" 
+                                class="news-link" 
+                                target="_blank"
+                            >Japan&#x27;s finance minister Katayama said a balance can be struck between fiscal sustainability and measures to support the economy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48452000" 
+                                class="news-link" 
+                                target="_blank"
+                            >Apple bets cheaper AI will woo small developers</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 2.26%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f9-6cee-733a-9238-a2964bbb4e9c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Hong Kong&#x27;s HSI opened down 105.13 points (-0.43%) at 24,551.93 on Tuesday, June 9; the Hang Seng Tech Index opened down 12.39 points (-0.26%) at 4,743.52; the HSCEI opened down 27.80 points (-0.33%) at 8,313.56; the Red Chip Index opened down 21.48 points (-0.50%) at 4,313.91.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48413655" 
+                                class="news-link" 
+                                target="_blank"
+                            >Looking Forward to Postgres 19: Query Hints</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f5-2f77-733a-9238-80c54315c431" 
+                                class="news-link" 
+                                target="_blank"
+                            >Financial Times reports Apollo and Blackstone have agreed a $35 bln private credit deal to fund Anthropic&#x27;s growth plans.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f3-3376-733a-9238-7f6287505f72" 
+                                class="news-link" 
+                                target="_blank"
+                            >Hang Seng futures opened the day session down 0.23% at 24,507, trading 150 points below the cash index.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e6-f0a5-733a-9238-575afd57df13" 
+                                class="news-link" 
+                                target="_blank"
+                            >FTSE China A50 index futures turned lower.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e4-eae5-733a-9238-3b950a540b89" 
+                                class="news-link" 
+                                target="_blank"
+                            >FTSE China A50 index futures opened 0.06% higher.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394337?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >【盘中宝】大厂AI产品不断推进，AI仍是全球产业叙事中最重要方向之一，机构称重视产品落地且有收入结构的细分方向，这家企业推出多个AI产品</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394225" 
+                                class="news-link" 
+                                target="_blank"
+                            >【早报】美股芯片、光通信股全线反弹，半导体指数大涨5.6%；油价冲高回落，金银探底企稳</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>24 条</span>
+                            <span>占比 9.02%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9fc-52f2-733a-9238-bd15a49008a4" 
+                                class="news-link" 
+                                target="_blank">China A-shares opened higher: Shanghai Composite +0.46%, Shenzhen Composite +1.16%, ChiNext Index +1.41%. MLCC, memory chips, semiconductors and optical fiber sectors led gains; oilfield services/engineering and coal underperformed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394196" 
+                                class="news-link" 
+                                target="_blank">苹果智能全面升级：AI深度整合全生态 新版本Siri登场</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2047324900080051711" 
+                                class="news-link" 
+                                target="_blank">网友调侃 Gemini 为北美大豆包，称其为最蠢 AI，为什么会被诟病难用？你的使用感受如何？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3774148" 
+                                class="news-link" 
+                                target="_blank">苹果WWDC 2026：Siri AI姗姗来迟，Apple Intelligence全面升级，OS集体迈入27版，股价盘中转跌</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394341?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">独家|曹操出行计划组建独立AI事业部 拟全面转型为AI原生公司</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394340?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">港股AI应用股走强 微盟集团涨近9%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/opinion/202606/0973700.html" 
+                                class="news-link" 
+                                target="_blank">谢伟铿：慎防反AI情绪形成风暴</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f7-af98-733a-9238-930e4f1d6981" 
+                                class="news-link" 
+                                target="_blank">Shanghai silver main contract fell 2.00% intraday, trading at 16,281 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3774134" 
+                                class="news-link" 
+                                target="_blank">英特尔盘前涨超14%，报道：谷歌拟下单三百万AI芯片、英伟达测试其18A工艺</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5248302" 
+                                class="news-link" 
+                                target="_blank">江波龙(301308.SZ)：公司端侧AI存储解决方案已与AMD完成了联合调优</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394212" 
+                                class="news-link" 
+                                target="_blank">OpenAI官宣已递交IPO申请文件 AI巨头资本大战或全面打响</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5248301" 
+                                class="news-link" 
+                                target="_blank">汉得信息(300170.SZ)：公司大圣AI中台已完成国内外主流大模型适配</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394258" 
+                                class="news-link" 
+                                target="_blank">6月9日投资避雷针：天娱数科、中望软件等公司密集澄清 没有物理AI业务</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e7-82a3-733a-9238-65ac8f654a11" 
+                                class="news-link" 
+                                target="_blank">Shanghai Gold Exchange&#x27;s Gold T+D fell 0.21% in early trade on Tuesday June 9 to 945.15 yuan/gram; Silver T+D dropped 0.14% to 16,313.0 yuan/kg.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394236" 
+                                class="news-link" 
+                                target="_blank">以总理确认暂停袭击伊朗 OpenAI递交上市申请文件 | 环球市场</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e7-7454-733a-9238-5fa0b77d0c3e" 
+                                class="news-link" 
+                                target="_blank">Taiwan Stock Exchange Weighted Index (TAIEX) opened up 467.38 points, +1.07%, at 43,970.16 on Tuesday, June 9.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e5-8823-733a-9238-4a0053f08f78" 
+                                class="news-link" 
+                                target="_blank">MIIT and SASAC launch 2026 humanoid-robot and embodied-intelligence real-scene training campaign</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e5-1531-733a-9238-43098b3b0512" 
+                                class="news-link" 
+                                target="_blank">At the morning open, China&#x27;s main domestic futures contracts were mixed. Coking coal dropped more than 6% and coke fell over 3%; fuel oil, caustic soda and low-sulfur fuel oil (LU) slid over 2%. Urea was down about 2%; palladium, Shanghai silver and LPG fell more than 1%. On the upside, Europe-route container freight, PTA, starch and p-xylene rose over 1%, while PET bottle chips and corn gained about 1%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e2-e96f-733a-9238-3622036311b1" 
+                                class="news-link" 
+                                target="_blank">Japan&#x27;s Nikkei 225 index has given back earlier gains and is down 0.15%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9de-a25c-733a-9238-2b03cd59a501" 
+                                class="news-link" 
+                                target="_blank">Caitong Fuxin periodic-open hybrid fund will suspend trading from market open on June 9, 2026 until 10:30 that morning.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9cc-23a3-733a-9237-fa5f7e7cbbd9" 
+                                class="news-link" 
+                                target="_blank">Japan&#x27;s finance minister KATAYAMA said readiness to take decisive action remains unchanged.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48453002" 
+                                class="news-link" 
+                                target="_blank">Show HN: Command Center, the AI coding env for people who care about quality</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9ca-c4e1-733a-9237-ee079cb1dcac" 
+                                class="news-link" 
+                                target="_blank">Japan&#x27;s finance minister Katayama said a balance can be struck between fiscal sustainability and measures to support the economy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48452000" 
+                                class="news-link" 
+                                target="_blank">Apple bets cheaper AI will woo small developers</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 2.26%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f9-6cee-733a-9238-a2964bbb4e9c" 
+                                class="news-link" 
+                                target="_blank">Hong Kong&#x27;s HSI opened down 105.13 points (-0.43%) at 24,551.93 on Tuesday, June 9; the Hang Seng Tech Index opened down 12.39 points (-0.26%) at 4,743.52; the HSCEI opened down 27.80 points (-0.33%) at 8,313.56; the Red Chip Index opened down 21.48 points (-0.50%) at 4,313.91.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48413655" 
+                                class="news-link" 
+                                target="_blank">Looking Forward to Postgres 19: Query Hints</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f5-2f77-733a-9238-80c54315c431" 
+                                class="news-link" 
+                                target="_blank">Financial Times reports Apollo and Blackstone have agreed a $35 bln private credit deal to fund Anthropic&#x27;s growth plans.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9f3-3376-733a-9238-7f6287505f72" 
+                                class="news-link" 
+                                target="_blank">Hang Seng futures opened the day session down 0.23% at 24,507, trading 150 points below the cash index.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e6-f0a5-733a-9238-575afd57df13" 
+                                class="news-link" 
+                                target="_blank">FTSE China A50 index futures turned lower.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ea9e4-eae5-733a-9238-3b950a540b89" 
+                                class="news-link" 
+                                target="_blank">FTSE China A50 index futures opened 0.06% higher.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2394337?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">【盘中宝】大厂AI产品不断推进，AI仍是全球产业叙事中最重要方向之一，机构称重视产品落地且有收入结构的细分方向，这家企业推出多个AI产品</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.38%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2394225" 
+                                class="news-link" 
+                                target="_blank">【早报】美股芯片、光通信股全线反弹，半导体指数大涨5.6%；油价冲高回落，金银探底企稳</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">09时46分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
