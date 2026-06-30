@@ -1,0 +1,1355 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="17时24分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">314</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">06-30</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">17:24</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>18 条</span>
+                            <span>占比 5.73%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c3-596c-7aab-8c2f-264a0809120a" 
+                                class="news-link" 
+                                target="_blank"
+                            >NVIDIA recruiting robotics teams in Beijing, Shanghai and Shenzhen</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/my-zodiac-ai?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >My Zodiac AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2055040930516824522" 
+                                class="news-link" 
+                                target="_blank"
+                            >如何评价 deepseek2026 年 6 月 29 日再次调整收费标准？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/china/202606/3075336.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >美团发布首个使用国产算力集群训练的AI模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/domainbase?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >Domainbase</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/findloc-ai-business-location-research?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >findloc.ai</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/ai-partner?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI Partner</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c2-3fbb-7aab-8c2e-d37f844693a6" 
+                                class="news-link" 
+                                target="_blank"
+                            >Greece May PPI rose 13.5% YoY, up from April&#x27;s 12.8%. Greece April retail sales fell 0.1% YoY, down from March&#x27;s 3.0% gain.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/lumenta-ai?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >Lumenta AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c2-2d65-7aab-8c2e-ce18ac7f70c9" 
+                                class="news-link" 
+                                target="_blank"
+                            >CRRC Corp said the company and its subsidiaries signed several major contracts mainly between April and June 2026, with aggregate value of about 51.64 billion yuan.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17bb-52f6-7aab-8c2e-c0149b21a81d" 
+                                class="news-link" 
+                                target="_blank"
+                            >Zelenskiy said Ukrainian forces again struck a satellite communications center in Russia&#x27;s Moscow region, the second such attack.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b6-e2eb-7aab-8c2e-b6f339534b66" 
+                                class="news-link" 
+                                target="_blank"
+                            >US says it has secured over $6 bln via NATO &#x27;Ukraine Priority Needs List&#x27; mechanism</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/insure-with-ease-glba-naic-compliant?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >Insure With Ease GLBA &amp; NAIC Compliant</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b4-fb71-7aab-8c2e-a031af5f68c9" 
+                                class="news-link" 
+                                target="_blank"
+                            >Scandinavian Airlines (SAS) has ordered up to 40 Airbus widebody jets in a deal valued at more than $10 billion.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b4-48b8-7aab-8c2e-9acab1eec0f3" 
+                                class="news-link" 
+                                target="_blank"
+                            >Tver region governor said debris from a Ukrainian drone struck a country house, killing a 61-year-old woman.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17aa-8265-7aab-8c2e-65a299200f10" 
+                                class="news-link" 
+                                target="_blank"
+                            >BANK OF JAPAN board member Sato Ayano said core CPI is not very strong, but wholesale inflation is relatively strong, so policymakers must take a comprehensive view of all data.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a9-8ad4-7aab-8c2e-5d2e7ceadf84" 
+                                class="news-link" 
+                                target="_blank"
+                            >ROMANIAN DEFENCE MINISTRY said explosive ordnance disposal teams found and safely detonated drone debris in Tulcea county near the Ukrainian border. Preliminary investigation indicates the fragments are from weapons Russia used in its April attack on Ukraine.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a8-a120-7aab-8c2e-424913ff2a2d" 
+                                class="news-link" 
+                                target="_blank"
+                            >EU will allocate half of the quota to countries that have signed free trade agreements with the EU; the remaining half will be open to all countries.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 1.91%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48698648" 
+                                class="news-link" 
+                                target="_blank"
+                            >Logical Physical Clocks and Consistent Snapshots in Globally Distributed DB [pdf]</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48679762" 
+                                class="news-link" 
+                                target="_blank"
+                            >The operating cost starts after the demo</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202606/3075315.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >WhatsApp将提供用户名 无须向联系人透露电话号码</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17ac-33d1-7aab-8c2e-7d4e67a8871f" 
+                                class="news-link" 
+                                target="_blank"
+                            >GME energy and commodities data platform reports Oman crude&#x27;s August official selling price calculated at $79.09/bbl, down $22.91 from $102/bbl in July.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17ab-8ed1-7aab-8c2e-68658afd6ed2" 
+                                class="news-link" 
+                                target="_blank"
+                            >Ministry of Finance: Jan–May, China&#x27;s state-owned and state-controlled enterprises saw total operating revenue decline 0.7% YoY while aggregate profits rose 3.5% YoY.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a9-02e1-7aab-8c2e-4e0d9e45fa25" 
+                                class="news-link" 
+                                target="_blank"
+                            >EU to enforce stricter &quot;smelting and casting&quot; origin-tracing rules to identify the original production source of steel and prevent tariff circumvention. It will apply a 50% out-of-quota ad valorem tariff to 26 categories of steel imports into the EU.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 0.96%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28355758&amp;topic_name=%E5%86%85%E5%8D%B7%E5%AE%B3%E4%BA%BA%2CCOSER%E5%8E%9F%E5%9C%B0%E5%B4%A9%E6%BA%83" 
+                                class="news-link" 
+                                target="_blank"
+                            >内卷害人,COSER原地崩溃</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/topic/2049932211311178031/hot" 
+                                class="news-link" 
+                                target="_blank"
+                            >你见过哪些「卷得像要去考研」的手工作品？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28355756&amp;topic_name=%E6%97%A5%E6%9C%AC%E6%B7%98%E6%B1%B0%E8%B5%9B%E7%99%BD%E5%8D%B7%2C%E5%9B%9B%E5%BC%BA%E5%85%A8%E9%9D%A0%E5%90%B9" 
+                                class="news-link" 
+                                target="_blank"
+                            >日本淘汰赛白卷,四强全靠吹</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 0.96%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260630/1072119743.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >波兰防长：乌克兰不分享无人机技术，就得不到米格-29</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    <span class="rank-tag">#5</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/4146954_103_1" 
+                                class="news-link" 
+                                target="_blank"
+                            >劳埃德银行（Lloyds）将在2030年重点拓展财富管理和职场养老金业务。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2048064764694245412" 
+                                class="news-link" 
+                                target="_blank"
+                            >如果把《爱情公寓》放到现在，它还是年轻人理想中的合租生活吗？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-5">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #5</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.32%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5260356" 
+                                class="news-link" 
+                                target="_blank"
+                            >尚太科技(001301.SZ)：拟注册发行银行间债券市场非金融企业债务融资工具</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>18 条</span>
+                            <span>占比 5.73%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c3-596c-7aab-8c2f-264a0809120a" 
+                                class="news-link" 
+                                target="_blank">NVIDIA recruiting robotics teams in Beijing, Shanghai and Shenzhen</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/my-zodiac-ai?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">My Zodiac AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2055040930516824522" 
+                                class="news-link" 
+                                target="_blank">如何评价 deepseek2026 年 6 月 29 日再次调整收费标准？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/china/202606/3075336.html" 
+                                class="news-link" 
+                                target="_blank">美团发布首个使用国产算力集群训练的AI模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/domainbase?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">Domainbase</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/findloc-ai-business-location-research?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">findloc.ai</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/ai-partner?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">AI Partner</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c2-3fbb-7aab-8c2e-d37f844693a6" 
+                                class="news-link" 
+                                target="_blank">Greece May PPI rose 13.5% YoY, up from April&#x27;s 12.8%. Greece April retail sales fell 0.1% YoY, down from March&#x27;s 3.0% gain.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/lumenta-ai?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">Lumenta AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17c2-2d65-7aab-8c2e-ce18ac7f70c9" 
+                                class="news-link" 
+                                target="_blank">CRRC Corp said the company and its subsidiaries signed several major contracts mainly between April and June 2026, with aggregate value of about 51.64 billion yuan.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17bb-52f6-7aab-8c2e-c0149b21a81d" 
+                                class="news-link" 
+                                target="_blank">Zelenskiy said Ukrainian forces again struck a satellite communications center in Russia&#x27;s Moscow region, the second such attack.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b6-e2eb-7aab-8c2e-b6f339534b66" 
+                                class="news-link" 
+                                target="_blank">US says it has secured over $6 bln via NATO &#x27;Ukraine Priority Needs List&#x27; mechanism</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/insure-with-ease-glba-naic-compliant?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">Insure With Ease GLBA &amp; NAIC Compliant</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b4-fb71-7aab-8c2e-a031af5f68c9" 
+                                class="news-link" 
+                                target="_blank">Scandinavian Airlines (SAS) has ordered up to 40 Airbus widebody jets in a deal valued at more than $10 billion.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17b4-48b8-7aab-8c2e-9acab1eec0f3" 
+                                class="news-link" 
+                                target="_blank">Tver region governor said debris from a Ukrainian drone struck a country house, killing a 61-year-old woman.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17aa-8265-7aab-8c2e-65a299200f10" 
+                                class="news-link" 
+                                target="_blank">BANK OF JAPAN board member Sato Ayano said core CPI is not very strong, but wholesale inflation is relatively strong, so policymakers must take a comprehensive view of all data.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a9-8ad4-7aab-8c2e-5d2e7ceadf84" 
+                                class="news-link" 
+                                target="_blank">ROMANIAN DEFENCE MINISTRY said explosive ordnance disposal teams found and safely detonated drone debris in Tulcea county near the Ukrainian border. Preliminary investigation indicates the fragments are from weapons Russia used in its April attack on Ukraine.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a8-a120-7aab-8c2e-424913ff2a2d" 
+                                class="news-link" 
+                                target="_blank">EU will allocate half of the quota to countries that have signed free trade agreements with the EU; the remaining half will be open to all countries.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>6 条</span>
+                            <span>占比 1.91%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48698648" 
+                                class="news-link" 
+                                target="_blank">Logical Physical Clocks and Consistent Snapshots in Globally Distributed DB [pdf]</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=48679762" 
+                                class="news-link" 
+                                target="_blank">The operating cost starts after the demo</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202606/3075315.html" 
+                                class="news-link" 
+                                target="_blank">WhatsApp将提供用户名 无须向联系人透露电话号码</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17ac-33d1-7aab-8c2e-7d4e67a8871f" 
+                                class="news-link" 
+                                target="_blank">GME energy and commodities data platform reports Oman crude&#x27;s August official selling price calculated at $79.09/bbl, down $22.91 from $102/bbl in July.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17ab-8ed1-7aab-8c2e-68658afd6ed2" 
+                                class="news-link" 
+                                target="_blank">Ministry of Finance: Jan–May, China&#x27;s state-owned and state-controlled enterprises saw total operating revenue decline 0.7% YoY while aggregate profits rose 3.5% YoY.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019f17a9-02e1-7aab-8c2e-4e0d9e45fa25" 
+                                class="news-link" 
+                                target="_blank">EU to enforce stricter &quot;smelting and casting&quot; origin-tracing rules to identify the original production source of steel and prevent tariff circumvention. It will apply a 50% out-of-quota ad valorem tariff to 26 categories of steel imports into the EU.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 0.96%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28355758&amp;topic_name=%E5%86%85%E5%8D%B7%E5%AE%B3%E4%BA%BA%2CCOSER%E5%8E%9F%E5%9C%B0%E5%B4%A9%E6%BA%83" 
+                                class="news-link" 
+                                target="_blank">内卷害人,COSER原地崩溃</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/topic/2049932211311178031/hot" 
+                                class="news-link" 
+                                target="_blank">你见过哪些「卷得像要去考研」的手工作品？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28355756&amp;topic_name=%E6%97%A5%E6%9C%AC%E6%B7%98%E6%B1%B0%E8%B5%9B%E7%99%BD%E5%8D%B7%2C%E5%9B%9B%E5%BC%BA%E5%85%A8%E9%9D%A0%E5%90%B9" 
+                                class="news-link" 
+                                target="_blank">日本淘汰赛白卷,四强全靠吹</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 经验 职场 生活 分享  #4</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 0.96%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://sputniknews.cn/20260630/1072119743.html" 
+                                class="news-link" 
+                                target="_blank">波兰防长：乌克兰不分享无人机技术，就得不到米格-29</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">俄罗斯卫星通讯社</span>
+                    <span class="rank-tag">#5</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.fastbull.com/cn/fastshort/4146954_103_1" 
+                                class="news-link" 
+                                target="_blank">劳埃德银行（Lloyds）将在2030年重点拓展财富管理和职场养老金业务。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">快牛</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2048064764694245412" 
+                                class="news-link" 
+                                target="_blank">如果把《爱情公寓》放到现在，它还是年轻人理想中的合租生活吗？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 工具 羊毛 福利 破解  #5</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.32%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.gelonghui.com/news/5260356" 
+                                class="news-link" 
+                                target="_blank">尚太科技(001301.SZ)：拟注册发行银行间债券市场非金融企业债务融资工具</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">格隆汇</span>
+                    <span class="time-tag">17时24分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
