@@ -1,0 +1,1412 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="23时51分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">224</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">07-31</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">23:51</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>32 条</span>
+                            <span>占比 14.29%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3778379" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI暴力反弹“昙花一现”，美股指转跌，存储股走低，亚马逊逆市涨超14%，日元走强重回159，油价涨超2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d2-a1f1-7aab-8f39-ef58003f7621" 
+                                class="news-link" 
+                                target="_blank"
+                            >European equities on Friday, July 31: Germany&#x27;s DAX closed up 68.42 points (+0.27%) at 25,642.92; Britain&#x27;s FTSE 100 closed down 21.08 points (-0.19%) at 10,876.19; France&#x27;s CAC 40 closed up 24.00 points (+0.28%) at 8,509.64; STOXX Europe 50 closed up 14.95 points (+0.24%) at 6,359.35; Spain&#x27;s IBEX 35 closed up 15.58 points (+0.08%) at 19,773.28; Italy&#x27;s FTSE MIB closed up 52.62 points (+0.10%) at 52,157.00.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d1-d711-7aab-8f39-e5dc33c19f6f" 
+                                class="news-link" 
+                                target="_blank"
+                            >U.S. President Trump praised the stock market.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202607/3177755.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >路透：中国军事研究员蒸馏美国前沿AI模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d0-e453-7aab-8f39-d2bb52e17af4" 
+                                class="news-link" 
+                                target="_blank"
+                            >Chevron (CVX.N) CEO said the company is in talks with multiple parties that may involve Iraqi pipeline projects.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d0-7bda-7aab-8f39-cb6a1e26dffe" 
+                                class="news-link" 
+                                target="_blank"
+                            >Trump said the Minnesota cyberattack should not be blamed on Iran.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230749877800" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI：通过Codex账户完成的工作，占每周输出Tokens总量的99.8%。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=DeepSeek%E6%8B%9F%E5%9C%A8%E5%86%85%E8%92%99%E5%8F%A4%E5%BB%BA%E8%B6%85%E7%AE%97%E4%B8%AD%E5%BF%83" 
+                                class="news-link" 
+                                target="_blank"
+                            >DeepSeek拟在内蒙古建超算中心</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ce-876e-7aab-8f39-c3479b9c4753" 
+                                class="news-link" 
+                                target="_blank"
+                            >Islamic Republic of Iran Broadcasting (IRIB) reports an explosion in Kuwait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230540746800" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI：我们的模型现在覆盖超过两百万家企业。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230518925800" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI：我们的模型现在拥有超过十亿活跃用户。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c8-8036-7aab-8f39-b73d02aa1875" 
+                                class="news-link" 
+                                target="_blank"
+                            >Romania&#x27;s prime minister said he has held talks with Ukraine and plans to import electricity during peak-demand hours.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c6-dc95-7aab-8f39-a8248a67047b" 
+                                class="news-link" 
+                                target="_blank"
+                            >Romania&#x27;s prime minister said the government will undertake engineering works on the Danube to redirect water flow and ensure the second nuclear reactor remains connected to the grid.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3778378" 
+                                class="news-link" 
+                                target="_blank"
+                            >市场不相信“神话”：“AI股神”死于杠杆？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c3-9d07-7aab-8f39-988e581cf8cd" 
+                                class="news-link" 
+                                target="_blank"
+                            >Romania&#x27;s prime minister declared a national state of emergency due to power supply shortages; the measure will remain in effect until August.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2443064?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社7月31日电，OpenAI表示其模型目前已覆盖超过10亿活跃用户。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c2-7e7d-7aab-8f39-94dcc078417e" 
+                                class="news-link" 
+                                target="_blank"
+                            >Chevron (CVX.N) raised the nameplate oil capacity of the third-generation facility at Kazakhstan&#x27;s Tengiz field to 320,000 bpd.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8bf-53e6-7aab-8f39-8bdb688133e0" 
+                                class="news-link" 
+                                target="_blank"
+                            >Chevron (CVX.N) CEO said the CPC pipeline is operating and vessels are still loading this week.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b7-b57c-7aab-8f39-8477fbad9782" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI said work completed via Codex accounts accounted for 99.8% of weekly output tokens.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b5-c1e2-7aab-8f39-7a4f934166fb" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI says its models now cover more than 2 mln companies.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b5-69c2-7aab-8f39-75e05a65ac5b" 
+                                class="news-link" 
+                                target="_blank"
+                            >OpenAI says its models now have over 1 billion active users.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E5%8D%8E%E5%B0%94%E8%A1%97AI%E8%82%A1%E7%A5%9E%E9%AB%98%E6%9D%A0%E6%9D%86%E7%88%86%E4%BB%93%E5%87%BA%E5%B1%80%23&t=31&band_rank=19&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >华尔街AI股神高杠杆爆仓出局</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b1-254c-7aab-8f39-5d59a0340289" 
+                                class="news-link" 
+                                target="_blank"
+                            >As of the 23:00 close, China&#x27;s main futures mostly rose. Low-sulfur fuel oil (LU) advanced more than 3%; asphalt and LPG gained over 2%; plastics, PX, PTA, propylene and fuel oil rose above 1%. On the downside, iron ore dropped nearly 3%; coke, coking coal, soda ash and glass fell more than 1%; pulp and rebar slipped about 1%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ae-2ffe-7aab-8f39-4d73fee3823c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Hungary plans to add 4 GW of wind power capacity by 2030 to diversify its energy mix, the prime minister said.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=49122994" 
+                                class="news-link" 
+                                target="_blank"
+                            >Situational Awareness Down 67% in July in AI Stock Rout</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ad-326e-7aab-8f39-3da2180f628d" 
+                                class="news-link" 
+                                target="_blank"
+                            >China&#x27;s latest national centralized drug procurement round added 65 products, Xinhua said.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2443041?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >美股AI硬件个股快速走弱 费城半导体指数回吐5%涨幅而转跌</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731224512482800" 
+                                class="news-link" 
+                                target="_blank"
+                            >加拿大帝国商业银行引入企业级代理AI工作区。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ab-f666-7aab-8f39-2f35847e8373" 
+                                class="news-link" 
+                                target="_blank"
+                            >Timiraos: The FOMC statement and Chairman Kevin Warsh’s opening remarks at the press conference offered some information on recent economic developments. Warsh briefly outlined the major issues discussed at the meeting but did not provide the detailed policy rationales set out in Friday’s dissenting statements from Fed voters including Kashkari.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a7-1a8d-7aab-8f39-15145c4692d1" 
+                                class="news-link" 
+                                target="_blank"
+                            >Vale CEO says iron ore market fundamentals remain strong.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a4-b560-7aab-8f39-0f2486f9a085" 
+                                class="news-link" 
+                                target="_blank"
+                            >TIMIRAOS: Three Fed officials favoring further hikes arguably offered more justification than most FOMC members in Wednesday’s statement or press briefing. Logan reiterated her view from two weeks ago that, excluding recent shocks, underlying inflation is near 2.5%, which she said provides a basis for tighter policy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a3-d25f-7aab-8f39-0067aa3001db" 
+                                class="news-link" 
+                                target="_blank"
+                            >India&#x27;s foreign minister said India has noted Iran&#x27;s views on the current situation and ongoing talks and reiterated support for dialogue and diplomacy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 1.79%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8cb-b844-7aab-8f39-bc91f5166b69" 
+                                class="news-link" 
+                                target="_blank"
+                            >Politico reports Trump&#x27;s approval rating in his second term has fallen to its lowest level.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b3-4b6f-7aab-8f39-696294e55eb4" 
+                                class="news-link" 
+                                target="_blank"
+                            >CSRC issues nine penalties in one day; six securities firms&#x27; IB units targeted</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ae-70a9-7aab-8f39-505b59e6eb65" 
+                                class="news-link" 
+                                target="_blank"
+                            >US wheat fell 4.00% intraday to 635.75 cents/bushel.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a9-8571-7aab-8f39-1e2b10aa1b40" 
+                                class="news-link" 
+                                target="_blank"
+                            >TIMIRAOS: Dissenters are not all making the same arguments. Kashkari is more inclined than Logan to view policy tightening as a risk-management choice.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>32 条</span>
+                            <span>占比 14.29%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3778379" 
+                                class="news-link" 
+                                target="_blank">AI暴力反弹“昙花一现”，美股指转跌，存储股走低，亚马逊逆市涨超14%，日元走强重回159，油价涨超2%</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d2-a1f1-7aab-8f39-ef58003f7621" 
+                                class="news-link" 
+                                target="_blank">European equities on Friday, July 31: Germany&#x27;s DAX closed up 68.42 points (+0.27%) at 25,642.92; Britain&#x27;s FTSE 100 closed down 21.08 points (-0.19%) at 10,876.19; France&#x27;s CAC 40 closed up 24.00 points (+0.28%) at 8,509.64; STOXX Europe 50 closed up 14.95 points (+0.24%) at 6,359.35; Spain&#x27;s IBEX 35 closed up 15.58 points (+0.08%) at 19,773.28; Italy&#x27;s FTSE MIB closed up 52.62 points (+0.10%) at 52,157.00.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d1-d711-7aab-8f39-e5dc33c19f6f" 
+                                class="news-link" 
+                                target="_blank">U.S. President Trump praised the stock market.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zaochenbao.com/news/politics/202607/3177755.html" 
+                                class="news-link" 
+                                target="_blank">路透：中国军事研究员蒸馏美国前沿AI模型</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">联合早报</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d0-e453-7aab-8f39-d2bb52e17af4" 
+                                class="news-link" 
+                                target="_blank">Chevron (CVX.N) CEO said the company is in talks with multiple parties that may involve Iraqi pipeline projects.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8d0-7bda-7aab-8f39-cb6a1e26dffe" 
+                                class="news-link" 
+                                target="_blank">Trump said the Minnesota cyberattack should not be blamed on Iran.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230749877800" 
+                                class="news-link" 
+                                target="_blank">OpenAI：通过Codex账户完成的工作，占每周输出Tokens总量的99.8%。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://search.bilibili.com/all?keyword=DeepSeek%E6%8B%9F%E5%9C%A8%E5%86%85%E8%92%99%E5%8F%A4%E5%BB%BA%E8%B6%85%E7%AE%97%E4%B8%AD%E5%BF%83" 
+                                class="news-link" 
+                                target="_blank">DeepSeek拟在内蒙古建超算中心</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">bilibili 热搜</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ce-876e-7aab-8f39-c3479b9c4753" 
+                                class="news-link" 
+                                target="_blank">Islamic Republic of Iran Broadcasting (IRIB) reports an explosion in Kuwait.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230540746800" 
+                                class="news-link" 
+                                target="_blank">OpenAI：我们的模型现在覆盖超过两百万家企业。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731230518925800" 
+                                class="news-link" 
+                                target="_blank">OpenAI：我们的模型现在拥有超过十亿活跃用户。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c8-8036-7aab-8f39-b73d02aa1875" 
+                                class="news-link" 
+                                target="_blank">Romania&#x27;s prime minister said he has held talks with Ukraine and plans to import electricity during peak-demand hours.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c6-dc95-7aab-8f39-a8248a67047b" 
+                                class="news-link" 
+                                target="_blank">Romania&#x27;s prime minister said the government will undertake engineering works on the Danube to redirect water flow and ensure the second nuclear reactor remains connected to the grid.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3778378" 
+                                class="news-link" 
+                                target="_blank">市场不相信“神话”：“AI股神”死于杠杆？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c3-9d07-7aab-8f39-988e581cf8cd" 
+                                class="news-link" 
+                                target="_blank">Romania&#x27;s prime minister declared a national state of emergency due to power supply shortages; the measure will remain in effect until August.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2443064?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">财联社7月31日电，OpenAI表示其模型目前已覆盖超过10亿活跃用户。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8c2-7e7d-7aab-8f39-94dcc078417e" 
+                                class="news-link" 
+                                target="_blank">Chevron (CVX.N) raised the nameplate oil capacity of the third-generation facility at Kazakhstan&#x27;s Tengiz field to 320,000 bpd.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8bf-53e6-7aab-8f39-8bdb688133e0" 
+                                class="news-link" 
+                                target="_blank">Chevron (CVX.N) CEO said the CPC pipeline is operating and vessels are still loading this week.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b7-b57c-7aab-8f39-8477fbad9782" 
+                                class="news-link" 
+                                target="_blank">OpenAI said work completed via Codex accounts accounted for 99.8% of weekly output tokens.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b5-c1e2-7aab-8f39-7a4f934166fb" 
+                                class="news-link" 
+                                target="_blank">OpenAI says its models now cover more than 2 mln companies.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b5-69c2-7aab-8f39-75e05a65ac5b" 
+                                class="news-link" 
+                                target="_blank">OpenAI says its models now have over 1 billion active users.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E5%8D%8E%E5%B0%94%E8%A1%97AI%E8%82%A1%E7%A5%9E%E9%AB%98%E6%9D%A0%E6%9D%86%E7%88%86%E4%BB%93%E5%87%BA%E5%B1%80%23&t=31&band_rank=19&Refer=top" 
+                                class="news-link" 
+                                target="_blank">华尔街AI股神高杠杆爆仓出局</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b1-254c-7aab-8f39-5d59a0340289" 
+                                class="news-link" 
+                                target="_blank">As of the 23:00 close, China&#x27;s main futures mostly rose. Low-sulfur fuel oil (LU) advanced more than 3%; asphalt and LPG gained over 2%; plastics, PX, PTA, propylene and fuel oil rose above 1%. On the downside, iron ore dropped nearly 3%; coke, coking coal, soda ash and glass fell more than 1%; pulp and rebar slipped about 1%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ae-2ffe-7aab-8f39-4d73fee3823c" 
+                                class="news-link" 
+                                target="_blank">Hungary plans to add 4 GW of wind power capacity by 2030 to diversify its energy mix, the prime minister said.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ycombinator.com/item?id=49122994" 
+                                class="news-link" 
+                                target="_blank">Situational Awareness Down 67% in July in AI Stock Rout</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">黑客新闻</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ad-326e-7aab-8f39-3da2180f628d" 
+                                class="news-link" 
+                                target="_blank">China&#x27;s latest national centralized drug procurement round added 65 products, Xinhua said.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2443041?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">美股AI硬件个股快速走弱 费城半导体指数回吐5%涨幅而转跌</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260731224512482800" 
+                                class="news-link" 
+                                target="_blank">加拿大帝国商业银行引入企业级代理AI工作区。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ab-f666-7aab-8f39-2f35847e8373" 
+                                class="news-link" 
+                                target="_blank">Timiraos: The FOMC statement and Chairman Kevin Warsh’s opening remarks at the press conference offered some information on recent economic developments. Warsh briefly outlined the major issues discussed at the meeting but did not provide the detailed policy rationales set out in Friday’s dissenting statements from Fed voters including Kashkari.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a7-1a8d-7aab-8f39-15145c4692d1" 
+                                class="news-link" 
+                                target="_blank">Vale CEO says iron ore market fundamentals remain strong.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a4-b560-7aab-8f39-0f2486f9a085" 
+                                class="news-link" 
+                                target="_blank">TIMIRAOS: Three Fed officials favoring further hikes arguably offered more justification than most FOMC members in Wednesday’s statement or press briefing. Logan reiterated her view from two weeks ago that, excluding recent shocks, underlying inflation is near 2.5%, which she said provides a basis for tighter policy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a3-d25f-7aab-8f39-0067aa3001db" 
+                                class="news-link" 
+                                target="_blank">India&#x27;s foreign minister said India has noted Iran&#x27;s views on the current situation and ongoing talks and reiterated support for dialogue and diplomacy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>4 条</span>
+                            <span>占比 1.79%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8cb-b844-7aab-8f39-bc91f5166b69" 
+                                class="news-link" 
+                                target="_blank">Politico reports Trump&#x27;s approval rating in his second term has fallen to its lowest level.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8b3-4b6f-7aab-8f39-696294e55eb4" 
+                                class="news-link" 
+                                target="_blank">CSRC issues nine penalties in one day; six securities firms&#x27; IB units targeted</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8ae-70a9-7aab-8f39-505b59e6eb65" 
+                                class="news-link" 
+                                target="_blank">US wheat fell 4.00% intraday to 635.75 cents/bushel.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fb8a9-8571-7aab-8f39-1e2b10aa1b40" 
+                                class="news-link" 
+                                target="_blank">TIMIRAOS: Dissenters are not all making the same arguments. Kashkari is more inclined than Logan to view policy tightening as a risk-management choice.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">23时51分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
