@@ -1,0 +1,981 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="01时48分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">91</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">08-03</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">01:48</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>21 条</span>
+                            <span>占比 23.08%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc389-0f4e-7aab-8f48-67a6bcb91abb" 
+                                class="news-link" 
+                                target="_blank"
+                            >Qatar&#x27;s foreign ministry said the prime minister and foreign minister, in a call with Egypt&#x27;s foreign minister, discussed efforts to ease regional tensions and urged all parties to pursue dialogue and safeguard freedom of navigation through the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc387-c986-7aab-8f48-58e31c25ded0" 
+                                class="news-link" 
+                                target="_blank"
+                            >Israeli officials said they were frustrated that Trump canceled planned strikes on Iran for the second time in a week, saying the last-minute reversals undermine military planning. Israeli officials now judge Trump is more likely to seek an agreement with Iran than to escalate the conflict.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc381-f390-7aab-8f48-4a58bcb97ece" 
+                                class="news-link" 
+                                target="_blank"
+                            >Israel Broadcasting Corporation reported an Israeli official said Trump&#x27;s handling of affairs makes serious preparation and planning for the future difficult.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc371-ff8a-7aab-8f48-430576999831" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran foreign ministry: Strait of Hormuz will not revert to pre-war status</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc36d-5a18-7aab-8f48-37fe26220626" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran foreign ministry spokesman said discussions with Pakistani and Turkish officials addressed warnings and responses to US threats, and that Iran would retaliate if attacked.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc369-2bd7-7aab-8f48-29424b282187" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s Foreign Ministry spokesperson said any country that cooperates or conspires with the United States to attack Iran will face Iran&#x27;s right of self-defence, and states that provide bases or military or logistical facilities to the aggressor will be treated as aggressors.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc368-1eea-7aab-8f48-230c5bb64d4b" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said the future management of the Strait of Hormuz will be negotiated between Iran and Oman.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc367-12b0-7aab-8f48-1b9acf605d8c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Samir Geagea, leader of the Lebanese Forces, said Lebanon&#x27;s relations with Gulf states will be restored to their previous state.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc366-d4ef-7aab-8f48-14beeeeb2d6a" 
+                                class="news-link" 
+                                target="_blank"
+                            >Lebanese Forces leader Samir Geagea said the crisis can only end if the Iranian regime collapses or at least changes its behavior and influence.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc365-52eb-7aab-8f48-0a7971998a48" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said it has received calls from the UK, Ukraine and Bulgaria, each telling Tehran they will not participate in the war.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc362-7625-7aab-8f47-f9ab9869557a" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iranian Foreign Ministry spokesman said the other side knows Iran will respond forcefully to any provocative action against it.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc362-0c2c-7aab-8f47-f26a372db16c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s Foreign Ministry spokesman said reopening the Strait of Hormuz is different from negotiations with Oman, because the strait&#x27;s closure stems from US violations of its commitments.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35e-b208-7aab-8f47-e2f6181bb0c7" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said friends and neighboring countries should be aware that any US attack on Iranian infrastructure would affect everyone.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-c228-7aab-8f47-d9e96cce2139" 
+                                class="news-link" 
+                                target="_blank"
+                            >Air-raid sirens sounded in Kyiv.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-766d-7aab-8f47-d1bb560e4b94" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said the United States, working with certain regional forces, has forcibly opened a southern route through the Strait of Hormuz and that route is not safe.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-4302-7aab-8f47-cace11c634b3" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran foreign ministry spokesman said Washington did not permit shipping through the Strait of Hormuz to resume as scheduled and attacked Iran before the deadline expired.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc359-ef4f-7aab-8f47-c458718728ad" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said an understanding with Oman on a new shipping route does not imply the opening or closure of the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc357-dc1a-7aab-8f47-bdef1dcfbd38" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign ministry spokesman said talks with Oman aim to find a common mechanism for the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc357-1db6-7aab-8f47-b14e094f26b2" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran foreign ministry spokesman said talks with Oman are bilateral and do not involve other parties, and reiterated that the situation in the Strait of Hormuz will not return to its pre-war state.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc355-6858-7aab-8f47-a9f3a7ae66f3" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran&#x27;s foreign minister said talks with Oman on the Strait of Hormuz have entered their final stage.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35f-ddb3-7aab-8f47-e9c72b223d92" 
+                                class="news-link" 
+                                target="_blank"
+                            >Iran’s foreign ministry spokesman said U.S. threats are not new and Tehran acts in its own interests, unaffected by such threats.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>21 条</span>
+                            <span>占比 23.08%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc389-0f4e-7aab-8f48-67a6bcb91abb" 
+                                class="news-link" 
+                                target="_blank">Qatar&#x27;s foreign ministry said the prime minister and foreign minister, in a call with Egypt&#x27;s foreign minister, discussed efforts to ease regional tensions and urged all parties to pursue dialogue and safeguard freedom of navigation through the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc387-c986-7aab-8f48-58e31c25ded0" 
+                                class="news-link" 
+                                target="_blank">Israeli officials said they were frustrated that Trump canceled planned strikes on Iran for the second time in a week, saying the last-minute reversals undermine military planning. Israeli officials now judge Trump is more likely to seek an agreement with Iran than to escalate the conflict.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc381-f390-7aab-8f48-4a58bcb97ece" 
+                                class="news-link" 
+                                target="_blank">Israel Broadcasting Corporation reported an Israeli official said Trump&#x27;s handling of affairs makes serious preparation and planning for the future difficult.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc371-ff8a-7aab-8f48-430576999831" 
+                                class="news-link" 
+                                target="_blank">Iran foreign ministry: Strait of Hormuz will not revert to pre-war status</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc36d-5a18-7aab-8f48-37fe26220626" 
+                                class="news-link" 
+                                target="_blank">Iran foreign ministry spokesman said discussions with Pakistani and Turkish officials addressed warnings and responses to US threats, and that Iran would retaliate if attacked.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc369-2bd7-7aab-8f48-29424b282187" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s Foreign Ministry spokesperson said any country that cooperates or conspires with the United States to attack Iran will face Iran&#x27;s right of self-defence, and states that provide bases or military or logistical facilities to the aggressor will be treated as aggressors.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc368-1eea-7aab-8f48-230c5bb64d4b" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said the future management of the Strait of Hormuz will be negotiated between Iran and Oman.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc367-12b0-7aab-8f48-1b9acf605d8c" 
+                                class="news-link" 
+                                target="_blank">Samir Geagea, leader of the Lebanese Forces, said Lebanon&#x27;s relations with Gulf states will be restored to their previous state.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc366-d4ef-7aab-8f48-14beeeeb2d6a" 
+                                class="news-link" 
+                                target="_blank">Lebanese Forces leader Samir Geagea said the crisis can only end if the Iranian regime collapses or at least changes its behavior and influence.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc365-52eb-7aab-8f48-0a7971998a48" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said it has received calls from the UK, Ukraine and Bulgaria, each telling Tehran they will not participate in the war.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc362-7625-7aab-8f47-f9ab9869557a" 
+                                class="news-link" 
+                                target="_blank">Iranian Foreign Ministry spokesman said the other side knows Iran will respond forcefully to any provocative action against it.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc362-0c2c-7aab-8f47-f26a372db16c" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s Foreign Ministry spokesman said reopening the Strait of Hormuz is different from negotiations with Oman, because the strait&#x27;s closure stems from US violations of its commitments.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35e-b208-7aab-8f47-e2f6181bb0c7" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said friends and neighboring countries should be aware that any US attack on Iranian infrastructure would affect everyone.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-c228-7aab-8f47-d9e96cce2139" 
+                                class="news-link" 
+                                target="_blank">Air-raid sirens sounded in Kyiv.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-766d-7aab-8f47-d1bb560e4b94" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said the United States, working with certain regional forces, has forcibly opened a southern route through the Strait of Hormuz and that route is not safe.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35c-4302-7aab-8f47-cace11c634b3" 
+                                class="news-link" 
+                                target="_blank">Iran foreign ministry spokesman said Washington did not permit shipping through the Strait of Hormuz to resume as scheduled and attacked Iran before the deadline expired.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc359-ef4f-7aab-8f47-c458718728ad" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said an understanding with Oman on a new shipping route does not imply the opening or closure of the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc357-dc1a-7aab-8f47-bdef1dcfbd38" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign ministry spokesman said talks with Oman aim to find a common mechanism for the Strait of Hormuz.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc357-1db6-7aab-8f47-b14e094f26b2" 
+                                class="news-link" 
+                                target="_blank">Iran foreign ministry spokesman said talks with Oman are bilateral and do not involve other parties, and reiterated that the situation in the Strait of Hormuz will not return to its pre-war state.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc355-6858-7aab-8f47-a9f3a7ae66f3" 
+                                class="news-link" 
+                                target="_blank">Iran&#x27;s foreign minister said talks with Oman on the Strait of Hormuz have entered their final stage.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019fc35f-ddb3-7aab-8f47-e9c72b223d92" 
+                                class="news-link" 
+                                target="_blank">Iran’s foreign ministry spokesman said U.S. threats are not new and Tehran acts in its own interests, unaffected by such threats.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">01时48分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
