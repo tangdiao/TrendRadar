@@ -1,0 +1,1356 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="16时58分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">08-13</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">16:58</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>23 条</span>
+                            <span>占比 9.31%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/08/13/e9263a7988f24c50b1cdbef12c6b3bc6.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >美学者：美国技术限制难阻中国AI创新</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28357340&amp;topic_name=AI%E7%BB%99%E5%81%87%E7%BD%91%2C%E5%90%A7%E5%8F%8B%E4%B8%AD%E6%8B%9B%E9%93%B6%E7%8B%90%E7%97%85%E6%AF%92" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI给假网,吧友中招银狐病毒</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/08/13/d590625a6cd04bfaa07df03df25d0aec.html" 
+                                class="news-link" 
+                                target="_blank"
+                            >港媒：东亚经济体AI发展策略优势各不同</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa52-e9bd-7aab-901f-e47ae5be7c57" 
+                                class="news-link" 
+                                target="_blank"
+                            >Turkey&#x27;s central bank governor said the central bank stands ready to tighten policy further if the inf outlook continues to deteriorate.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa52-885e-7aab-901f-dae7567f8489" 
+                                class="news-link" 
+                                target="_blank"
+                            >Governor of Russia&#x27;s Orenburg region says repair work will continue for six months.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/bswa-mouse-enhancer?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >mouse movement and aiming feel better</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453472?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社8月13日电，阿布扎比证券交易所（ADX）成为中东及北非地区首家以“实时”方式向ChatGPT、Claude及其他AI平台直接提供市场数据的交易所。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/ai-project-health-check?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI Project Health Check</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa4d-6762-7aab-901f-b3f6ff0f309e" 
+                                class="news-link" 
+                                target="_blank"
+                            >Huahong Hongli (01347.HK) said China sales in 2026 Q2 were $563.7 mln, 78.6% of group revenue, up 20.0% YoY, driven by stronger demand for MCUs, flash memory, general‑purpose MOSFETs, logic and smart‑card chips.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ifeng.com/c/8vYegkOgEUC" 
+                                class="news-link" 
+                                target="_blank"
+                            >规避抄袭率检测让AI改稿，化学论文竟推荐“屠杀一整个民族”？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">凤凰网</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2453237" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI“循环融资”越来越仰赖一件事：英伟达GPU能保值多久……</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa49-f917-7aab-901f-9a6c31b855db" 
+                                class="news-link" 
+                                target="_blank"
+                            >Hua Hong Hongli (01347.HK) said profit attributable to owners of the parent for Q2 2026 was $38.6m, up 385.9% YoY.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa47-48b7-7aab-901f-958a6ceef65f" 
+                                class="news-link" 
+                                target="_blank"
+                            >SMIC (00981.HK): AI-driven industrial momentum and spillover effects will continue, sustaining broad demand for China’s integrated-circuit manufacturing.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa47-0f39-7aab-901f-8f7282d9f1d3" 
+                                class="news-link" 
+                                target="_blank"
+                            >SMIC (00981.HK) said it is flexibly reallocating existing capacity and rapidly validating additional capacity to help ease industry-wide supply shortages.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453450?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社8月13日电，AI算力租赁商CoreWeave、Nebius盘前双双回落，上一交易日分别收涨19%和34%。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa42-051a-7aab-901f-5b4b227f5863" 
+                                class="news-link" 
+                                target="_blank"
+                            >India doubles installed capacity to shore supply; transmission lag constrains delivery</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa40-d17e-7aab-901f-55535b333d0c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Morgan Stanley raises Cisco (CSCO.O) price target to $135 from $130.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453443?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >财联社8月13日电，AI芯片制造商Cerebras美股盘前大跌近18%，公司第二财季营收1.801亿美元，低于市场预期。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3f-384b-7aab-901f-32f897c586b9" 
+                                class="news-link" 
+                                target="_blank"
+                            >China Mobile (00941.HK) said 1H 2026 revenue was 538.0 billion yuan, down from 543.76 billion yuan a year earlier.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3b-1af0-7aab-901f-275d61137583" 
+                                class="news-link" 
+                                target="_blank"
+                            >Turkey&#x27;s central bank governor said the bank has decided to maintain its current policy stance because uncertainty persists, and that the worst phase of the war&#x27;s impact has passed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa39-ce1f-7aab-901f-1999241a6b38" 
+                                class="news-link" 
+                                target="_blank"
+                            >Turkey&#x27;s central bank governor said since the war began the bank has taken proactive response measures.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa38-fc86-7aab-901f-12fb5e534504" 
+                                class="news-link" 
+                                target="_blank"
+                            >RWE CEO said it will not disclose further details on two data-center projects nearing completion.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453429?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank"
+                            >鹏鼎控股：AI服务器PCB上半年营收近10亿元 高速光模块PCB突破6亿元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 2.83%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa57-ad10-7aab-901f-f3616c45a951" 
+                                class="news-link" 
+                                target="_blank"
+                            >Ping An to hold 2026 interim results briefing on Aug 21, 2026 from 11:45 to 12:45.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa55-c25c-7aab-901f-ea6468861c0c" 
+                                class="news-link" 
+                                target="_blank"
+                            >CK Asset Holdings posts interim profit HK$8.68bn; revenue up 58.8% YoY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa50-51c3-7aab-901f-bd7de97f03c6" 
+                                class="news-link" 
+                                target="_blank"
+                            >Zhongjin Gold: Reserve-verification exploration at Hubei Jilongshan mine starts</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa4a-8a69-7aab-901f-a02e045a3d22" 
+                                class="news-link" 
+                                target="_blank"
+                            >Huahong Hongli (01347.HK) expects Q3 2026 sales of about US$770-780m and a gross margin of roughly 16-18%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa46-e329-7aab-901f-86c5c7be4422" 
+                                class="news-link" 
+                                target="_blank"
+                            >SMIC (00981.HK) expects Q3 revenue to rise 2-4% QoQ; gross margin guidance 26-28%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa46-83ee-7aab-901f-76a21832ebe9" 
+                                class="news-link" 
+                                target="_blank"
+                            >SMIC (00981.HK): Q2 gross margin 25.3%, up 5.2 percentage points (520 bps) QoQ.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3f-481a-7aab-901f-3d69d521b797" 
+                                class="news-link" 
+                                target="_blank"
+                            >Onshore yuan closed at 6.7451 per US dollar at 16:30 on Aug 13, up 5 points from the previous trading day.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.4%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260813161318111800" 
+                                class="news-link" 
+                                target="_blank"
+                            >沙特战略急转弯：不想卷入大战，紧急搭建多层威慑网络</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-4">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.4%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E8%AF%84%E9%92%9F%E7%9D%92%E7%9D%92%E4%BA%89%E8%AE%AE%E8%A8%80%E8%AE%BA" 
+                                class="news-link" 
+                                target="_blank"
+                            >人民日报评钟睒睒争议言论</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>23 条</span>
+                            <span>占比 9.31%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/08/13/e9263a7988f24c50b1cdbef12c6b3bc6.html" 
+                                class="news-link" 
+                                target="_blank">美学者：美国技术限制难阻中国AI创新</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://tieba.baidu.com/hottopic/browse/hottopic?topic_id=28357340&amp;topic_name=AI%E7%BB%99%E5%81%87%E7%BD%91%2C%E5%90%A7%E5%8F%8B%E4%B8%AD%E6%8B%9B%E9%93%B6%E7%8B%90%E7%97%85%E6%AF%92" 
+                                class="news-link" 
+                                target="_blank">AI给假网,吧友中招银狐病毒</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">贴吧</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://ckxxapp.ckxx.net/pages/2026/08/13/d590625a6cd04bfaa07df03df25d0aec.html" 
+                                class="news-link" 
+                                target="_blank">港媒：东亚经济体AI发展策略优势各不同</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">参考消息</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa52-e9bd-7aab-901f-e47ae5be7c57" 
+                                class="news-link" 
+                                target="_blank">Turkey&#x27;s central bank governor said the central bank stands ready to tighten policy further if the inf outlook continues to deteriorate.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa52-885e-7aab-901f-dae7567f8489" 
+                                class="news-link" 
+                                target="_blank">Governor of Russia&#x27;s Orenburg region says repair work will continue for six months.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/bswa-mouse-enhancer?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">mouse movement and aiming feel better</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453472?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">财联社8月13日电，阿布扎比证券交易所（ADX）成为中东及北非地区首家以“实时”方式向ChatGPT、Claude及其他AI平台直接提供市场数据的交易所。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.producthunt.com/products/ai-project-health-check?utm_campaign=producthunt-api&utm_medium=api-v2&utm_source=Application%3A+newsnow+%28ID%3A+239216%29" 
+                                class="news-link" 
+                                target="_blank">AI Project Health Check</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">产品猎手</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa4d-6762-7aab-901f-b3f6ff0f309e" 
+                                class="news-link" 
+                                target="_blank">Huahong Hongli (01347.HK) said China sales in 2026 Q2 were $563.7 mln, 78.6% of group revenue, up 20.0% YoY, driven by stronger demand for MCUs, flash memory, general‑purpose MOSFETs, logic and smart‑card chips.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://news.ifeng.com/c/8vYegkOgEUC" 
+                                class="news-link" 
+                                target="_blank">规避抄袭率检测让AI改稿，化学论文竟推荐“屠杀一整个民族”？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">凤凰网</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2453237" 
+                                class="news-link" 
+                                target="_blank">AI“循环融资”越来越仰赖一件事：英伟达GPU能保值多久……</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa49-f917-7aab-901f-9a6c31b855db" 
+                                class="news-link" 
+                                target="_blank">Hua Hong Hongli (01347.HK) said profit attributable to owners of the parent for Q2 2026 was $38.6m, up 385.9% YoY.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa47-48b7-7aab-901f-958a6ceef65f" 
+                                class="news-link" 
+                                target="_blank">SMIC (00981.HK): AI-driven industrial momentum and spillover effects will continue, sustaining broad demand for China’s integrated-circuit manufacturing.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa47-0f39-7aab-901f-8f7282d9f1d3" 
+                                class="news-link" 
+                                target="_blank">SMIC (00981.HK) said it is flexibly reallocating existing capacity and rapidly validating additional capacity to help ease industry-wide supply shortages.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453450?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">财联社8月13日电，AI算力租赁商CoreWeave、Nebius盘前双双回落，上一交易日分别收涨19%和34%。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa42-051a-7aab-901f-5b4b227f5863" 
+                                class="news-link" 
+                                target="_blank">India doubles installed capacity to shore supply; transmission lag constrains delivery</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa40-d17e-7aab-901f-55535b333d0c" 
+                                class="news-link" 
+                                target="_blank">Morgan Stanley raises Cisco (CSCO.O) price target to $135 from $130.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453443?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">财联社8月13日电，AI芯片制造商Cerebras美股盘前大跌近18%，公司第二财季营收1.801亿美元，低于市场预期。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3f-384b-7aab-901f-32f897c586b9" 
+                                class="news-link" 
+                                target="_blank">China Mobile (00941.HK) said 1H 2026 revenue was 538.0 billion yuan, down from 543.76 billion yuan a year earlier.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3b-1af0-7aab-901f-275d61137583" 
+                                class="news-link" 
+                                target="_blank">Turkey&#x27;s central bank governor said the bank has decided to maintain its current policy stance because uncertainty persists, and that the worst phase of the war&#x27;s impact has passed.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa39-ce1f-7aab-901f-1999241a6b38" 
+                                class="news-link" 
+                                target="_blank">Turkey&#x27;s central bank governor said since the war began the bank has taken proactive response measures.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa38-fc86-7aab-901f-12fb5e534504" 
+                                class="news-link" 
+                                target="_blank">RWE CEO said it will not disclose further details on two data-center projects nearing completion.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://api3.cls.cn/share/article/2453429?os=web&sv=7.7.5&app=" 
+                                class="news-link" 
+                                target="_blank">鹏鼎控股：AI服务器PCB上半年营收近10亿元 高速光模块PCB突破6亿元</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>7 条</span>
+                            <span>占比 2.83%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa57-ad10-7aab-901f-f3616c45a951" 
+                                class="news-link" 
+                                target="_blank">Ping An to hold 2026 interim results briefing on Aug 21, 2026 from 11:45 to 12:45.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa55-c25c-7aab-901f-ea6468861c0c" 
+                                class="news-link" 
+                                target="_blank">CK Asset Holdings posts interim profit HK$8.68bn; revenue up 58.8% YoY</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa50-51c3-7aab-901f-bd7de97f03c6" 
+                                class="news-link" 
+                                target="_blank">Zhongjin Gold: Reserve-verification exploration at Hubei Jilongshan mine starts</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa4a-8a69-7aab-901f-a02e045a3d22" 
+                                class="news-link" 
+                                target="_blank">Huahong Hongli (01347.HK) expects Q3 2026 sales of about US$770-780m and a gross margin of roughly 16-18%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa46-e329-7aab-901f-86c5c7be4422" 
+                                class="news-link" 
+                                target="_blank">SMIC (00981.HK) expects Q3 revenue to rise 2-4% QoQ; gross margin guidance 26-28%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa46-83ee-7aab-901f-76a21832ebe9" 
+                                class="news-link" 
+                                target="_blank">SMIC (00981.HK): Q2 gross margin 25.3%, up 5.2 percentage points (520 bps) QoQ.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=019ffa3f-481a-7aab-901f-3d69d521b797" 
+                                class="news-link" 
+                                target="_blank">Onshore yuan closed at 6.7451 per US dollar at 16:30 on Aug 13, up 5 points from the previous trading day.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 国产算力特攻队 讯飞星火 百度文心 阿里通义 卷场景 卷芯片 卷人才 卷 加班 大厂  #3</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.4%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260813161318111800" 
+                                class="news-link" 
+                                target="_blank">沙特战略急转弯：不想卷入大战，紧急搭建多层威慑网络</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #4</div>
+                        <div class="word-stats">
+                            <span>1 条</span>
+                            <span>占比 0.4%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E4%BA%BA%E6%B0%91%E6%97%A5%E6%8A%A5%E8%AF%84%E9%92%9F%E7%9D%92%E7%9D%92%E4%BA%89%E8%AE%AE%E8%A8%80%E8%AE%BA" 
+                                class="news-link" 
+                                target="_blank">人民日报评钟睒睒争议言论</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">16时58分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
