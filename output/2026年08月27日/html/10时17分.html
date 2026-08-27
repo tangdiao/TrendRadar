@@ -1,0 +1,1411 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>今日新闻</title>
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Helvetica, Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    color: #333;
+                    line-height: 1.6;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+
+                .header {
+                    background: linear-gradient(135deg, #07c160, #00a14c);
+                    color: white;
+                    padding: 30px 20px;
+                    border-radius: 12px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
+                    position: relative;
+                }
+                
+                .style-switcher {
+                    position: absolute;
+                    top: 15px;
+                    right: 15px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                .style-btn {
+                    padding: 6px 12px;
+                    background: rgba(255, 255, 255, 0.2);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 15px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-size: 12px;
+                    text-decoration: none;
+                }
+                
+                .style-btn:hover {
+                    background: rgba(255, 255, 255, 0.3);
+                    transform: translateY(-1px);
+                }
+                
+                .style-btn.active {
+                    background: white;
+                    color: #07c160;
+                }
+
+                .header h1 {
+                    font-size: 24px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                .header-info {
+                    opacity: 0.9;
+                    font-size: 14px;
+                }
+
+                .card {
+                    background: white;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                }
+
+                .stats-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-bottom: 20px;
+                }
+
+                .stat-item {
+                    text-align: center;
+                    padding: 20px;
+                    border-radius: 10px;
+                    background: #f8f9fa;
+                }
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #07c160;
+                }
+
+                .stat-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-top: 5px;
+                }
+
+                .word-section {
+                    border-bottom: 1px solid #f0f0f0;
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .word-section:last-child {
+                    border-bottom: none;
+                    margin-bottom: 0;
+                }
+
+                .word-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 15px;
+                }
+
+                .word-name {
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #07c160;
+                }
+
+                .word-stats {
+                    display: flex;
+                    gap: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+
+                .news-list {
+                    list-style: none;
+                }
+
+                .news-item {
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    background: #fafafa;
+                    border-radius: 8px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .news-title {
+                    font-size: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .news-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 13px;
+                    color: #666;
+                }
+
+                .source-tag {
+                    background: #f0f9ff;
+                    color: #007acc;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                }
+
+                .rank-tag {
+                    background: #fff2e8;
+                    color: #ff7a45;
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 600;
+                }
+
+                .time-tag {
+                    color: #999;
+                }
+
+                .new-badge {
+                    display: inline-block;
+                    background: linear-gradient(135deg, #ff6b6b, #ff4757);
+                    color: white;
+                    padding: 3px 8px;
+                    border-radius: 12px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    margin-right: 5px;
+                }
+
+                .new-section {
+                    background: linear-gradient(135deg, #fff5f5, #fef7ef);
+                    border: 1px solid #ffdad8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .new-section h3 {
+                    color: #ff6b6b;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .new-section h3::before {
+                    content: "🔥";
+                    margin-right: 8px;
+                }
+
+                .source-group {
+                    margin-bottom: 15px;
+                }
+
+                .source-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 10px;
+                    padding-left: 10px;
+                    border-left: 3px solid #07c160;
+                }
+
+                .error-section {
+                    background: #fff5f5;
+                    border: 1px solid #feddd8;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+
+                .error-section h3 {
+                    color: #ff4d4f;
+                    font-size: 18px;
+                    margin-bottom: 10px;
+                }
+
+                .error-list {
+                    list-style: none;
+                }
+
+                .error-item {
+                    padding: 10px;
+                    margin-bottom: 5px;
+                    background: #fafafa;
+                    border-radius: 5px;
+                    border-left: 3px solid #ff4d4f;
+                }
+
+                .news-link {
+                    color: #1890ff;
+                    text-decoration: none;
+                    position: relative;
+                }
+
+                .news-link:hover {
+                    color: #40a9ff;
+                    text-decoration: underline;
+                }
+
+                .news-link:visited {
+                    color: #722ed1;
+                }
+
+                @media (max-width: 768px) {
+                    .container {
+                        padding: 10px;
+                    }
+                    
+                    .header {
+                        padding: 20px 15px;
+                    }
+                    
+                    .header h1 {
+                        font-size: 20px;
+                    }
+                    
+                    .stats-grid {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                    }
+                    
+                    .word-header {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        gap: 5px;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header" id="top">
+                    <h1>今日新闻</h1>
+                    <div class="style-switcher">
+                        <a href="#" class="style-btn active" onclick="return false;">经典</a>
+                        <a href="10时17分_card.html" class="style-btn">卡片</a>
+                    </div>
+                    <div class="header-info">
+                        <!-- 锚点导航 -->
+                        <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                            <a href="#hot-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                🔥 新增热点
+                            </a>
+                            <a href="#today-news" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📰 今日资讯
+                            </a>
+                            <a href="#trending" style="color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                📈 热点词汇
+                            </a>
+                            <a href="#failed-platforms" style="display: none; color: white; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.2); border-radius: 15px; font-size: 14px; transition: background 0.3s;" id="error-nav" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                                ⚠️ 错误信息
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <script>
+            // 检测错误部分并显示导航
+            document.addEventListener('DOMContentLoaded', function() {
+                const errorSection = document.querySelector('.error-section');
+                if (errorSection) {
+                    const errorNav = document.getElementById('error-nav');
+                    if (errorNav) errorNav.style.display = 'inline-block';
+                }
+            });
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+        </script>
+        
+                    <p>📊 实时分析</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">270</div>
+                    <div class="stat-label">总标题数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">热点词</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">08-27</div>
+                    <div class="stat-label">日期</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">10:17</div>
+                    <div class="stat-label">时间</div>
+                </div>
+            </div>
+        
+            <div class="card" id="today-news">
+                <h2>📰 今日资讯</h2>
+            
+                <div class="word-section" id="trending-1">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>30 条</span>
+                            <span>占比 11.11%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040ea-e497-7aab-913e-3ffe257a1176" 
+                                class="news-link" 
+                                target="_blank"
+                            >A-share storage-chip sector rallied; Sanfu Co. and Kairuide hit limit-up, Dapuwei had earlier hit limit-up. Maijie Technology, Anji Technology, Juguang Technology and Tongyou Technology were among top gainers.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e9-dafb-7aab-913e-34cdf29b0cd2" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said downside pressure on the economy and upward pressure on prices will emerge, but the risk of a sharp economic contraction caused by supply problems has diminished.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e9-0ead-7aab-913e-2c0b62a318cf" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan deputy governor HIMINO said real interest rates remain negative, particularly in the short- and medium-term.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E6%AF%94%E5%B0%94%E7%9B%96%E8%8C%A8%E5%8F%9112%E9%A1%B5%E9%95%BF%E6%96%87%E8%AD%A6%E5%91%8AAI%E9%A3%8E%E9%99%A9%23&t=31&band_rank=6&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >比尔盖茨发12页长文警告AI风险</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2075227159929386027" 
+                                class="news-link" 
+                                target="_blank"
+                            >如何评价 Anthropic 最强模型 Fable 5 遇冷？AI 行业是否高估了「更强模型」的价值？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3780350" 
+                                class="news-link" 
+                                target="_blank"
+                            >智谱“认领”神秘AI模型Ox Alpha“牛来”，使用量已达DeepSeek两倍以上</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e6-ac62-7aab-913e-0c8207abb996" 
+                                class="news-link" 
+                                target="_blank"
+                            >BANK OF JAPAN Deputy Governor HIMINO said he wants to avoid delaying rate hikes in a way that lets inflation surge and forces rapid follow-up tightening.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E6%B2%88%E8%85%BE%E8%8C%83%E4%B8%9E%E4%B8%9E%E5%90%88%E7%85%A7%E5%B8%85%E6%88%90AI%E4%BA%86%23&t=31&band_rank=9&Refer=top" 
+                                class="news-link" 
+                                target="_blank"
+                            >沈腾范丞丞合照帅成AI了</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-3398-7aab-913e-01329c49f0a4" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said Japan&#x27;s financial environment remains accommodative.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-257d-7aab-913d-fb2073c1c822" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said monetary policy is not intended to control the exchange rate, but exchange-rate fluctuations are one of the key factors affecting the economy and prices.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2465527" 
+                                class="news-link" 
+                                target="_blank"
+                            >AI带动铜矿热潮 工程机械“卖铲人”忙着翻倍扩大业务规模</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-1265-7aab-913d-f0723a83988a" 
+                                class="news-link" 
+                                target="_blank"
+                            >Himino, deputy governor at the Bank of Japan, said the central bank&#x27;s core responsibility is to ensure everyone can use the yen confidently and efficiently.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-cb04-7aab-913d-eb99d2f79742" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said foreign exchange is an important factor for Japan&#x27;s economy and prices and called for careful review of the effects of yen depreciation. He said exchange-rate pass-through to prices is more pronounced than in the past.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-631c-7aab-913d-e214df901bd9" 
+                                class="news-link" 
+                                target="_blank"
+                            >China A-share gold names repeatedly strengthened; Shenzhen Zhonghua A posted a sixth consecutive limit-up, Hunan Gold and Laishen Tongling hit limit-up, and Hunan Silver, Zhaojin Gold, Baiyin Nonferrous and Shengda Resources rose in sympathy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-4cf9-7aab-913d-df24286c0098" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said the weak yen has lifted global corporate profits but is weighing on household real incomes.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-0b56-7aab-913d-d55791a27312" 
+                                class="news-link" 
+                                target="_blank"
+                            >China A-share coal sector rallied. Kairuide surged to the daily trading limit; Xindazhou A, Huayang, Haohua Energy, Pingmei, Jizhong Energy and Jinkong Coal also advanced.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%AF%94%E5%B0%94%E7%9B%96%E8%8C%A8%E7%BD%95%E8%A7%81%E5%8F%91%E9%95%BF%E6%96%87%E8%AD%A6%E5%91%8A%E4%BA%BA%E7%B1%BB%E6%B3%A8%E6%84%8FAI" 
+                                class="news-link" 
+                                target="_blank"
+                            >比尔盖茨罕见发长文警告人类注意AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e3-2fa4-7aab-913d-ce7f0677e3a7" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said the risk of a severe recession facing the economy has diminished.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e3-2225-7aab-913d-c74d0e3f56ee" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said focusing solely on immediate reactions could lead to overlooking the overall impact of policy changes.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-f295-7aab-913d-bdb4a2464041" 
+                                class="news-link" 
+                                target="_blank"
+                            >BOJ Deputy Governor HIMINO said monitoring current conditions is essential for assessing the outlook and risks, but policy discussions tend to focus more on future outlook and risks.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-4beb-7aab-913d-afe3ef234130" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said that with financial conditions still accommodative, it is necessary to moderate the pace of tightening while continuing to raise the policy rate in a timely manner.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-1a3e-7aab-913d-a4cec3fceeda" 
+                                class="news-link" 
+                                target="_blank"
+                            >A-share securities sector strengthened again today; Jinlong and Xiangcai recorded two consecutive trading-day limit-ups, while Guosheng Securities, Pacific Securities, Hualin Securities, Huachuang Yunxin and BOC Securities also rose.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e0-5f3f-7aab-913d-9447de87b36f" 
+                                class="news-link" 
+                                target="_blank"
+                            >Short-term retail cash yields: Licaitong, WeChat Wallet, Alipay Yu&#x27;e Bao</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e0-48bb-7aab-913d-88b9cfeef873" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said effective use of monetary policy can prevent the economy from deviating from a healthy growth trajectory.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-e392-7aab-913d-8096df6ff88f" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said monetary policy&#x27;s impact on prices will take time.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-c9ee-7aab-913d-7d168979aace" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said the main factors guiding policy are the outlook and risks, not current underlying economic conditions.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-141a-7aab-913d-770fa4d2715f" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor Himino said policymakers should pay greater attention than before to the risk of rising prices.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-feab-7aab-913d-6e9691705052" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said policy guidance must take into account a range of factors.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-f9bf-7aab-913d-642af570e12f" 
+                                class="news-link" 
+                                target="_blank"
+                            >A-share NVIDIA-related stocks strengthened; Dapuwei hit the daily limit, while Junwei Electronics, Hongchang Electronics, Helin Weina and Maijie Technology were among the top gainers.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-e4a0-7aab-913d-5d4456b18e92" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO said that if underlying inflation rises above the 2% price-stability target, it would have adverse effects on the economy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-2">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 1.11%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040ea-fcf7-7aab-913e-45eb273f003c" 
+                                class="news-link" 
+                                target="_blank"
+                            >Bank of Japan Deputy Governor HIMINO expects inf in H2 of the current fiscal year to exceed 2%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e8-6591-7aab-913e-25dfadce6ead" 
+                                class="news-link" 
+                                target="_blank"
+                            >Wall Street Journal reports Barrett Zoff, co-founder of Thinking Machines Lab, has joined Google (GOOG.O).</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e7-2fde-7aab-913e-145b361c68c4" 
+                                class="news-link" 
+                                target="_blank"
+                            >South Korean won rose to 1,377.30 per U.S. dollar, its highest level since mid-September 2025.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section" id="trending-3">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.74%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2465606" 
+                                class="news-link" 
+                                target="_blank"
+                            >【早报】英伟达，业绩大超预期；苹果首款折叠屏手机，要来了；原油黄金，双双下跌；多家A股公司，发布中报</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260827094920860800" 
+                                class="news-link" 
+                                target="_blank"
+                            >据华尔街日报：思维机器实验室（Thinking Machines Lab）联合创始人巴雷特·佐夫加入谷歌(GOOG.O)。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+                <h2>📈 热点词汇统计</h2>
+            
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 ai Claude Code Gemini Kimi Deepseek 硅基流动 通义灵码 api  #1</div>
+                        <div class="word-stats">
+                            <span>30 条</span>
+                            <span>占比 11.11%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040ea-e497-7aab-913e-3ffe257a1176" 
+                                class="news-link" 
+                                target="_blank">A-share storage-chip sector rallied; Sanfu Co. and Kairuide hit limit-up, Dapuwei had earlier hit limit-up. Maijie Technology, Anji Technology, Juguang Technology and Tongyou Technology were among top gainers.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e9-dafb-7aab-913e-34cdf29b0cd2" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said downside pressure on the economy and upward pressure on prices will emerge, but the risk of a sharp economic contraction caused by supply problems has diminished.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#3</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e9-0ead-7aab-913e-2c0b62a318cf" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan deputy governor HIMINO said real interest rates remain negative, particularly in the short- and medium-term.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#4</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E6%AF%94%E5%B0%94%E7%9B%96%E8%8C%A8%E5%8F%9112%E9%A1%B5%E9%95%BF%E6%96%87%E8%AD%A6%E5%91%8AAI%E9%A3%8E%E9%99%A9%23&t=31&band_rank=6&Refer=top" 
+                                class="news-link" 
+                                target="_blank">比尔盖茨发12页长文警告AI风险</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.zhihu.com/question/2075227159929386027" 
+                                class="news-link" 
+                                target="_blank">如何评价 Anthropic 最强模型 Fable 5 遇冷？AI 行业是否高估了「更强模型」的价值？</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">知乎</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://wallstreetcn.com/articles/3780350" 
+                                class="news-link" 
+                                target="_blank">智谱“认领”神秘AI模型Ox Alpha“牛来”，使用量已达DeepSeek两倍以上</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">华尔街见闻</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e6-ac62-7aab-913e-0c8207abb996" 
+                                class="news-link" 
+                                target="_blank">BANK OF JAPAN Deputy Governor HIMINO said he wants to avoid delaying rate hikes in a way that lets inflation surge and forces rapid follow-up tightening.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://s.weibo.com/weibo?q=%23%E6%B2%88%E8%85%BE%E8%8C%83%E4%B8%9E%E4%B8%9E%E5%90%88%E7%85%A7%E5%B8%85%E6%88%90AI%E4%BA%86%23&t=31&band_rank=9&Refer=top" 
+                                class="news-link" 
+                                target="_blank">沈腾范丞丞合照帅成AI了</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">微博</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-3398-7aab-913e-01329c49f0a4" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said Japan&#x27;s financial environment remains accommodative.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-257d-7aab-913d-fb2073c1c822" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said monetary policy is not intended to control the exchange rate, but exchange-rate fluctuations are one of the key factors affecting the economy and prices.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2465527" 
+                                class="news-link" 
+                                target="_blank">AI带动铜矿热潮 工程机械“卖铲人”忙着翻倍扩大业务规模</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e5-1265-7aab-913d-f0723a83988a" 
+                                class="news-link" 
+                                target="_blank">Himino, deputy governor at the Bank of Japan, said the central bank&#x27;s core responsibility is to ensure everyone can use the yen confidently and efficiently.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-cb04-7aab-913d-eb99d2f79742" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said foreign exchange is an important factor for Japan&#x27;s economy and prices and called for careful review of the effects of yen depreciation. He said exchange-rate pass-through to prices is more pronounced than in the past.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-631c-7aab-913d-e214df901bd9" 
+                                class="news-link" 
+                                target="_blank">China A-share gold names repeatedly strengthened; Shenzhen Zhonghua A posted a sixth consecutive limit-up, Hunan Gold and Laishen Tongling hit limit-up, and Hunan Silver, Zhaojin Gold, Baiyin Nonferrous and Shengda Resources rose in sympathy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-4cf9-7aab-913d-df24286c0098" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said the weak yen has lifted global corporate profits but is weighing on household real incomes.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e4-0b56-7aab-913d-d55791a27312" 
+                                class="news-link" 
+                                target="_blank">China A-share coal sector rallied. Kairuide surged to the daily trading limit; Xindazhou A, Huayang, Haohua Energy, Pingmei, Jizhong Energy and Jinkong Coal also advanced.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.baidu.com/s?wd=%E6%AF%94%E5%B0%94%E7%9B%96%E8%8C%A8%E7%BD%95%E8%A7%81%E5%8F%91%E9%95%BF%E6%96%87%E8%AD%A6%E5%91%8A%E4%BA%BA%E7%B1%BB%E6%B3%A8%E6%84%8FAI" 
+                                class="news-link" 
+                                target="_blank">比尔盖茨罕见发长文警告人类注意AI</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">百度热搜</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e3-2fa4-7aab-913d-ce7f0677e3a7" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said the risk of a severe recession facing the economy has diminished.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e3-2225-7aab-913d-c74d0e3f56ee" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said focusing solely on immediate reactions could lead to overlooking the overall impact of policy changes.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-f295-7aab-913d-bdb4a2464041" 
+                                class="news-link" 
+                                target="_blank">BOJ Deputy Governor HIMINO said monitoring current conditions is essential for assessing the outlook and risks, but policy discussions tend to focus more on future outlook and risks.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-4beb-7aab-913d-afe3ef234130" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said that with financial conditions still accommodative, it is necessary to moderate the pace of tightening while continuing to raise the policy rate in a timely manner.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e2-1a3e-7aab-913d-a4cec3fceeda" 
+                                class="news-link" 
+                                target="_blank">A-share securities sector strengthened again today; Jinlong and Xiangcai recorded two consecutive trading-day limit-ups, while Guosheng Securities, Pacific Securities, Hualin Securities, Huachuang Yunxin and BOC Securities also rose.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e0-5f3f-7aab-913d-9447de87b36f" 
+                                class="news-link" 
+                                target="_blank">Short-term retail cash yields: Licaitong, WeChat Wallet, Alipay Yu&#x27;e Bao</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e0-48bb-7aab-913d-88b9cfeef873" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said effective use of monetary policy can prevent the economy from deviating from a healthy growth trajectory.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-e392-7aab-913d-8096df6ff88f" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said monetary policy&#x27;s impact on prices will take time.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-c9ee-7aab-913d-7d168979aace" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said the main factors guiding policy are the outlook and risks, not current underlying economic conditions.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040de-141a-7aab-913d-770fa4d2715f" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor Himino said policymakers should pay greater attention than before to the risk of rising prices.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-feab-7aab-913d-6e9691705052" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said policy guidance must take into account a range of factors.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-f9bf-7aab-913d-642af570e12f" 
+                                class="news-link" 
+                                target="_blank">A-share NVIDIA-related stocks strengthened; Dapuwei hit the daily limit, while Junwei Electronics, Hongchang Electronics, Helin Weina and Maijie Technology were among the top gainers.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040dd-e4a0-7aab-913d-5d4456b18e92" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO said that if underlying inflation rises above the 2% price-stability target, it would have adverse effects on the economy.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 前端 JavaScript TypeScript js ts HTML html CSS css Vue vue React react 面试 interview  #2</div>
+                        <div class="word-stats">
+                            <span>3 条</span>
+                            <span>占比 1.11%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040ea-fcf7-7aab-913e-45eb273f003c" 
+                                class="news-link" 
+                                target="_blank">Bank of Japan Deputy Governor HIMINO expects inf in H2 of the current fiscal year to exceed 2%.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#1</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e8-6591-7aab-913e-25dfadce6ead" 
+                                class="news-link" 
+                                target="_blank">Wall Street Journal reports Barrett Zoff, co-founder of Thinking Machines Lab, has joined Google (GOOG.O).</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="rank-tag">#5</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://mktnews.net/flashDetail.html?id=01a040e7-2fde-7aab-913e-145b361c68c4" 
+                                class="news-link" 
+                                target="_blank">South Korean won rose to 1,377.30 per U.S. dollar, its highest level since mid-September 2025.</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">MKT News</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="word-section">
+                    <div class="word-header">
+                        <div class="word-name">🏆 日报 早报 晚报  #3</div>
+                        <div class="word-stats">
+                            <span>2 条</span>
+                            <span>占比 0.74%</span>
+                        </div>
+                    </div>
+                    <ul class="news-list">
+                
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://www.cls.cn/detail/2465606" 
+                                class="news-link" 
+                                target="_blank">【早报】英伟达，业绩大超预期；苹果首款折叠屏手机，要来了；原油黄金，双双下跌；多家A股公司，发布中报</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">财联社热门</span>
+                    <span class="rank-tag">#2</span><span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    <li class="news-item">
+                        <div class="news-title">
+                            <span class="new-badge">NEW</span>
+                            <a href="https://flash.jin10.com/detail/20260827094920860800" 
+                                class="news-link" 
+                                target="_blank">据华尔街日报：思维机器实验室（Thinking Machines Lab）联合创始人巴雷特·佐夫加入谷歌(GOOG.O)。</a>
+                        </div>
+                        <div class="news-meta">
+                            <span class="source-tag">金十数据</span>
+                    <span class="time-tag">10时17分</span>
+                        </div>
+                    </li>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
